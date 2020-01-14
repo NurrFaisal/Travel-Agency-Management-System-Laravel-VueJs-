@@ -1,0 +1,135 @@
+<template>
+    <div>
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <router-link to="/dashboard">Home</router-link>
+                    </li>
+
+                    <li>
+                        <router-link to="/payment-list">Payment List</router-link>
+                    </li>
+                </ul><!-- /.breadcrumb -->
+
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- /.nav-search -->
+            </div>
+
+            <div class="page-content">
+
+                <div class="page-header">
+                    <h1>
+                        Payment List
+                        <div class="card-tools" style="float:right">
+                            <router-link to="/new-payment" class="btn btn-success">Add Payment</router-link>
+                        </div>
+                        <br/>
+                    </h1>
+                </div><!-- /.page-header -->
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table id="simple-table" class="table  table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="center">Sl.</th>
+                                        <th class="center">Date</th>
+                                        <th>Suplier Name</th>
+                                        <th>Narration Name</th>
+                                        <th>Received By</th>
+                                        <th>Paid By</th>
+                                        <th>Approved By</th>
+                                        <th>Total Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr v-for="(payment, index) in  payments">
+                                        <td class="center">{{index+1}}</td>
+                                        <td>{{payment.debit_voucher_date | timeformate}}</td>
+                                        <td>{{payment.supliert.name}}</td>
+                                        <td>{{payment.narration}}</td>
+                                        <td>{{payment.received_by}}</td>
+                                        <td>{{payment.paid_by}}</td>
+                                        <td>{{payment.approved_by}}</td>
+                                        <td>{{payment.total_payment_amount}}</td>
+
+                                        <td class="center">
+                                            <div class="hidden-sm hidden-xs btn-group">
+
+                                                <button class="btn btn-xs btn-success">
+                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
+                                                </button>
+                                                <router-link :to="`/edit-payment/${payment.id}`" class="btn btn-xs btn-info">
+                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </router-link>
+
+                                                <!--                                                <button @click.prevent="deleteGuestTitle(received.id)" class="btn btn-xs btn-danger">-->
+                                                <!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
+                                                <!--                                                </button>-->
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div><!-- /.span -->
+                            <div class="justify-content-center">
+                                <pagination v-if="pagination.last_page > 1"
+                                            :pagination="pagination"
+                                            :offset="5"
+                                            @paginate="getPayment()"
+                                ></pagination>
+                            </div>
+
+                        </div><!-- /.row -->
+                        <div class="hr hr-18 dotted hr-double"></div>
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "ListPaymentComponent",
+        mounted() {
+            this.getPayment()
+        },
+        data(){
+            return {
+                pagination:{
+                    current_page: 1,
+                },
+                payments: '',
+            }
+        },
+        methods:{
+            getPayment(){
+                axios.get('/api/get-all-payment?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.payments = response.data.payments.data
+                        this.pagination = response.data.payments
+                    })
+            },
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>
