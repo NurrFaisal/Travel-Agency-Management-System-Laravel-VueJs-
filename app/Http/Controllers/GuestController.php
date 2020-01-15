@@ -20,7 +20,6 @@ class GuestController extends Controller
             'phone_number' => 'required|max:15|min:11',
             'alt_phone_number' => 'required|max:15|min:11',
             'address' => 'required',
-            'category' => 'required',
             'status' => 'required|numeric',
         ]);
     }
@@ -37,7 +36,6 @@ class GuestController extends Controller
         $guest->alt_phone_number = $request->alt_phone_number;
         $guest->address = $request->address;
         $guest->type = $request->type;
-        $guest->category = $request->category;
         $guest->status = $request->status;
     }
     public function addGuest(Request $request){

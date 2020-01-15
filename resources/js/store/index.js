@@ -50,13 +50,13 @@ export default {
     },
     actions:{
         allGuestTitle(payload){
-            axios.get('/api/get-all-guest-title')
+            axios.get('/api/get-all-guest-title-for-select')
                 .then((response) =>{
                     payload.commit('guest_title', response.data.all_guest_titles)
                 })
         },
         allGuestDesignation(payload){
-            axios.get('/api/get-all-guest-designation')
+            axios.get('/api/get-all-guest-designation-for-select')
                 .then((response) => {
                     payload.commit('guest_designation', response.data.all_guest_designations)
                 })

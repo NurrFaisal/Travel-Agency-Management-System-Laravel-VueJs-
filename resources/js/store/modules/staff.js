@@ -11,7 +11,7 @@ export default {
     actions:{
 
         allStaffs(payload){
-            axios.get('/api/get-all-staffs')
+            axios.get('/api/get-all-staffs-for-select')
                 .then((response) =>{
                     payload.commit('staffs', response.data.staffs)
                 })

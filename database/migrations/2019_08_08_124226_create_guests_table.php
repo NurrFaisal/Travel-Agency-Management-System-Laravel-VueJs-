@@ -26,7 +26,6 @@ class CreateGuestsTable extends Migration
             $table->string('phone_number');
             $table->string('alt_phone_number');
             $table->text('address');
-            $table->tinyInteger('category');
             $table->tinyInteger('type');
             $table->tinyInteger('status');
             $table->timestamps();

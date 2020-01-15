@@ -24,6 +24,12 @@ class GuestTitleController extends Controller
             'all_guest_titles' => $all_guest_titles
         ], 200);
     }
+    public function getAllGuestTitleForSelect(){
+        $all_guest_titles = GuestTitle::orderBy('guest_title')->get();
+        return response()->json([
+            'all_guest_titles' => $all_guest_titles
+        ], 200);
+    }
     public function deleteGuestTitle($id){
         $guest_title = GuestTitle::find($id);
         $guest_title->delete();

@@ -116,6 +116,12 @@ class StaffController extends Controller
             'staffs' => $staffs
         ], 200);
     }
+    public function getAllStaffForSelect(){
+        $staffs = Staff::orderBy('first_name')->select('id', 'first_name', 'last_name')->get();
+        return response()->json([
+            'staffs' => $staffs
+        ], 200);
+    }
     public function deleteStaff($id){
         $staff = Staff::where('id', $id)->first();
         $public_path = public_path();

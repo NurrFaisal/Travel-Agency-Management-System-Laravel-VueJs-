@@ -23,6 +23,12 @@ class GuestDesignationController extends Controller
             'all_guest_designations' => $all_guest_designations
         ], 200);
     }
+    public function allGuestDesignationForSelect(){
+        $all_guest_designations = GuestDesignation::orderBy('guest_designation')->get();
+        return response()->json([
+            'all_guest_designations' => $all_guest_designations
+        ], 200);
+    }
     public function deleteGuestDesignation($id){
         $guest_designation = GuestDesignation::find($id);
         $guest_designation->delete();

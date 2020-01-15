@@ -111,6 +111,7 @@ Route::get('/api/logout', 'LoginController@logout');
 //Guest title Controller Start
 Route::post('/api/add-guest-title', 'GuestTitleController@addGuestTitle');
 Route::get('/api/get-all-guest-title', 'GuestTitleController@getAllGuestTitle');
+Route::get('/api/get-all-guest-title-for-select', 'GuestTitleController@getAllGuestTitleForSelect');
 Route::get('/api/delete-guest-title/{id}', 'GuestTitleController@deleteGuestTitle');
 Route::get('/api/edit-guest-title/{id}', 'GuestTitleController@editGuestTitle');
 Route::post('/api/update-guest-title', 'GuestTitleController@updateGuestTitle');
@@ -124,6 +125,7 @@ Route::post('/api/update-guest-title', 'GuestTitleController@updateGuestTitle');
 // Guest Designation Controller Start
 Route::post('/api/add-guest-designation', 'GuestDesignationController@addGuestDesignation');
 Route::get('/api/get-all-guest-designation', 'GuestDesignationController@allGuestDesignation');
+Route::get('/api/get-all-guest-designation-for-select', 'GuestDesignationController@allGuestDesignationForSelect');
 Route::get('/api/delete-guest-designation/{id}', 'GuestDesignationController@deleteGuestDesignation');
 Route::get('/api/edit-guest-designation/{id}', 'GuestDesignationController@editGuestDesignation');
 Route::post('/api/update-guest-designation', 'GuestDesignationController@updateGuestDesignation');
@@ -148,6 +150,7 @@ Route::get('/api/delete-department/{id}', 'DepartmentController@deleteDepartment
 //staff-information start
 Route::post('/api/add-staff-information', 'StaffController@addStaff');
 Route::get('/api/get-all-staffs', 'StaffController@getAllStaff');
+Route::get('/api/get-all-staffs-for-select', 'StaffController@getAllStaffForSelect');
 Route::get('/api/delete-staff/{id}', 'StaffController@deleteStaff');
 Route::get('/api/edit-staff/{id}', 'StaffController@editeStaff');
 Route::get('/api/view-staff/{id}', 'StaffController@viewStaff');
