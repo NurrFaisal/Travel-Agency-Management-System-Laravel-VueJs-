@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\model\Guest;
+use App\model\Transjaction;
 use Illuminate\Http\Request;
 
 class GuestController extends Controller
@@ -47,15 +48,21 @@ class GuestController extends Controller
     }
 
     public function getAllGuest(){
-        $guest = Guest::orderBy('updated_at', 'desc')->get();
+        $guests = Guest::with(['transjactions'=>function($q){$q->select('guest_id', 'guest_blance')->orderBy('id', 'desc')->first();}])->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'status')->paginate(10);
         return response()->json([
-            'guest' => $guest
+            'guests' => $guests
         ]);
     }
     public function deleteGuest($id){
         $guest = Guest::where('id', $id)->first();
-        $guest->delete();
-        return 'delete';
+        $transjaction = Transjaction::where('guest_id', $id)->get();
+        if($transjaction->isEmpty()){
+            $guest->delete();
+            return 'Deleted';
+        }
+        return 'NotDeleted';
+
+
     }
     public function editGuest($id){
         $guest = Guest::with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->where('id', $id)->first();
@@ -70,15 +77,6 @@ class GuestController extends Controller
         $guest->update();
         return 'update';
     }
-
-    public function getAllGuestForSelect(){
-        $guest = Guest::get();
-        return response()->json([
-            'guest' => $guest
-        ]);
-    }
-
-
     public function getAllGuestRefernce($query){
         $guests = Guest::where('name', 'like', $query.'%')->orWhere('phone_number', 'like', $query.'%')->select('id', 'name', 'phone_number')->orderBy('name', 'asc')->get();
         return response()->json([

@@ -437,7 +437,7 @@ Route::post('/api/updated-hotel-booking', 'HotelBookingController@updateHotelBoo
 
 // GuestController Start for Guest Select
 
-Route::get('/api/get-all-guest-for-select', 'GuestController@getAllGuestForSelect');
+//Route::get('/api/get-all-guest-for-select', 'GuestController@getAllGuestForSelect');
 
 // GuestController Start For Guest Select
 

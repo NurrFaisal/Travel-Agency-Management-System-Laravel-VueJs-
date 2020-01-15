@@ -10,26 +10,21 @@ class AgencyController extends Controller
     protected function suplierValidation($request){
         $request->validate([
             'name' => 'required',
-            'company_name' => 'required',
-            'email_address' => 'required|email',
+            'contact_person' => 'required',
             'phone_number' => 'required',
-            'alt_phone_number' => 'required',
-            'address' => 'required',
-            'website' => 'required',
-            'status' => 'required',
+            'email_address' => 'required|email',
+            'country' => 'required',
+            'product' => 'required',
         ]);
     }
 
     protected function suplierBasic($request, $agency){
         $agency->name = $request->name;
-        $agency->company_name = $request->company_name;
-        $agency->email_address = $request->email_address;
+        $agency->contact_person = $request->contact_person;
         $agency->phone_number = $request->phone_number;
-        $agency->alt_phone_number = $request->alt_phone_number;
-        $agency->address = $request->address;
-        $agency->website = $request->website;
-        $agency->department = $request->department;
-        $agency->status = $request->status;
+        $agency->email_address = $request->email_address;
+        $agency->country = $request->country;
+        $agency->product = $request->product;
     }
 
     public function addSuplier(Request $request){
@@ -41,7 +36,7 @@ class AgencyController extends Controller
     }
 
     public function getAllAgency(){
-        $agency = Agency::with('department')->orderBy('updated_at', 'desc')->get();
+        $agency = Agency::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'agency' => $agency
         ]);

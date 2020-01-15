@@ -32,7 +32,7 @@
                             <div class="">
                                 <div class="widget-box">
                                     <div class="widget-header">
-                                        <h5 class="widget-title">Create new Guest</h5>
+                                        <h5 class="widget-title">Edit Guest Info</h5>
                                         <div class="card-tools" style="float:right">
                                             <router-link to="/guest-list" class="btn btn-success">Guest List</router-link>
                                         </div>
@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="widget-body justify-content-center">
                                         <div class="widget-main justify-content-center" style="margin: 0px 100px;">
-                                            <form @submit.prevent="addGuest()" class="form-horizontal" method="post" role="form">
+                                            <form @submit.prevent="updateGuest()" class="form-horizontal" method="post" role="form">
 
                                                 <div class="form-group">
 
@@ -303,7 +303,7 @@
 
                                                         <button class="btn btn-info" type="submit">
                                                             <i class="ace-icon fa fa-check bigger-110"></i>
-                                                            Submit
+                                                            Update
                                                         </button>
                                                     </div>
                                                 </div>
@@ -339,7 +339,6 @@
             this.$store.dispatch("allGuestDesignation")
             this.$store.dispatch("allStaffs")
             this.editGuest()
-            console.log(this.form)
             this.doAjax()
 
         },

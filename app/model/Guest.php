@@ -14,4 +14,7 @@ class Guest extends Model
     public function Staff(){
         return $this->belongsTo(Staff::class, 'rf_staff');
     }
+    public function transjactions(){
+        return $this->hasMany(Transjaction::class, 'guest_id');
+    }
 }

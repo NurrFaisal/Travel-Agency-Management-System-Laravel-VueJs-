@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -47,11 +55,8 @@
                                         <th>Guest Name</th>
                                         <th>Phone Number</th>
                                         <th class="hidden-480">Email</th>
-                                        <th class="hidden-480">Category</th>
 
-                                        <th>Service</th>
-                                        <th>Recived</th>
-                                        <th>Due</th>
+                                        <th>Balance</th>
                                         <th class="hidden-480">Status</th>
 
                                         <th>Action</th>
@@ -59,7 +64,7 @@
                                     </thead>
 
                                     <tbody>
-                                    <tr v-for="(guest, index) in  getAllGuest">
+                                    <tr v-for="(guest, index) in  guests">
                                         <td class="center">{{index+1}}</td>
 
 
@@ -67,13 +72,9 @@
                                         <td>{{guest.name}}</td>
                                         <td>{{guest.phone_number}}</td>
                                         <td class="hidden-480">{{guest.email_address}}</td>
-                                        <td v-if="guest.category == 1">Guest</td>
-                                        <td v-if="guest.category == 2">Sup Agency</td>
-                                        <td v-if="guest.category == 3">Suplier</td>
-                                        <td v-if="guest.category == 4">Suplier and Sup Agency</td>
-                                        <td>Service</td>
-                                        <td>Recived</td>
-                                        <td>Due</td>
+                                        <td v-if="guest.transjactions[0] == null" style="text-align: right" >-</td>
+                                        <td v-if="guest.transjactions[0] != null && guest.transjactions[0].guest_blance < 0" style="text-align: right; background-color:red; color:white" ><strong>{{guest.transjactions[0] != null ? guest.transjactions[0].guest_blance: '-'}}</strong></td>
+                                        <td v-if="guest.transjactions[0] != null && guest.transjactions[0].guest_blance > 0" style="text-align: right; background-color:green; color:white" ><strong>{{guest.transjactions[0] != null ? guest.transjactions[0].guest_blance: '-'}}</strong></td>
 
                                         <td class="hidden-480">
 
@@ -134,7 +135,15 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                <div class="justify-content-center">
+                                    <pagination v-if="pagination.last_page > 1"
+                                                :pagination="pagination"
+                                                :offset="5"
+                                                @paginate="getAllGuest()"
+                                    ></pagination>
+                                </div>
                             </div><!-- /.span -->
+
                         </div><!-- /.row -->
 
                         <div class="hr hr-18 dotted hr-double"></div>
@@ -148,17 +157,55 @@
 </template>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "ListGuestComponent",
         mounted(){
-            this.$store.dispatch("allGuest")
+            this.isLoading = true
+            this.getAllGuest()
+        },
+        components: {
+            Loading
         },
         computed:{
-            getAllGuest(){
-                return this.$store.getters.get_guest
+
+        },
+        data(){
+            return {
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
+                pagination:{
+                    current_page: 1,
+                },
+                guests: '',
             }
         },
         methods:{
+            getAllGuest(){
+                this.isLoading = true
+                axios.get('/api/get-all-guest?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.user_type = response.data.user_type
+                        this.guests = response.data.guests.data
+                        this.pagination = response.data.guests
+                        this.doAjax();
+
+                    })
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
+
             deleteGuest(id){
                 Swal.fire({
                     title: 'Are you sure?',
@@ -172,10 +219,20 @@
                     if (result.value) {
                         axios.get('/api/delete-guest/'+id)
                             .then((response) =>{
-                                Toast.fire({
-                                    type: 'success',
-                                    title: 'Guest Deleted successfully'
-                                })
+                                if(response.data == "Deleted"){
+                                    Toast.fire({
+                                        type: 'success',
+                                        title: 'Guest Deleted successfully'
+                                    })
+                                }else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Something went wrong!',
+                                        footer: 'You Are Not Allowed To Delete This Guest'
+                                    })
+                                }
+
                                 this.$store.dispatch("allGuest")
                             })
 

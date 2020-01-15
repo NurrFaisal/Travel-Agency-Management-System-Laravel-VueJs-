@@ -185,6 +185,14 @@
 
             <b class="arrow"></b>
         </li>
+        <li class="">
+            <router-link to="/suplier-list">
+                <i class="menu-icon fa fa-list-alt"></i>
+                <span class="menu-text"> Suplier </span>
+            </router-link>
+
+            <b class="arrow"></b>
+        </li>
 {{--        <li class="">--}}
 {{--            <router-link to="/guest-query-list">--}}
 {{--                <i class="menu-icon fa fa-list-alt"></i>--}}

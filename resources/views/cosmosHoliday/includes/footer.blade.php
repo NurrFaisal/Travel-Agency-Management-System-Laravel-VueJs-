@@ -3,7 +3,7 @@
         <div class="footer-content">
 						<span class="bigger-120">
 							<span class="blue bolder">Cosmos Holiday</span>
-							 &copy; 2011 - 2019 ||
+							 &copy; 2011 - <span id="year"></span> ||
                             <span class="bolder">Powered By</span>
                             Noormoy Faisal
 						</span>
@@ -25,3 +25,4 @@
         </div>
     </div>
 </div>
+

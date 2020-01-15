@@ -16,14 +16,11 @@ class CreateAgenciesTable extends Migration
         Schema::create('agencies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('company_name');
-            $table->string('email_address');
+            $table->string('contact_person');
             $table->string('phone_number');
-            $table->string('alt_phone_number');
-            $table->text('address');
-            $table->string('website');
-            $table->unsignedInteger('department');
-            $table->tinyInteger('status');
+            $table->string('email_address');
+            $table->string('country');
+            $table->text('product');
             $table->timestamps();
         });
     }
