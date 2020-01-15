@@ -155,7 +155,7 @@
                             <td style="text-align: right">{{$package->airport_rd_total_price}}</td>
                         </tr>
                         <tr>
-                            <td rowspan="3" colspan="2" style="text-align: justify">{{$package->extra_note}}</td>
+                            <td rowspan="4" colspan="2" style="text-align: justify">{{$package->extra_note}}</td>
                             <td style="text-align: center" >{{$package->first_qty}}</td>
                             <td style="text-align: right">{{$package->first_price}}</td>
                             <td style="text-align: right">{{$package->first_total_price}}</td>
@@ -169,6 +169,11 @@
                             <td style="text-align: center" >{{$package->third_qty}}</td>
                             <td style="text-align: right">{{$package->third_price}}</td>
                             <td style="text-align: right">{{$package->third_total_price}}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center" >-</td>
+                            <td style="text-align: center">-</td>
+                            <td style="text-align: center">-</td>
                         </tr>
 
                         <tr>
