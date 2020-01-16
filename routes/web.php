@@ -184,15 +184,15 @@ Route::get('/api/delete-guest-query/{id}', 'GuestQueryController@deleteGuestQuer
 //Guest Query Controller End
 
 
-// Agency (Suplier) Controller Start
-
-Route::post('/api/add-suplier', 'AgencyController@addSuplier');
-Route::get('/api/get-all-agency', 'AgencyController@getAllAgency');
-Route::get('/api/edit-suplier/{id}', 'AgencyController@editSuplier');
-Route::post('/api/update-suplier', 'AgencyController@updateSuplier');
-Route::get('/api/delete-suplier/{id}', 'AgencyController@deleteSuplier');
-
-// Agency (Suplier) Controller End
+//// Agency (Suplier) Controller Start
+//
+//Route::post('/api/add-suplier', 'AgencyController@addSuplier');
+//Route::get('/api/get-all-agency', 'AgencyController@getAllAgency');
+//Route::get('/api/edit-suplier/{id}', 'AgencyController@editSuplier');
+//Route::post('/api/update-suplier', 'AgencyController@updateSuplier');
+//Route::get('/api/delete-suplier/{id}', 'AgencyController@deleteSuplier');
+//
+//// Agency (Suplier) Controller End
 
 
 // AirLine Controller Start
@@ -240,10 +240,10 @@ Route::post('/api/update-visa-country', 'VisaCountryController@updateVisaCountry
 
 
 // Suplier Controller Start
-
-Route::get('/api/get-all-suplier', 'SuplierController@getAllSuplier');
-Route::get('/api/get-all-reference', 'SuplierController@getAllReference');
-Route::get('/api/get-all-staff', 'SuplierController@getAllVisaStaff');
+Route::post('/api/add-suplier', 'SuplierController@addSuplier');
+Route::get('/api/get-all-supliers', 'SuplierController@getAllSuplier');
+Route::get('/api/edit-suplier/{id}', 'SuplierController@editSuplier');
+Route::post('/api/update-suplier', 'SuplierController@updateSuplier');
 
 // Suplier controller End
 

@@ -1,186 +1,191 @@
-<!--<template>-->
-<!--    <div>-->
-<!--        <div class="main-content-inner">-->
-<!--            <div class="breadcrumbs ace-save-state" id="breadcrumbs">-->
-<!--                <ul class="breadcrumb">-->
-<!--                    <li>-->
-<!--                        <i class="ace-icon fa fa-home home-icon"></i>-->
-<!--                        <router-link to="/dashboard">Home</router-link>-->
-<!--                    </li>-->
+<template>
+    <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
+        <div class="main-content-inner">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <router-link to="/dashboard">Home</router-link>
+                    </li>
 
-<!--                    <li>-->
-<!--                        <router-link to="/suplier-list">Agency List</router-link>-->
-<!--                    </li>-->
-<!--                </ul>&lt;!&ndash; /.breadcrumb &ndash;&gt;-->
+                    <li>
+                        <router-link to="/suplier-list">Supliers List</router-link>
+                    </li>
+                </ul><!-- /.breadcrumb -->
 
-<!--                <div class="nav-search" id="nav-search">-->
-<!--                    <form class="form-search">-->
-<!--								<span class="input-icon">-->
-<!--									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />-->
-<!--									<i class="ace-icon fa fa-search nav-search-icon"></i>-->
-<!--								</span>-->
-<!--                    </form>-->
-<!--                </div>&lt;!&ndash; /.nav-search &ndash;&gt;-->
-<!--            </div>-->
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchAirTicket()" id="nav-search-input" v-model="searchText" autocomplete="off" />
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- /.nav-search -->
+            </div>
 
-<!--            <div class="page-content">-->
+            <div class="page-content">
 
-<!--                <div class="page-header">-->
-<!--                    <h1>-->
-<!--                        Suplier List-->
-<!--                        <div class="card-tools" style="float:right">-->
-<!--                            <router-link to="/new-suplier" class="btn btn-success">Add New Agency</router-link>-->
-<!--                        </div>-->
-<!--                        <br/>-->
-<!--                    </h1>-->
-<!--                </div>&lt;!&ndash; /.page-header &ndash;&gt;-->
+                <div class="page-header">
+                    <h1>
+                        Supliers List
+                        <div class="card-tools" style="float:right">
+                            <router-link to="/new-suplier" class="btn btn-success">Add New Suplier</router-link>
+                        </div>
+                        <br/>
+                    </h1>
+                </div><!-- /.page-header -->
 
-<!--                <div class="row">-->
-<!--                    <div class="col-xs-12">-->
-<!--                        &lt;!&ndash; PAGE CONTENT BEGINS &ndash;&gt;-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-xs-12">-->
-<!--                                <table id="simple-table" class="table  table-bordered table-hover">-->
-<!--                                    <thead>-->
-<!--                                    <tr>-->
-<!--                                        <th class="center">Sl.</th>-->
-<!--                                        <th>Company Name</th>-->
-<!--                                        <th>Name</th>-->
-<!--                                        <th class="hidden-480">Email Address</th>-->
-<!--                                        <th class="hidden-480">Phone Number</th>-->
-<!--                                        <th class="hidden-480">Department</th>-->
-<!--                                        <th>Service</th>-->
-<!--                                        <th>Recived</th>-->
-<!--                                        <th>Due</th>-->
-<!--                                        <th class="hidden-480">Status</th>-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table id="simple-table" class="table  table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="center">Sl.</th>
+                                        <th  class="center" >Company Name</th>
+                                        <th  class="center" >Contact Person</th>
+                                        <th  class="center" >Email</th>
+                                        <th  class="center" >Country</th>
+                                        <th  class="center" >Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="(suplier, index) in supliers">
+                                        <td class="center">{{index+1}}</td>
+                                        <td class="center">{{suplier.name}}</td>
+                                        <td class="center">{{suplier.contact_person}}</td>
+                                        <td class="center">{{suplier.email_address}}</td>
+                                        <td class="center">{{suplier.countryt.name}}</td>
+                                        <td class="center">
+                                            <div class="btn-group center">
+                                                <!--                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
+                                                <!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
+                                                <!--                                                </a>-->
+                                                <router-link  :to="`/edit-suplier/${suplier.id}`" class="btn btn-xs btn-info">
+                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </router-link>
+                                                <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
+                                                <!--                                                                    Follow Up-->
+                                                <!--                                                                </a>-->
+                                                <a href="#" @click.prevent="deleteSuplier(suplier.id)"  class="btn btn-xs btn-danger"  title="Delete">
+                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div><!-- /.span -->
 
-<!--                                        <th>Action</th>-->
-<!--                                    </tr>-->
-<!--                                    </thead>-->
 
-<!--                                    <tbody>-->
-<!--                                    <tr v-for="(agency, index) in  getAllAgency">-->
-<!--                                        <td class="center">{{index+1}}</td>-->
-<!--                                        <td>{{agency.company_name}}</td>-->
-<!--                                        <td>{{agency.name}}</td>-->
-<!--                                        <td class="hidden-480">{{agency.email_address}}</td>-->
-<!--                                        <td>{{agency.phone_number}}</td>-->
-<!--                                        <td>{{agency.department.department_name}}</td>-->
-<!--                                        <td>Service</td>-->
-<!--                                        <td>Recived</td>-->
-<!--                                        <td>Due</td>-->
 
-<!--                                        <td class="hidden-480">-->
 
-<!--                                            <span v-if="agency.status == 1" class="label label-sm label-success">Active</span>-->
-<!--                                            <span v-else class="label label-sm label-danger">Inactive</span>-->
-<!--                                        </td>-->
+                            <div class="justify-content-center">
+                                <pagination v-if="pagination.last_page > 1"
+                                            :pagination="pagination"
+                                            :offset="5"
+                                            @paginate="getAllSuplier()"
+                                ></pagination>
+                            </div>
+                        </div><!-- /.row -->
 
-<!--                                        <td class="center">-->
-<!--                                            <div class="hidden-sm hidden-xs btn-group">-->
 
-<!--                                                <router-link :to="`/view-suplier/${agency.id}`" class="btn btn-xs btn-success">-->
-<!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
-<!--                                                </router-link>-->
-<!--                                                <router-link :to="`/edit-suplier/${agency.id}`" class="btn btn-xs btn-info">-->
-<!--                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>-->
-<!--                                                </router-link>-->
+                        <div class="hr hr-18 dotted hr-double"></div>
 
-<!--                                                <button @click.prevent="deleteAgency(agency.id)" class="btn btn-xs btn-danger">-->
-<!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
-<!--                                                </button>-->
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div>
+    </div>
+</template>
 
-<!--                                            </div>-->
+<script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
 
-<!--                                            <div class="hidden-md hidden-lg">-->
-<!--                                                <div class="inline pos-rel">-->
-<!--                                                    <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">-->
-<!--                                                        <i class="ace-icon fa fa-cog icon-only bigger-110"></i>-->
-<!--                                                    </button>-->
+    export default {
+        name: "ListSuplierComponent",
+        mounted(){
+            this.isLoading = true
+            this.getAllSuplier()
+        },
+        components: {
+            Loading
+        },
+        data(){
+            return {
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
+                pagination:{
+                    current_page: 1,
+                },
+                supliers: '',
+            }
+        },
+        methods:{
+            getAllSuplier(){
+                axios.get('/api/get-all-supliers?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.user_type = response.data.user_type
+                        this.supliers = response.data.supliers.data
+                        this.pagination = response.data.supliers
+                        this.doAjax();
+                    })
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
 
-<!--                                                    <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">-->
-<!--                                                        <li>-->
-<!--                                                            <a href="#" class="tooltip-info" data-rel="tooltip" title="View">-->
-<!--																			<span class="blue">-->
-<!--																				<i class="ace-icon fa fa-search-plus bigger-120"></i>-->
-<!--																			</span>-->
-<!--                                                            </a>-->
-<!--                                                        </li>-->
 
-<!--                                                        <li>-->
-<!--                                                            <a href="#" class="tooltip-success" data-rel="tooltip" title="Edit">-->
-<!--																			<span class="green">-->
-<!--																				<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>-->
-<!--																			</span>-->
-<!--                                                            </a>-->
-<!--                                                        </li>-->
 
-<!--                                                        <li>-->
-<!--                                                            <a href="#" @click.prevent="deleteGuest(guest.id)" class="tooltip-error" data-rel="tooltip" title="Delete">-->
-<!--																			<span class="red">-->
-<!--																				<i class="ace-icon fa fa-trash-o bigger-120"></i>-->
-<!--																			</span>-->
-<!--                                                            </a>-->
-<!--                                                        </li>-->
-<!--                                                    </ul>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </td>-->
-<!--                                    </tr>-->
-<!--                                    </tbody>-->
-<!--                                </table>-->
-<!--                            </div>&lt;!&ndash; /.span &ndash;&gt;-->
-<!--                        </div>&lt;!&ndash; /.row &ndash;&gt;-->
 
-<!--                        <div class="hr hr-18 dotted hr-double"></div>-->
+            // deleteAgency(id){
+            //     Swal.fire({
+            //         title: 'Are you sure?',
+            //         text: "You won't be able to revert this!",
+            //         type: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonColor: '#3085d6',
+            //         cancelButtonColor: '#d33',
+            //         confirmButtonText: 'Yes, delete it!'
+            //     }).then((result) => {
+            //         if (result.value) {
+            //             axios.get('/api/delete-suplier/'+id)
+            //                 .then((response) =>{
+            //                     Toast.fire({
+            //                         type: 'success',
+            //                         title: 'Agency Deleted successfully'
+            //                     })
+            //                     this.$store.dispatch("allAgency")
+            //                 })
+            //
+            //         }
+            //     })
+            // }
+        }
+    }
+</script>
 
-<!--                        &lt;!&ndash; PAGE CONTENT ENDS &ndash;&gt;-->
-<!--                    </div>&lt;!&ndash; /.col &ndash;&gt;-->
-<!--                </div>&lt;!&ndash; /.row &ndash;&gt;-->
-<!--            </div>&lt;!&ndash; /.page-content &ndash;&gt;-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</template>-->
+<style scoped>
 
-<!--<script>-->
-<!--    export default {-->
-<!--        name: "ListSuplierComponent",-->
-<!--        mounted(){-->
-<!--            this.$store.dispatch("allAgency")-->
-<!--        },-->
-<!--        computed:{-->
-<!--            getAllAgency(){-->
-<!--                return this.$store.getters.get_agency-->
-<!--            }-->
-<!--        },-->
-<!--        methods:{-->
-<!--            deleteAgency(id){-->
-<!--                Swal.fire({-->
-<!--                    title: 'Are you sure?',-->
-<!--                    text: "You won't be able to revert this!",-->
-<!--                    type: 'warning',-->
-<!--                    showCancelButton: true,-->
-<!--                    confirmButtonColor: '#3085d6',-->
-<!--                    cancelButtonColor: '#d33',-->
-<!--                    confirmButtonText: 'Yes, delete it!'-->
-<!--                }).then((result) => {-->
-<!--                    if (result.value) {-->
-<!--                        axios.get('/api/delete-suplier/'+id)-->
-<!--                            .then((response) =>{-->
-<!--                                Toast.fire({-->
-<!--                                    type: 'success',-->
-<!--                                    title: 'Agency Deleted successfully'-->
-<!--                                })-->
-<!--                                this.$store.dispatch("allAgency")-->
-<!--                            })-->
-
-<!--                    }-->
-<!--                })-->
-<!--            }-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
-
-<!--<style scoped>-->
-
-<!--</style>-->
+</style>
