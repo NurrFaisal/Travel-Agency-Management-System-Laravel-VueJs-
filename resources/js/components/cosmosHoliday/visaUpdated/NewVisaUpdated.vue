@@ -143,7 +143,7 @@
                                                                     Country<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('country') }" v-model="passport.country" id="country" name="country" class="col-xs-12 col-sm-12" >
+                                                                <select  v-validate="'required'" :class="{ 'is-invalid': form.errors.has('country') }" required v-model="passport.country" id="country" name="country" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Country--</option>
                                                                     <option :value="country.id" v-for="country in getAllVisaCountry " >{{country.name}}</option>
                                                                 </select>

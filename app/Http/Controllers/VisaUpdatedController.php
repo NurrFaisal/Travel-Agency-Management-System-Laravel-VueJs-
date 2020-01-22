@@ -78,28 +78,7 @@ class VisaUpdatedController extends Controller
         $passport->old_passport = $passport_arry[$i]['old_passport'];
         $passport->narration = $passport_arry[$i]['narration'];
 
-        //SuplierTransaction Start
-        $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
-        $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $passport->suplier)->first();
 
-        $suplier_transaction = new SuplierTransaction();
-        $suplier_transaction->suplier_id =  $passport->suplier;
-        $suplier_transaction->visa_id = $passport->id;
-        $suplier_transaction->transaction_date = $passport->created_at->format('Y-m-d');
-        $suplier_transaction->narration = $passport->sector;
-        $suplier_transaction->debit_amount = $passport->net_price;
-        if($pre_sup_transaction == null){
-            $suplier_transaction->balance = $passport->net_price;
-        }else{
-            $suplier_transaction->balance = $pre_sup_transaction->balance+$passport->net_price;
-        }
-        if($pre_suplier_sup_transaction == null){
-            $suplier_transaction->suplier_balance = $passport->net_price;
-        }else{
-            $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$passport->net_price;
-        }
-        $suplier_transaction->save();
-        //SuplierTransaction End
     }
     protected function tranjactionBasic($transjaction, $request, $visa_updated, $pre_guest_transjaction_blance, $pre_staff_transjaction_blance, $pre_transjaction_blance){
         $transjaction->guest_id = $request->client;
@@ -140,8 +119,31 @@ class VisaUpdatedController extends Controller
             $this->passportsBasic($passport, $passport_arry, $i);
             $passport->visa_updated_id = $visa_updated->id;
             $passport->save();
+            //SuplierTransaction Start
+            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $passport->suplier)->first();
+
+            $suplier_transaction = new SuplierTransaction();
+            $suplier_transaction->suplier_id =  $passport->suplier;
+            $suplier_transaction->visa_id = $passport->id;
+            $suplier_transaction->transaction_date = $passport->created_at->format('Y-m-d');
+            $suplier_transaction->narration = $passport->narration;
+            $suplier_transaction->debit_amount = $passport->net_price;
+            if($pre_sup_transaction == null){
+                $suplier_transaction->balance = $passport->net_price;
+            }else{
+                $suplier_transaction->balance = $pre_sup_transaction->balance+$passport->net_price;
+            }
+            if($pre_suplier_sup_transaction == null){
+                $suplier_transaction->suplier_balance = $passport->net_price;
+            }else{
+                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$passport->net_price;
+            }
+            $suplier_transaction->save();
+            //SuplierTransaction End
         }
     }
+
     public function addVisaUpdated(Request $request){
         $this->visaUpdatedValidation($request);
         $visa_updated = new VisaUpdated();
@@ -149,6 +151,7 @@ class VisaUpdatedController extends Controller
         $visa_updated->sell_person =Session::get('staff_id');
         $visa_updated->state = 1;
         $visa_updated->save();
+
         $this->visaUpdatedPassport($visa_updated, $request);
         $this->tranjaction($request, $visa_updated);
         return 'New VISA info successfully added';
@@ -180,7 +183,7 @@ class VisaUpdatedController extends Controller
                 }
                 $next_transaction->update();
             }
-            $suplier_transaction->delte();
+            $suplier_transaction->delete();
             $passport->delete();
         }
     }
