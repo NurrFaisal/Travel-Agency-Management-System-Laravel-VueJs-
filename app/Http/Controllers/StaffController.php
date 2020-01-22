@@ -111,7 +111,7 @@ class StaffController extends Controller
         return 'save';
     }
     public function getAllStaff(){
-        $staffs = Staff::orderBy('updated_at', 'asc')->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address')->get();
+        $staffs = Staff::orderBy('first_name', 'asc')->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address')->paginate(10);
         return response()->json([
             'staffs' => $staffs
         ], 200);

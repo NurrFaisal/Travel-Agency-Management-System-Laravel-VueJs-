@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\model\Hotel;
 use App\model\HotelBooking;
+use App\model\SuplierTransaction;
 use App\model\Transjaction;
 use App\Profit;
 use Illuminate\Http\Request;
@@ -82,6 +83,8 @@ class HotelBookingController extends Controller
         $hotel->late_check_out_total_price = $hotel_arry[$i]['late_check_out_total_price'];
 
         $hotel->total_hotel_price = $hotel_arry[$i]['total_hotel_price'];
+
+
     }
     public function addHotelBooking(Request $request){
         $this->hotelBookingValidation($request);
@@ -97,6 +100,31 @@ class HotelBookingController extends Controller
             $hotel->hotel_booking_id = $hotel_booking->id;
             $hotel->save();
             $index = $i;
+
+            //SuplierTransaction Start
+            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $hotel->suplier)->first();
+
+            $suplier_transaction = new SuplierTransaction();
+            $suplier_transaction->suplier_id =  $hotel->suplier;
+            $suplier_transaction->hotel_id = $hotel->id;
+            $suplier_transaction->transaction_date = $hotel->created_at->format('Y-m-d');
+            $suplier_transaction->narration = $hotel->hotel_name;
+            $suplier_transaction->debit_amount = $hotel->net_price;
+            if($pre_sup_transaction == null){
+                $suplier_transaction->balance = $hotel->net_price;
+            }else{
+                $suplier_transaction->balance = $pre_sup_transaction->balance+$hotel->net_price;
+            }
+            if($pre_suplier_sup_transaction == null){
+                $suplier_transaction->suplier_balance = $hotel->net_price;
+            }else{
+                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$hotel->net_price;
+            }
+            $suplier_transaction->save();
+            //SuplierTransaction End
+
+
         }
         $profit = new Profit();
         $profit->hotel_id = $hotel_booking->id;
@@ -161,6 +189,16 @@ class HotelBookingController extends Controller
         $hotel_booking->update();
         $hotels = Hotel::where('hotel_booking_id', $request->id)->get();
         foreach ($hotels as $hotel){
+            $suplier_transaction = SuplierTransaction::where('hotel_id', $hotel->id)->first();
+            $next_transactions = SuplierTransaction::where('id', '>', $hotel->id)->get();
+            foreach ($next_transactions as $next_transaction){
+                $next_transactions->balance = $next_transaction->balance - $suplier_transaction->debit_amount;
+                if($suplier_transaction->suplier_id = $next_transaction->suplier_id){
+                    $next_transaction->suplier_balance = $next_transaction->suplier_balance - $suplier_transaction->debit_amount;
+                }
+                $next_transaction->update();
+            }
+            $suplier_transaction->delete();
             $hotel->delete();
         }
         $hotel_arry = $request->hotels;
@@ -170,6 +208,29 @@ class HotelBookingController extends Controller
             $this->hotelBasic($hotel, $hotel_arry, $i);
             $hotel->hotel_booking_id = $hotel_booking->id;
             $hotel->save();
+
+            //SuplierTransaction Start
+            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $hotel->suplier)->first();
+
+            $suplier_transaction = new SuplierTransaction();
+            $suplier_transaction->suplier_id =  $hotel->suplier;
+            $suplier_transaction->hotel_id = $hotel->id;
+            $suplier_transaction->transaction_date = $hotel->created_at->format('Y-m-d');
+            $suplier_transaction->narration = $hotel->hotel_name;
+            $suplier_transaction->debit_amount = $hotel->net_price;
+            if($pre_sup_transaction == null){
+                $suplier_transaction->balance = $hotel->net_price;
+            }else{
+                $suplier_transaction->balance = $pre_sup_transaction->balance+$hotel->net_price;
+            }
+            if($pre_suplier_sup_transaction == null){
+                $suplier_transaction->suplier_balance = $hotel->net_price;
+            }else{
+                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$hotel->net_price;
+            }
+            $suplier_transaction->save();
+            //SuplierTransaction End
         }
         $old_profit = Profit::where('hotel_id', $hotel_booking->id)->first();
         if($old_profit){

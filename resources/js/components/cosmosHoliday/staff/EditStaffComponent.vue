@@ -646,5 +646,30 @@
 </script>
 
 <style scoped>
+    input {
+        background-color: rgb(223, 240, 216) !important;
+        color: rgb(0, 0, 0) !important;
+        height: 25px !important;
+        border-radius: 4px !important;
+    }
+    textarea {
+        background-color: rgb(223, 240, 216) !important;
+        color: rgb(0, 0, 0) !important;
+    }
+
+    select {
+        background-color: #dff0d8 !important;
+        color: #000 !important;
+        height: 25px !important;
+        font-size: 11px;
+        border-radius: 4px !important;
+    }
+    .chosen-single{
+        backgrond:red!important;
+
+    }
+    .chosen-container-single{
+        width:100%!important;
+    }
 
 </style>
