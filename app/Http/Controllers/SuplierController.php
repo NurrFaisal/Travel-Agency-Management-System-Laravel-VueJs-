@@ -55,4 +55,10 @@ class SuplierController extends Controller
         $suplier->update();
         return 'Success';
     }
+    public function getAllActiveSuplier(){
+        $supliers = Agency::orderBy('name')->select('id', 'name')->get();
+        return response()->json([
+            'supliers' => $supliers
+        ]);
+    }
 }

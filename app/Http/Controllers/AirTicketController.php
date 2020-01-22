@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Airticket;
 use App\model\Pax;
+use App\model\SuplierTransaction;
 use App\model\Transjaction;
 use App\Profit;
 use App\SubAirticket;
@@ -107,8 +108,34 @@ class AirTicketController extends Controller
             $sup_air_ticket->suplier =  $employees_arry[$i]['suplier'];
             $sup_air_ticket->airticket_id = $airticket->id;
             $sup_air_ticket->save();
+
+            // SuplierTransaction Start
+            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $sup_air_ticket->suplier)->first();
+
+            $suplier_transaction = new SuplierTransaction();
+            $suplier_transaction->suplier_id =  $sup_air_ticket->suplier;
+            $suplier_transaction->air_id = $sup_air_ticket->id;
+            $suplier_transaction->transaction_date = $airticket->created_at->format('Y-m-d');
+            $suplier_transaction->narration = $sup_air_ticket->sector;
+            $suplier_transaction->debit_amount = $sup_air_ticket->net_price;
+            if($pre_sup_transaction == null){
+                $suplier_transaction->balance = $sup_air_ticket->net_price;
+            }else{
+                $suplier_transaction->balance = $pre_sup_transaction->balance+$sup_air_ticket->net_price;
+            }
+            if($pre_suplier_sup_transaction == null){
+                $suplier_transaction->suplier_balance = $sup_air_ticket->net_price;
+            }else{
+                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$sup_air_ticket->net_price;
+            }
+            $suplier_transaction->save();
+            // SuplierTransaction End
+
         }
     }
+
+
     public function savePaxLoop($request, $airticket){
         $paxs_arry = $request->paxs;
         $paxs_arry_count = count($paxs_arry);
@@ -234,6 +261,16 @@ class AirTicketController extends Controller
         $airticket->update();
         $sup_airtickets = SubAirticket::where('airticket_id', $request->id)->get();
         foreach ($sup_airtickets as $sup_airticket){
+            $suplier_transaction = SuplierTransaction::where('air_id', $sup_airticket->id)->first();
+            $next_transactions = SuplierTransaction::where('id', '>', $suplier_transaction->id)->get();
+            foreach ($next_transactions as $next_transaction){
+                $next_transactions->balance = $next_transaction->balance - $suplier_transaction->debit_amount;
+                if($suplier_transaction->suplier_id = $next_transaction->suplier_id){
+                    $next_transaction->suplier_balance = $next_transaction->suplier_balance - $suplier_transaction->debit_amount;
+                }
+                $next_transaction->update();
+            }
+            $suplier_transaction->delete();
             $sup_airticket->delete();
         }
         $this->saveEmployeeLoop($request, $airticket);

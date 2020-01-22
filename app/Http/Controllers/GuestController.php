@@ -84,11 +84,6 @@ class GuestController extends Controller
         ]);
     }
 
-    public function getAllActiveSuplier(){
-        $supliers = Guest::where('category', 3)->orWhere('category', 4)->select('id', 'name', 'phone_number')->get();
-        return response()->json([
-            'supliers' => $supliers
-        ]);
-    }
+
 
 }

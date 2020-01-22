@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\model\Hotel;
+use App\model\Staff;
 use App\model\Transjaction;
 use App\model\VisaUpdated;
 use App\Passport;
@@ -586,6 +587,13 @@ class VisaUpdatedController extends Controller
         $delelvered_visa = VisaUpdated::with(['guest' => function($q){$q->select('id', 'name');}])->where('state', 8)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'delelvered_visa' => $delelvered_visa
+        ]);
+    }
+
+    public function getAlltaff(){
+        $all_visa_staff = Staff::orderBy('first_name')->where('department', 4)->get();
+        return response()->json([
+            'all_visa_staff' => $all_visa_staff
         ]);
     }
 

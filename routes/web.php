@@ -244,6 +244,8 @@ Route::post('/api/add-suplier', 'SuplierController@addSuplier');
 Route::get('/api/get-all-supliers', 'SuplierController@getAllSuplier');
 Route::get('/api/edit-suplier/{id}', 'SuplierController@editSuplier');
 Route::post('/api/update-suplier', 'SuplierController@updateSuplier');
+Route::get('/api/get-all-active-suplier', 'SuplierController@getAllActiveSuplier');
+
 
 // Suplier controller End
 
@@ -291,6 +293,7 @@ Route::post('/api/update-call-and-sms-visa', 'VisaController@updateCallAndSmsVis
 
 Route::get('/api/edit-delevered-visa/{id}', 'VisaController@editDeleveredVisa');
 Route::post('/api/update-delevered-visa', 'VisaController@updateDeleveredVisa');
+
 
 
 // Visa Controller End
@@ -608,14 +611,11 @@ Route::post('/api/update-visa-updated-gcs-by', 'VisaUpdatedController@updateVisa
 Route::post('/api/add-visa-delevered-updated', 'VisaUpdatedController@addVisaDeleveredUpdated');
 Route::get('/api/get-all-delevered-visa-updated', 'VisaUpdatedController@getAllDeleveredVisaUpdated');
 Route::post('/api/update-visa-updated-delevered-by', 'VisaUpdatedController@updateVisaUpdatedDeleveredBy');
+Route::get('/api/get-all-staff', 'VisaUpdatedController@getAlltaff');
 
 // VisaUPdatedController End
 
 
-
-// GuestController For Suplier Start
-Route::get('/api/get-all-active-suplier', 'GuestController@getAllActiveSuplier');
-// GuestController For Suplier End
 
 
 
