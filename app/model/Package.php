@@ -23,40 +23,40 @@ class Package extends Model
         return $this->hasMany(PackageNetPrice::class, 'pack_id');
     }
 
-    public function getPackageTypeAttribute($value){
-        if($value == 1){
-            return 'FIT';
-        }
-        if($value == 2){
-            return 'Customise';
-        }
-        if($value == 3){
-            return 'Regular';
-        }
-        if($value == 4){
-            return 'Cosmos Group Tour';
-        }
-        if($value == 5){
-            return 'Eid Group';
-        }
-        if($value == 6){
-            return 'Eid FIT';
-        }
-        if($value == 7){
-            return 'Student Group';
-        }
-        if($value == 8){
-            return 'Corporate Group';
-        }
-        if($value == 9){
-            return 'VIP Group';
-        }
-        if($value == 10){
-            return 'Others';
-        }
-
-
-
-
-    }
+//    public function getPackageTypeAttribute($value){
+//        if($value == 1){
+//            return 'FIT';
+//        }
+//        if($value == 2){
+//            return 'Customise';
+//        }
+//        if($value == 3){
+//            return 'Regular';
+//        }
+//        if($value == 4){
+//            return 'Cosmos Group Tour';
+//        }
+//        if($value == 5){
+//            return 'Eid Group';
+//        }
+//        if($value == 6){
+//            return 'Eid FIT';
+//        }
+//        if($value == 7){
+//            return 'Student Group';
+//        }
+//        if($value == 8){
+//            return 'Corporate Group';
+//        }
+//        if($value == 9){
+//            return 'VIP Group';
+//        }
+//        if($value == 10){
+//            return 'Others';
+//        }
+//
+//
+//
+//
+//    }
 }

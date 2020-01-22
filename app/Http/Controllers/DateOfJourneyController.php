@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\model\Package;
 use App\model\PackageNetPrice;
+use App\model\SuplierTransaction;
 use App\model\Transjaction;
 use App\PackageDay;
 use App\Profit;
@@ -183,6 +184,29 @@ class DateOfJourneyController extends Controller
             $net_price->amount = $net_price_arry[$i]['amount'];
             $net_price->pack_id = $package->id;
             $net_price->save();
+
+            // SuplierTransaction Start
+            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $net_price->suplier)->first();
+
+            $suplier_transaction = new SuplierTransaction();
+            $suplier_transaction->suplier_id =  $net_price->suplier;
+            $suplier_transaction->pack_id = $net_price->id;
+            $suplier_transaction->transaction_date = $net_price->created_at->format('Y-m-d');
+            $suplier_transaction->narration = $request->narration;
+            $suplier_transaction->debit_amount = $net_price->amount;
+            if($pre_sup_transaction == null){
+                $suplier_transaction->balance = $net_price->amount;
+            }else{
+                $suplier_transaction->balance = $pre_sup_transaction->balance+$net_price->amount;
+            }
+            if($pre_suplier_sup_transaction == null){
+                $suplier_transaction->suplier_balance = $net_price->amount;
+            }else{
+                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$net_price->amount;
+            }
+            $suplier_transaction->save();
+            // SuplierTransaction End
         }
     }
     protected function profit($package){
@@ -208,6 +232,16 @@ class DateOfJourneyController extends Controller
         $this->packageDay($request, $package);
         $net_prices = PackageNetPrice::where('pack_id', $package->id)->get();
         foreach ($net_prices as $net_price){
+            $suplier_transaction = SuplierTransaction::where('pack_id', $net_price->id)->first();
+            $next_transactions = SuplierTransaction::where('id', '>', $suplier_transaction->id)->get();
+            foreach ($next_transactions as $next_transaction){
+                $next_transactions->balance = $next_transaction->balance - $suplier_transaction->debit_amount;
+                if($suplier_transaction->suplier_id = $next_transaction->suplier_id){
+                    $next_transaction->suplier_balance = $next_transaction->suplier_balance - $suplier_transaction->debit_amount;
+                }
+                $next_transaction->update();
+            }
+            $suplier_transaction->delete();
             $net_price->delete();
         }
         $this->saveUpdateNetPriceLoop($request, $package);
