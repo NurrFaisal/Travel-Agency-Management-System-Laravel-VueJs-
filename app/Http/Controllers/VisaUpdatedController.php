@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\model\Hotel;
 use App\model\Staff;
+use App\model\SuplierTransaction;
 use App\model\Transjaction;
 use App\model\VisaUpdated;
 use App\Passport;
@@ -76,6 +77,29 @@ class VisaUpdatedController extends Controller
         $passport->price = $passport_arry[$i]['price'];
         $passport->old_passport = $passport_arry[$i]['old_passport'];
         $passport->narration = $passport_arry[$i]['narration'];
+
+        //SuplierTransaction Start
+        $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
+        $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $passport->suplier)->first();
+
+        $suplier_transaction = new SuplierTransaction();
+        $suplier_transaction->suplier_id =  $passport->suplier;
+        $suplier_transaction->visa_id = $passport->id;
+        $suplier_transaction->transaction_date = $passport->created_at->format('Y-m-d');
+        $suplier_transaction->narration = $passport->sector;
+        $suplier_transaction->debit_amount = $passport->net_price;
+        if($pre_sup_transaction == null){
+            $suplier_transaction->balance = $passport->net_price;
+        }else{
+            $suplier_transaction->balance = $pre_sup_transaction->balance+$passport->net_price;
+        }
+        if($pre_suplier_sup_transaction == null){
+            $suplier_transaction->suplier_balance = $passport->net_price;
+        }else{
+            $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$passport->net_price;
+        }
+        $suplier_transaction->save();
+        //SuplierTransaction End
     }
     protected function tranjactionBasic($transjaction, $request, $visa_updated, $pre_guest_transjaction_blance, $pre_staff_transjaction_blance, $pre_transjaction_blance){
         $transjaction->guest_id = $request->client;
@@ -147,6 +171,16 @@ class VisaUpdatedController extends Controller
     protected function removePassport($request){
         $passports = Passport::where('visa_updated_id', $request->id)->get();
         foreach ($passports as $passport){
+            $suplier_transaction = SuplierTransaction::where('visa_id', $passport->id)->first();
+            $next_transactions = SuplierTransaction::where('id', '>', $passport->id)->get();
+            foreach ($next_transactions as $next_transaction){
+                $next_transactions->balance = $next_transaction->balance - $suplier_transaction->debit_amount;
+                if($suplier_transaction->suplier_id = $next_transaction->suplier_id){
+                    $next_transaction->suplier_balance = $next_transaction->suplier_balance - $suplier_transaction->debit_amount;
+                }
+                $next_transaction->update();
+            }
+            $suplier_transaction->delte();
             $passport->delete();
         }
     }

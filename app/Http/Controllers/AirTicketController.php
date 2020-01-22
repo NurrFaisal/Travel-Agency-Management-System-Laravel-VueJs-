@@ -283,6 +283,7 @@ class AirTicketController extends Controller
         foreach ($paxs as $pax){
             $pax->delete();
         }
+        $this->savePaxLoop($request, $airticket);
         $this->updateTransjactionBlance($request);
 
 //        $this->savePaxLoop($request, $airticket);
