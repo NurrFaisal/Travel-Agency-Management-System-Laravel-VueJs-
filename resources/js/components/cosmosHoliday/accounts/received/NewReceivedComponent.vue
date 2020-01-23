@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -43,16 +51,15 @@
                                         <div class="widget-main justify-content-center" style="margin: 0px 100px;">
                                             <form @submit.prevent="addReceived()" class="form-horizontal" method="post" role="form">
                                                 <div class="form-group ">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="guest">
                                                                 Guest Name<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <select v-model="form.guest" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('guest') }" required  id="guest" name="guest" class="col-xs-12 col-sm-12" >
-                                                                    <option value="">--Select Guest Name--</option>
-                                                                    <option  :value="guest.id" v-for="guest in getAllReference " >{{guest.name}}</option>
-                                                                </select>
+                                                                <span class="block input-icon input-icon-right">
+                                                                 <GuestAutoComplate :shouldReset="true" @change="onchange"  :items="guests" filterby="phone_number" @Selected="customerSelected"/>
+                                                            </span>
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -60,7 +67,7 @@
                                                             <span style="color: red">{{ errors.first('guest') }}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="staff">
                                                                 Staff Name<span class="text-danger">*</span> :
@@ -77,9 +84,7 @@
                                                             <span style="color: red">{{ errors.first('staff') }}</span>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group ">
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="bill_amount">
                                                                 Bill Amount<span class="text-danger">*</span> :
@@ -94,6 +99,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
 
                                                 <div class="form-group ">
                                                     <div class="col-md-12">
@@ -334,7 +340,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group ">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="total_received_amount">
                                                                 Total Received Amount<span class="text-danger">*</span> :
@@ -348,7 +354,21 @@
                                                             <span style="color: red">{{ errors.first('total_received_amount') }}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="discount">
+                                                                Discount <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input @keyup="sumPrice()" v-model="form.discount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('discount') }"   class="col-xs-12 col-sm-12" id="discount" name="due_amount" placeholder="Enter Discount Amount" required="" type="number">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="discount"></has-error>
+                                                            <span style="color: red">{{ errors.first('discount') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="due_amount">
                                                                 Due Amount<span class="text-danger">*</span> :
@@ -413,15 +433,19 @@
 </template>
 
 <script>
+    import GuestAutoComplate from "../../searchSelect/GuestAutoComplate";
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "NewReceivedComponent",
+        components: {GuestAutoComplate, Loading},
         mounted(){
-            this.$store.dispatch("allGuest")
-            this.$store.dispatch('allStaffs')
+            this.isLoading = true
             this.$store.dispatch('allBanks')
-            // this.bankDivFunction()
-            // this.chequeDivFunction()
-            // this.othersDivFunction()
+            this.getAllSuplier()
+
         },
         computed:{
             getAllReference(){
@@ -437,8 +461,21 @@
 
         },
         data(){
-
             return {
+
+                allReference: '',
+                guests: '',
+                supliers: '',
+
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
+
+
+
+
                 form: new Form({
                     guest:'',
                     staff:'',
@@ -448,6 +485,7 @@
                     cheque:'',
                     other:'',
                     total_received_amount:'',
+                    discount:'',
                     due_amount:'',
                     narration:'',
 
@@ -579,22 +617,18 @@
             deleteBank(index){
 
                 this.$delete(this.form.banks, index)
-                console.log(this.form.banks)
             },
             deleteCheque(index){
 
                 this.$delete(this.form.cheques, index)
-                console.log(this.form.cheques)
             },
             deleteOthers(index){
 
                 this.$delete(this.form.others, index)
-                console.log(this.form.others)
             },
             addReceived(){
                 this.form.post('/api/add-received')
                     .then((response) => {
-                        console.log(response.data)
                         this.form.guest = ''
                         this.form.staff = ''
                         this.form.bill_amount = ''
@@ -603,6 +637,7 @@
                         this.form.cheque = ''
                         this.form.other = ''
                         this.form.total_received_amount = ''
+                        this.form.discount = ''
                         this.form.due_amount = ''
                         this.form.narration = ''
                         this.form.cashs = [
@@ -665,9 +700,52 @@
                         this.form.total_received_amount += parseInt(this.form.others[i].others_amount)
                     }
                 }
-                this.form.due_amount = parseInt(this.form.bill_amount) - this.form.total_received_amount
+                this.form.due_amount = parseInt(this.form.bill_amount) - parseInt(this.form.total_received_amount)
+                if(this.form.discount > 0){
+                    this.form.due_amount -= parseInt(this.form.discount)
+                }
 
-            }
+            },
+
+
+            customerSelected(customer){
+                this.form.guest = customer.id;
+
+            },
+
+            // onchange(query){
+            //     if(query != ''){
+            //         this.allRefernceStaff(query)
+            //     }
+            // },
+            onchange:_.debounce(function (query) {
+                if(query != ''){
+                    this.allRefernceStaff(query)
+                }
+            }, 1000),
+            allRefernceStaff(query){
+                axios.get(`/api/get-all-guests/${query}`)
+                    .then(response => {
+                        this.guests = response.data.guests
+                    })
+            },
+            getAllSuplier(){
+                axios.get('/api/get-all-active-suplier')
+                    .then(response => {
+                        this.supliers = response.data.supliers
+                    })
+                this.doAjax()
+
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },1000)
+            },
+            onCancel() {
+                console.log('User cancelled the loader.')
+            },
+
         }
     }
 </script>
