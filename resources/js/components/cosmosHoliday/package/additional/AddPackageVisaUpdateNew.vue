@@ -1149,7 +1149,7 @@
                     this.form.grand_total_price += parseInt(this.form.airport_rd_total_price);
                 }
                 if(this.form.others_total_price > 0){
-                    this.form.grand_total_price += parseInt(this.form.airport_rd_total_price);
+                    this.form.grand_total_price += parseInt(this.form.others_total_price);
                 }
                 if(this.form.first_total_price > 0){
                     this.form.grand_total_price += parseInt(this.form.first_total_price);
