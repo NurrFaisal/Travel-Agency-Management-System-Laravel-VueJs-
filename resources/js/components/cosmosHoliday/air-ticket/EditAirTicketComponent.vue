@@ -1252,16 +1252,23 @@
                 this.changeTotalAmount()
             },
             changeTotalAmount(){
-                this.form.total_amount =0;
+                this.form.total_amount = 0;
+                if(this.form.adult_total_price > 0){
+                    this.form.total_amount += parseInt(this.form.adult_total_price)
+                }
+                if(this.form.child_total_price > 0){
+                    this.form.total_amount += parseInt(this.form.child_total_price)
+                }
+                if(this.form.infant_total_price > 0){
+                    this.form.total_amount += parseInt(this.form.infant_total_price)
+                }
+                if(this.form.ssr_total_price > 0){
+                    this.form.total_amount += parseInt(this.form.ssr_total_price)
+                }
+                if(this.form.service_amount > 0){
+                    this.form.total_amount += parseInt(this.form.service_amount)
+                }
 
-                if(this.form.service_amount == ''){
-                    this.form.service_amount = 0
-                }
-                this.form.total_amount = parseInt(this.form.total_amount+this.form.adult_total_price+this.form.child_total_price+this.form.infant_total_price+this.form.ssr_total_price+this.form.service_amount)/10;
-                // this.form.total_amount = parseInt(this.form.adult_total_price)+parseInt(this.form.child_total_price)+parseInt(this.form.infant_total_price)+parseInt(this.form.ssr_total_price)+parseInt(this.form.service_amount);
-                if(this.form.service_amount == 0){
-                    this.form.service_amount = ''
-                }
 
             },
 

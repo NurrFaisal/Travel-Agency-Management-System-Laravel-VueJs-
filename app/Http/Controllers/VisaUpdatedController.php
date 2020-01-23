@@ -86,21 +86,21 @@ class VisaUpdatedController extends Controller
         $transjaction->visa_id = $visa_updated->id;
         $transjaction->narration = $request->invoice_narration;
         $transjaction->transjaction_date = $visa_updated->created_at->format('Y-m-d');
-        $transjaction->credit_amount = $request->grand_total_price;
+        $transjaction->debit_amount = $request->grand_total_price;
         if($pre_guest_transjaction_blance == null){
-            $transjaction->guest_blance = -$request->grand_total_price;
+            $transjaction->guest_blance = $request->grand_total_price;
         }else{
-            $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->grand_total_price;
+            $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $request->grand_total_price;
         }
         if($pre_staff_transjaction_blance == null){
-            $transjaction->staff_blance = -$request->grand_total_price;
+            $transjaction->staff_blance = $request->grand_total_price;
         }else{
-            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->grand_total_price;
+            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $request->grand_total_price;
         }
         if($pre_transjaction_blance == null){
-            $transjaction->blance = -$request->grand_total_price;
+            $transjaction->blance = $request->grand_total_price;
         }else{
-            $transjaction->blance = $pre_transjaction_blance->blance - $request->grand_total_price;
+            $transjaction->blance = $pre_transjaction_blance->blance + $request->grand_total_price;
         }
     }
     protected function tranjaction($request, $visa_updated){
@@ -128,16 +128,16 @@ class VisaUpdatedController extends Controller
             $suplier_transaction->visa_id = $passport->id;
             $suplier_transaction->transaction_date = $passport->created_at->format('Y-m-d');
             $suplier_transaction->narration = $passport->narration;
-            $suplier_transaction->debit_amount = $passport->net_price;
+            $suplier_transaction->credit_amount = $passport->net_price;
             if($pre_sup_transaction == null){
-                $suplier_transaction->balance = $passport->net_price;
+                $suplier_transaction->balance = -$passport->net_price;
             }else{
-                $suplier_transaction->balance = $pre_sup_transaction->balance+$passport->net_price;
+                $suplier_transaction->balance = $pre_sup_transaction->balance - $passport->net_price;
             }
             if($pre_suplier_sup_transaction == null){
-                $suplier_transaction->suplier_balance = $passport->net_price;
+                $suplier_transaction->suplier_balance = -$passport->net_price;
             }else{
-                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance+$passport->net_price;
+                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance - $passport->net_price;
             }
             $suplier_transaction->save();
             //SuplierTransaction End
@@ -177,9 +177,9 @@ class VisaUpdatedController extends Controller
             $suplier_transaction = SuplierTransaction::where('visa_id', $passport->id)->first();
             $next_transactions = SuplierTransaction::where('id', '>', $passport->id)->get();
             foreach ($next_transactions as $next_transaction){
-                $next_transactions->balance = $next_transaction->balance - $suplier_transaction->debit_amount;
+                $next_transactions->balance = $next_transaction->balance + $suplier_transaction->credit_amount;
                 if($suplier_transaction->suplier_id = $next_transaction->suplier_id){
-                    $next_transaction->suplier_balance = $next_transaction->suplier_balance - $suplier_transaction->debit_amount;
+                    $next_transaction->suplier_balance = $next_transaction->suplier_balance + $suplier_transaction->credit_amount;
                 }
                 $next_transaction->update();
             }
@@ -187,29 +187,29 @@ class VisaUpdatedController extends Controller
             $passport->delete();
         }
     }
-    protected function firstTransjactionUpdate($request){
-        $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
-        $update_first_transjaction->visa_id = null;
-        $update_first_transjaction->update();
-        return $update_first_transjaction;
-    }
-
-    protected function secondTransjactionUpdate($update_first_transjaction, $request, $visa_updated){
-        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->client)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        $pre_staff_transjaction_blance = Transjaction::where('staff_id', $request->sell_person)->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
-        $update_scond_transjaction = new Transjaction();
-        $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
-        $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( V-'.$update_first_transjaction->visa_id.' )';
-        $update_scond_transjaction->transjaction_date = $visa_updated->updated_at->format('Y-m-d');
-        $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
-        $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
-        $update_scond_transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $update_first_transjaction->credit_amount;
-        $update_scond_transjaction->blance = $pre_transjaction_blance->blance + $update_first_transjaction->credit_amount;
-        $update_scond_transjaction->save();
-    }
+//    protected function firstTransjactionUpdate($request){
+//        $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
+//        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+//        $update_first_transjaction->visa_id = null;
+//        $update_first_transjaction->update();
+//        return $update_first_transjaction;
+//    }
+//
+//    protected function secondTransjactionUpdate($update_first_transjaction, $request, $visa_updated){
+//        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->client)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+//        $pre_staff_transjaction_blance = Transjaction::where('staff_id', $request->sell_person)->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+//        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
+//        $update_scond_transjaction = new Transjaction();
+//        $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
+//        $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
+//        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( V-'.$update_first_transjaction->visa_id.' )';
+//        $update_scond_transjaction->transjaction_date = $visa_updated->updated_at->format('Y-m-d');
+//        $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
+//        $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
+//        $update_scond_transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $update_first_transjaction->credit_amount;
+//        $update_scond_transjaction->blance = $pre_transjaction_blance->blance + $update_first_transjaction->credit_amount;
+//        $update_scond_transjaction->save();
+//    }
 
     public function updateVisaUpdated(Request $request){
         $this->visaUpdatedValidation($request);
@@ -227,53 +227,53 @@ class VisaUpdatedController extends Controller
 
     public function updateTransjactionBlance($request){
         $transjaction = Transjaction::where('visa_id', $request->id)->first();
-        $increment_blance = $request->grand_total_price - $transjaction->credit_amount;
-        $old_transjaction_credit = $transjaction->credit_amount;
+        $increment_blance = $request->grand_total_price - $transjaction->debit_amount;
+        $old_transjaction_debit = $transjaction->debit_amount;
         $old_staff_id = $transjaction->staff_id;
         $old_guest_id = $transjaction->guest_id;
         $transjaction->guest_id = $request->client;
 //        $transjaction->staff_id = $request->sell_person;
         $transjaction->narration = $request->invoice_narration;
-        $transjaction->credit_amount = $request->grand_total_price;
-        $transjaction->blance = $transjaction->blance - $increment_blance;
+        $transjaction->debit_amount = $request->grand_total_price;
+        $transjaction->blance = $transjaction->blance + $increment_blance;
         $blance_transjactions = Transjaction::where('id', '>', $transjaction->id)->get();
         foreach ($blance_transjactions as $blance_transjaction){
-            $blance_transjaction->blance = $blance_transjaction->blance - $increment_blance;
+            $blance_transjaction->blance = $blance_transjaction->blance + $increment_blance;
             $blance_transjaction->update();
         }
-        $transjaction->staff_blance = $transjaction->staff_blance - $increment_blance;
+        $transjaction->staff_blance = $transjaction->staff_blance + $increment_blance;
         $staff_blance_tranjactions = Transjaction::where('id', '>', $transjaction->id)->where('staff_id', $transjaction->staff_id)->get();
         foreach ($staff_blance_tranjactions as $staff_blance_tranjaction){
-            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance - $increment_blance;
+            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance + $increment_blance;
             $staff_blance_tranjaction->update();
         }
 
         if($old_guest_id == $request->client){
-            $transjaction->guest_blance = $transjaction->guest_blance - $increment_blance;
+            $transjaction->guest_blance = $transjaction->guest_blance + $increment_blance;
             $transjaction->update();
             $guest_blances = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
             foreach ($guest_blances as $guest_blance){
-                $guest_blance->guest_blance = $guest_blance->guest_blance - $increment_blance;
+                $guest_blance->guest_blance = $guest_blance->guest_blance + $increment_blance;
                 $guest_blance->update();
             }
         }else{
             $pre_guest_transjaction = Transjaction::where('id', '<', $transjaction->id)->where('guest_id', $request->client)->orderBy('id', 'desc')->first();
             if($pre_guest_transjaction){
-                $transjaction->guest_blance = $pre_guest_transjaction->guest_blance - $request->grand_total_price;
+                $transjaction->guest_blance = $pre_guest_transjaction->guest_blance + $request->grand_total_price;
             }else{
-                $transjaction->guest_blance = -$request->grand_total_price;
+                $transjaction->guest_blance = $request->grand_total_price;
             }
 
 
             $transjaction->update();
             $next_old_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
             foreach ($next_old_guest_transjactions as $next_old_guest_transjaction){
-                $next_old_guest_transjaction->guest_blance = $next_old_guest_transjaction->guest_blance + $old_transjaction_credit;
+                $next_old_guest_transjaction->guest_blance = $next_old_guest_transjaction->guest_blance + $old_transjaction_debit;
                 $next_old_guest_transjaction->update();
             }
             $next_new_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $request->client)->get();
             foreach ($next_new_guest_transjactions as $next_new_guest_transjaction){
-                $next_new_guest_transjaction->guest_blance = $next_new_guest_transjaction->guest_blance - $request->grand_total_price;
+                $next_new_guest_transjaction->guest_blance = $next_new_guest_transjaction->guest_blance + $request->grand_total_price;
                 $next_new_guest_transjaction->update();
             }
         }
