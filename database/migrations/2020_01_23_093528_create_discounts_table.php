@@ -15,6 +15,11 @@ class CreateDiscountsTable extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('guest_id');
+            $table->unsignedBigInteger('staff_id');
+            $table->unsignedBigInteger('money_receipt_id');
+            $table->date('discount_date');
+            $table->decimal('amount', 10,2);
             $table->timestamps();
         });
     }

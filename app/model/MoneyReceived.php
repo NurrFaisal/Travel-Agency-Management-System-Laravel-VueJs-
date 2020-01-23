@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MoneyReceived extends Model
 {
-    protected $fillable = ['guest', 'staff', 'bill_amount', 'total_received_amount', 'due_amount', 'narration'];
+    protected $fillable = ['guest', 'staff', 'bill_amount', 'total_received_amount', 'discount', 'due_amount', 'narration'];
 
     public function staff(){
         return $this->belongsTo(Staff::class, 'sell_person');

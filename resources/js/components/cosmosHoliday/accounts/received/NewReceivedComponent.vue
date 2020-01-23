@@ -444,14 +444,12 @@
         mounted(){
             this.isLoading = true
             this.$store.dispatch('allBanks')
-            this.getAllSuplier()
+            this.$store.dispatch('allStaffs')
+            this.doAjax()
+
 
         },
         computed:{
-            getAllReference(){
-                return this.$store.getters.get_guest
-            },
-
             get_all_staffs(){
                 return this.$store.getters.get_staffs
             },
@@ -465,7 +463,6 @@
 
                 allReference: '',
                 guests: '',
-                supliers: '',
 
                 width:128,
                 height:128,
@@ -710,7 +707,6 @@
 
             customerSelected(customer){
                 this.form.guest = customer.id;
-
             },
 
             // onchange(query){
@@ -729,14 +725,7 @@
                         this.guests = response.data.guests
                     })
             },
-            getAllSuplier(){
-                axios.get('/api/get-all-active-suplier')
-                    .then(response => {
-                        this.supliers = response.data.supliers
-                    })
-                this.doAjax()
 
-            },
             doAjax() {
                 setTimeout(() => {
                     this.isLoading = false

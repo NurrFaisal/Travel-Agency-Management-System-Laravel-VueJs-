@@ -22,6 +22,7 @@ class CreateTransjactionsTable extends Migration
             $table->unsignedInteger('visa_id')->nullable();
             $table->unsignedInteger('hotel_id')->nullable();
             $table->unsignedInteger('received_id')->nullable();
+            $table->unsignedInteger('discount_id')->nullable();
             $table->date('transjaction_date');
             $table->text('narration');
             $table->decimal('debit_amount');

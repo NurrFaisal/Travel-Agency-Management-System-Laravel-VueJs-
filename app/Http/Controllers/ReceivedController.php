@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\model\BankBook;
 use App\model\CashBook;
 use App\model\ChequeBook;
+use App\model\Discount;
 use App\model\MoneyReceived;
 use App\model\Other;
 use App\model\Transjaction;
@@ -34,6 +35,7 @@ class ReceivedController extends Controller
         $received->other = $request->other;
         $received->bill_amount = $request->bill_amount;
         $received->total_received_amount = $request->total_received_amount;
+        $received->discount = $request->discount;
         $received->due_amount = $request->due_amount;
         $received->narration = $request->narration;
     }
@@ -164,23 +166,77 @@ class ReceivedController extends Controller
         $transjaction->received_id = $received->id;
         $transjaction->narration = $received->narration;
         $transjaction->transjaction_date = $received->created_at->format('Y-m-d');
-        $transjaction->debit_amount = $received->total_received_amount;
+        $transjaction->credit_amount = $received->total_received_amount;
         if($pre_guest_transjaction_blance == null){
-            $transjaction->guest_blance = $request->total_received_amount;
+            $transjaction->guest_blance = -$request->total_received_amount;
         }else{
-            $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $request->total_received_amount;
+            $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->total_received_amount;
         }
         if($pre_staff_transjaction_blance == null){
-            $transjaction->staff_blance = $request->total_received_amount;
+            $transjaction->staff_blance = -$request->total_received_amount;
         }else{
-            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $request->total_received_amount;
+            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->total_received_amount;
         }
         if($pre_transjaction_blance == null){
-            $transjaction->blance = $request->total_received_amount;
+            $transjaction->blance = -$request->total_received_amount;
         }else{
-            $transjaction->blance = $pre_transjaction_blance->blance + $request->total_received_amount;
+            $transjaction->blance = $pre_transjaction_blance->blance - $request->total_received_amount;
         }
         $transjaction->save();
+
+
+        // Discount Start
+        if($request->discount > 0){
+            $discount = new Discount();
+            $discount->guest_id = $request->guest;
+            $discount->staff_id = $request->staff;
+            $discount->money_receipt_id = $received->id;
+            $discount->discount_date = $received->created_at->format('Y-m-d');
+            $discount->amount = $request->discount;
+            $discount->save();
+
+
+            // Discount Transaction Start
+
+            $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->guest)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+            $pre_staff_transjaction_blance = Transjaction::where('staff_id', $request->staff)->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+            $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
+
+
+            $dicount_transjaction = new Transjaction();
+            $dicount_transjaction->guest_id = $request->guest;
+            $dicount_transjaction->staff_id = $request->staff;
+            $dicount_transjaction->discount_id = $discount->id;
+            $dicount_transjaction->narration = $received->narration.'(Discount)';
+            $dicount_transjaction->transjaction_date = $received->created_at->format('Y-m-d');
+            $dicount_transjaction->credit_amount = $request->discount;
+            if($pre_guest_transjaction_blance == null){
+                $dicount_transjaction->guest_blance = -$request->discount;
+            }else{
+                $dicount_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->discount;
+            }
+            if($pre_staff_transjaction_blance == null){
+                $dicount_transjaction->staff_blance = -$request->discount;
+            }else{
+                $dicount_transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->discount;
+            }
+            if($pre_transjaction_blance == null){
+                $dicount_transjaction->blance = -$request->discount;
+            }else{
+                $dicount_transjaction->blance = $pre_transjaction_blance->blance - $request->discount;
+            }
+            $dicount_transjaction->save();
+
+
+
+            // Discount Transaction End
+
+
+
+
+        }
+
+        // Discount End
 
     }
 
@@ -193,7 +249,7 @@ class ReceivedController extends Controller
     }
 
     public function editReceived($id){
-        $received = MoneyReceived::with('cashs', 'banks', 'cheques', 'others')->where('id', $id)->first();
+        $received = MoneyReceived::with(['cashs', 'banks', 'cheques', 'others', 'guestt' => function($q){$q->select('id', 'name','phone_number');}])->where('id', $id)->first();
         return response()->json([
             'received' => $received
         ]);

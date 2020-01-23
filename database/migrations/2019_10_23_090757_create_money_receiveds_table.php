@@ -20,6 +20,7 @@ class CreateMoneyReceivedsTable extends Migration
             $table->decimal('bill_amount');
             $table->decimal('total_received_amount');
             $table->decimal('due_amount');
+            $table->decimal('discount');
             $table->text('narration');
             $table->timestamps();
         });
