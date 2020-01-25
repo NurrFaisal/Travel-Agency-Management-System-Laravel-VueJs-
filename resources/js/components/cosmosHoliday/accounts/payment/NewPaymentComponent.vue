@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -65,7 +73,7 @@
                                                             <span class="block input-icon input-icon-right">
                                                                 <select v-model="form.suplier" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('suplier') }" required  id="suplier" name="suplier" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Suplier Name--</option>
-                                                                    <option  :value="suplier.id" v-for="suplier in get_all_supliers " >{{suplier.name}}</option>
+                                                                    <option  :value="suplier.id" v-for="suplier in supliers " >{{suplier.name}}</option>
                                                                 </select>
                                                             </span>
                                                         </div>
@@ -300,22 +308,22 @@
 </template>
 
 <script>
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "NewPaymentComponent",
+        components: {Loading},
         mounted(){
-            this.$store.dispatch("allGuest")
-            this.$store.dispatch('allSuplier')
+            this.isLoading = true
+
+            // this.$store.dispatch('allSuplier')
             this.$store.dispatch('allBanks')
             this.chequeDivFunction()
+            this.getAllSuplier()
         },
         computed:{
-            getAllReference(){
-                return this.$store.getters.get_guest
-            },
-
-            get_all_supliers(){
-                return this.$store.getters.get_suplier
-            },
             get_all_banks(){
                 return this.$store.getters.get_banks
             }
@@ -324,6 +332,13 @@
         data(){
 
             return {
+                supliers: '',
+
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
                 form: new Form({
                     debit_voucher_date:'',
                     suplier:'',
@@ -396,6 +411,7 @@
                 console.log(this.form.cheques)
             },
             addPayment(){
+                this.isLoading = true
                 this.form.post('/api/add-payment')
                     .then((response) => {
                         this.form.debit_voucher_date = ''
@@ -425,15 +441,38 @@
 
 
                         this.$router.push('/payment-list')
+                        this.isLoading = false
                         Toast.fire({
                             type: 'success',
                             title: 'New Debit Voucher Added successfully'
                         })
                     })
                     .catch((response) => {
-
+                        this.isLoading = false
                     })
             },
+            getAllSuplier(){
+                axios.get('/api/get-all-active-suplier')
+                    .then(response => {
+                        this.supliers = response.data.supliers
+                    })
+                this.doAjax()
+
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },1000)
+            },
+            onCancel() {
+                console.log('User cancelled the loader.')
+            },
+
+
+
+
+
+
             sumPrice(){
                 this.form.due_amount = 0
                 this.form.total_payment_amount = 0
