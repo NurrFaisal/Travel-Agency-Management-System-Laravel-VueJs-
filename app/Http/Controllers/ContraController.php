@@ -33,7 +33,11 @@ class ContraController extends Controller
             $cash_book->cash_date = $contra->created_at->format('Y-m-d');
             $cash_book->narration = $request->narration;
             $cash_book->credit_cash_amount = $request->contra_amount;
-            $cash_book->blance = $pre_cash_book->blance - $request->contra_amount;
+            if($pre_cash_book != null){
+                $cash_book->blance = $pre_cash_book->blance - $request->contra_amount;
+            }else{
+                $cash_book->blance = -$request->contra_amount;
+            }
             $cash_book->save();
 
             $bank_blance = BankBook::orderBy('id', 'desc')->where('bank_name', $request->bank_name)->first();
@@ -44,7 +48,12 @@ class ContraController extends Controller
             $bank_book->bank_name = $request->bank_name;
             $bank_book->narration = $request->narration;
             $bank_book->debit_bank_amount = $request->contra_amount;
-            $bank_book->blance = $pre_bank_book->blance + $request->contra_amount;
+            if($pre_bank_book != null){
+                $bank_book->blance = $pre_bank_book->blance + $request->contra_amount;
+            }else{
+                $bank_book->blance = $request->contra_amount;
+            }
+
             if($bank_blance == null){
                 $bank_book->bank_blance = $request->contra_amount;
             }else{
@@ -66,7 +75,11 @@ class ContraController extends Controller
             $cash_book->cash_date = $contra->created_at->format('Y-m-d');
             $cash_book->narration = $request->narration;
             $cash_book->debit_cash_amount = $request->contra_amount;
-            $cash_book->blance = $pre_cash_book->blance +$request->contra_amount;
+            if($pre_cash_book == null){
+                $cash_book->blance = $request->contra_amount;
+            }else{
+                $cash_book->blance = $pre_cash_book->blance +$request->contra_amount;
+            }
             $cash_book->save();
 
             $bank_blance = BankBook::orderBy('id', 'desc')->where('bank_name', $request->bank_name)->first();
@@ -77,7 +90,11 @@ class ContraController extends Controller
             $bank_book->bank_name = $request->bank_name;
             $bank_book->narration = $request->narration;
             $bank_book->credit_bank_amount = $request->contra_amount;
-            $bank_book->blance = $pre_bank_book->blance - $request->contra_amount;
+            if($pre_bank_book == null){
+                $bank_book->blance = -$request->contra_amount;
+            }else{
+                $bank_book->blance = $pre_bank_book->blance - $request->contra_amount;
+            }
             if($bank_blance == null){
                 $bank_book->bank_blance = -$request->contra_amount;
             }else{
@@ -103,8 +120,16 @@ class ContraController extends Controller
             $from_bank_book->bank_name = $request->from_bank_name;
             $from_bank_book->narration = $request->narration;
             $from_bank_book->credit_bank_amount = $request->contra_amount;
-            $from_bank_book->blance = $from_pre_bank_book->blance - $request->contra_amount;
-            $from_bank_book->bank_blance = $from_bank_blance->bank_blance - $request->contra_amount;
+            if($from_pre_bank_book == null){
+                $from_bank_book->blance = -$request->contra_amount;
+            }else{
+                $from_bank_book->blance = $from_pre_bank_book->blance - $request->contra_amount;
+            }
+            if($from_bank_blance == null){
+                $from_bank_book->bank_blance = -$request->contra_amount;
+            }else{
+                $from_bank_book->bank_blance = $from_bank_blance->bank_blance - $request->contra_amount;
+            }
             $from_bank_book->save();
 
 
@@ -116,8 +141,16 @@ class ContraController extends Controller
             $to_bank_book->bank_name = $request->to_bank_name;
             $to_bank_book->narration = $request->narration;
             $to_bank_book->debit_bank_amount = $request->contra_amount;
-            $to_bank_book->blance = $to_pre_bank_book->blance + $request->contra_amount;
-            $to_bank_book->bank_blance = $to_bank_blance->bank_blance + $request->contra_amount;
+            if($to_pre_bank_book == null){
+                $to_bank_book->blance = $request->contra_amount;
+            }else{
+                $to_bank_book->blance = $to_pre_bank_book->blance + $request->contra_amount;
+            }
+            if($to_bank_blance == null){
+                $to_bank_book->bank_blance = $request->contra_amount;
+            }else{
+                $to_bank_book->bank_blance = $to_bank_blance->bank_blance + $request->contra_amount;
+            }
             $to_bank_book->save();
          }
 
