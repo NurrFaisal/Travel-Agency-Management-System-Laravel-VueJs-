@@ -186,54 +186,45 @@ class ContraController extends Controller
         $contra->narration = $request->narration;
         $contra->update();
 
-        $pre_cash_book = CashBook::orderBy('id', 'desc')->first();
-        $cash_book = CashBook::where('contra_id', $request->id)->first();
+        // Contra CashBook Update Start
+        $cash_book = CashBook::where('contra_id', $contra->id)->first();
         if($cash_book != null){
-            $cash_book->contra_id = null;
-            $cash_book->narration = 'update from Contra (1st)';
-            $cash_book->update();
-
-            $update_cash_book = new CashBook();
-            $update_cash_book->cash_date = $request->contra_date;
-            $update_cash_book->narration = $cash_book->id.' '. 'Update from contra (2nd)';
-            if($cash_book->credit_cash_amount > 0){
-                $update_cash_book->debit_cash_amount = $cash_book->credit_cash_amount;
-                $update_cash_book->blance = $pre_cash_book->blance + $cash_book->credit_cash_amount;
+            $next_cash_books = CashBook::where('id', '>', $cash_book->id)->get();
+            foreach ($next_cash_books as $next_cash_book){
+                if($cash_book->debit_cash_amount > 0){
+                    $next_cash_book->blance -= $cash_book->debit_cash_amount;
+                }
+                if($cash_book->credit_cash_amount > 0){
+                    $next_cash_book->blance += $cash_book->credit_cash_amount;
+                }
+                $next_cash_book->update();
             }
-            if($cash_book->debit_cash_amount > 0){
-                $update_cash_book->credit_cash_amount = $cash_book->debit_cash_amount;
-                $update_cash_book->blance = $pre_cash_book->blance - $cash_book->debit_cash_amount;
-            }
-            $update_cash_book->save();
+            $cash_book->delete();
         }
+        // Contra CashBook Update End
 
-
+        // Contra BankBook Update Start
         $bank_books = BankBook::where('contra_id', $request->id)->get();
-        $bank_books_arry_len = count($bank_books);
-        if($bank_books_arry_len > 0){
-            foreach ($bank_books as $bank_book){
-                $bank_book->contra_id = null;
-                $bank_book->narration = 'Update from Contra {1st}';
-                $bank_book->update();
-                $pre_bank_book = BankBook::orderBy('id', 'desc')->first();
-                $bank_blance = BankBook::orderBy('id', 'desc')->where('bank_name', $bank_book->bank_name)->first();
-                $update_bank_book = new BankBook();
-                $update_bank_book->bank_name = $bank_book->bank_name;
-                $update_bank_book->bank_date = $bank_book->bank_date;
-                $update_bank_book->narration = $bank_book->id.' '.'Udate from contra (2nd)';
-                if($bank_book->credit_bank_amount > 0){
-                    $update_bank_book->debit_bank_amount = $bank_book->credit_bank_amount;
-                    $update_bank_book->blance = $pre_bank_book->blance + $bank_book->credit_bank_amount;
-                    $update_bank_book->bank_blance = $bank_blance->bank_blance + $bank_book->credit_bank_amount;
-                }
+        foreach ($bank_books as $bank_book){
+            $next_bank_books = BankBook::where('id', '>', $bank_book->id)->get();
+            foreach ($next_bank_books as $next_bank_book){
                 if($bank_book->debit_bank_amount > 0){
-                    $update_bank_book->credit_bank_amount = $bank_book->debit_bank_amount;
-                    $update_bank_book->blance = $pre_bank_book->blance - $bank_book->debit_bank_amount;
-                    $update_bank_book->bank_blance = $bank_blance = $bank_book->debit_bank_amount;
+                    $next_bank_book->blance -= $bank_book->debit_bank_amount;
+                    if($next_bank_book->bank_name == $bank_book->bank_name){
+                        $next_bank_book->bank_blance -= $bank_book->debit_bank_amount;
+                    }
                 }
-                $update_bank_book->save();
+                if($bank_book->credit_bank_amount > 0){
+                    $next_bank_book->blance += $bank_book->credit_bank_amount;
+                    if($next_bank_book->bank_name == $bank_book->bank_name){
+                        $next_bank_book->bank_blance += $bank_book->credit_bank_amount;
+                    }
+                }
+                $next_bank_book->update();
             }
+            $bank_book->delete();
         }
+        // Contra BankBook Update End
         if($request->contra_type == 1){
             $request->validate([
                 'bank_name' => 'required'
