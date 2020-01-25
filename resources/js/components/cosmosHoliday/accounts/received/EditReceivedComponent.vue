@@ -49,7 +49,7 @@
                                     </div>
                                     <div class="widget-body justify-content-center">
                                         <div class="widget-main justify-content-center" style="margin: 0px 100px;">
-                                            <form @submit.prevent="addReceived()" class="form-horizontal" method="post" role="form">
+                                            <form @submit.prevent="updateReceived()" class="form-horizontal" method="post" role="form">
                                                 <div class="form-group ">
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">

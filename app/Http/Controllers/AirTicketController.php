@@ -228,29 +228,7 @@ class AirTicketController extends Controller
             'user_type' => $user_type
         ]);
     }
-//    protected function firstTransjaction($request){
-//        $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('air_id', $request->id)->first();
-//        $update_first_transjaction->narration = 'Updated Air Transjaction 1st ( A-'.$update_first_transjaction->air_id.' )';
-//        $update_first_transjaction->update();
-//        return $update_first_transjaction;
-//    }
-//    protected function secondTrnasjaction($request, $airticket, $update_first_transjaction){
-//        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->selling_to)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-//        $pre_staff_transjaction_blance = Transjaction::where('staff_id', Session::get('staff_id'))->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-//        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
-//
-//        $update_scond_transjaction = new Transjaction();
-//        $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
-//        $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
-//        $update_scond_transjaction->air_id = $update_first_transjaction->air_id;
-//        $update_scond_transjaction->narration = 'Updated Air Transjaction 2nd ( A-'.$update_first_transjaction->air_id.' )';
-//        $update_scond_transjaction->transjaction_date = $airticket->updated_at->format('Y-m-d');
-//        $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->blance = $pre_transjaction_blance->blance + $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->save();
-//    }
+
     public function updateAirTicket(Request $request){
         $request->validate([
             'id' => 'required|numeric'
