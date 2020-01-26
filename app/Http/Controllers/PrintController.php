@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Airticket;
 use App\model\HotelBooking;
+use App\model\MoneyReceived;
 use App\model\Package;
 use App\model\VisaUpdated;
 use PDF;
@@ -95,6 +96,51 @@ class PrintController extends Controller
             'clear_total_price' => $clear_total_price
         ])->setPaper('a4');
         return $pdf->stream('invoicePackage.pdf');
+    }
+
+    public function invoicePrintMoneyReceipt($id){
+        $money_receipt = MoneyReceived::with([ 'guestt'=>function($q){$q->select('id', 'name','phone_number', 'address');}, 'cashs' =>function($q){$q->select('id', 'received_id', 'debit_cash_amount');}, 'banks'=>function($q){$q->select('id', 'received_id', 'debit_bank_amount');}, 'cheques', 'others'])->where('id', $id)->first();
+        $cash_amount = 0;
+        $bank_amount = 0;
+        $cheque_amount = 0;
+        $others_amount = 0;
+        foreach ($money_receipt->cashs as $cash){
+            $cash_amount += $cash->debit_cash_amount;
+        }
+        foreach ($money_receipt->banks as $bank){
+            $bank_amount += $bank->debit_bank_amount;
+        }
+        foreach ($money_receipt->cheques as $cheque){
+            $cheque_amount += $cheque->cheque_amount;
+        }
+        foreach ($money_receipt->others as $other){
+            $others_amount += $other->others_amount;
+        }
+
+        $total_price = $this->convert_number_to_words($money_receipt->total_received_amount);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
+
+
+
+//        return view('cosmosHoliday.page.invoiceMoneyReceipt', [
+//            'money_receipt' => $money_receipt,
+//            'cash_amount' => $cash_amount,
+//            'bank_amount' => $bank_amount,
+//            'cheque_amount' => $cheque_amount,
+//            'others_amount' => $others_amount,
+//            'clear_total_price' => $clear_total_price
+//        ]);
+        $pdf = PDF::loadView('cosmosHoliday.page.invoiceMoneyReceipt',[
+            'money_receipt' => $money_receipt,
+            'cash_amount' => $cash_amount,
+            'bank_amount' => $bank_amount,
+            'cheque_amount' => $cheque_amount,
+            'others_amount' => $others_amount,
+            'clear_total_price' => $clear_total_price
+        ])->setPaper('a4');
+        return $pdf->stream('MoneyReceipt.pdf');
+
     }
 
 

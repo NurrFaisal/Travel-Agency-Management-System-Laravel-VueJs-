@@ -25,6 +25,7 @@ Route::get('/invoice-print-air-ticket/{id}', 'PrintController@invoicePrintAirTic
 Route::get('/invoice-print-visa/{id}', 'PrintController@invoicePrintVisa');
 Route::get('/invoice-print-hotel/{id}', 'PrintController@invoicePrintHotel');
 Route::get('/invoice-print-package/{id}', 'PrintController@invoicePrintPackage');
+Route::get('/invoice-print-money-receipt/{id}', 'PrintController@invoicePrintMoneyReceipt');
 // airTicketInvoice
 
 
