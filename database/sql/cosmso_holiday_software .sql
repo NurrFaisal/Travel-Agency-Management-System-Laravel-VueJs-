@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2020 at 07:07 AM
+-- Generation Time: Jan 26, 2020 at 06:28 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -257,6 +257,23 @@ INSERT INTO `departments` (`id`, `slug`, `department_name`, `created_at`, `updat
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `discounts`
+--
+
+CREATE TABLE `discounts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `guest_id` bigint(20) UNSIGNED NOT NULL,
+  `staff_id` bigint(20) UNSIGNED NOT NULL,
+  `money_receipt_id` bigint(20) UNSIGNED NOT NULL,
+  `discount_date` date NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `expences`
 --
 
@@ -317,10 +334,7 @@ CREATE TABLE `follow_u_pto_guests` (
 --
 
 INSERT INTO `follow_u_pto_guests` (`id`, `package_id`, `flw_up_to_guest_date`, `guest_reaction`, `note`, `created_at`, `updated_at`) VALUES
-(1, 4, '2020-01-15', 2, '2020-01-02', '2020-01-12 00:54:06', '2020-01-12 00:54:06'),
-(2, 4, '2020-01-15', 2, '2020-01-22', '2020-01-12 01:34:10', '2020-01-12 01:34:10'),
-(3, 4, '2020-01-16', 3, '2020-01-24', '2020-01-12 03:18:32', '2020-01-12 03:18:32'),
-(4, 4, '2020-01-16', 3, '2020-01-23', '2020-01-13 22:42:15', '2020-01-13 22:42:15');
+(1, 1, '2020-01-24', 1, '2020-01-24', '2020-01-23 00:06:34', '2020-01-23 00:06:34');
 
 -- --------------------------------------------------------
 
@@ -342,11 +356,7 @@ CREATE TABLE `follow_u_p_to_supliers` (
 --
 
 INSERT INTO `follow_u_p_to_supliers` (`id`, `package_id`, `flw_up_to_suplier_date`, `note`, `created_at`, `updated_at`) VALUES
-(3, 4, '2020-01-22', 'sdfasd', '2020-01-12 00:15:02', '2020-01-12 00:15:02'),
-(4, 4, '2020-01-11', 'sdfasd', '2020-01-12 00:15:18', '2020-01-12 00:15:18'),
-(5, 4, '2020-01-17', 'sdfasd', '2020-01-12 00:45:49', '2020-01-12 00:45:49'),
-(6, 4, '2020-01-09', 'sdfasd', '2020-01-12 03:14:39', '2020-01-12 03:14:39'),
-(7, 4, '2020-01-16', 'sdfasd', '2020-01-13 22:40:19', '2020-01-13 22:40:19');
+(1, 1, '2020-01-24', 'sdfasd', '2020-01-23 00:06:16', '2020-01-23 00:06:16');
 
 -- --------------------------------------------------------
 
@@ -521,14 +531,6 @@ CREATE TABLE `hotels` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `hotels`
---
-
-INSERT INTO `hotels` (`id`, `hotel_booking_id`, `hotel_name`, `check_in`, `check_out`, `number_of_persons`, `number_of_room`, `hotel_booking_ref`, `net_price`, `suplier`, `room_category`, `note`, `address`, `king_size`, `couple`, `twin`, `triple`, `quared`, `king_size_price`, `couple_price`, `twin_price`, `triple_price`, `quared_price`, `room_qty`, `room_total_price`, `extra_bed_qty`, `extra_bed_price`, `extra_bed_total_price`, `breakfast_qty`, `breakfast_price`, `breakfast_total_price`, `early_check_in_qty`, `early_check_in_price`, `early_check_in_total_price`, `late_check_out_qty`, `late_check_out_price`, `late_check_out_total_price`, `total_hotel_price`, `created_at`, `updated_at`) VALUES
-(23, 8, 'Ruposhi Bangla', '2020-01-01', '2020-01-31', 5, 2, 'sdfsda', '1200.00', 5, 'Deuxe', 'sdfasd', 'Dhaka, Bangladesh, Asia, Earth.', 2, 3, 4, 5, 4, '100.00', '201.00', '300.00', '400.00', '500.00', 18, '6003.00', 2, '100.00', '200.00', 3, '200.00', '600.00', 4, '300.00', '1200.00', 5, '400.00', '2000.00', '10003.00', '2020-01-02 02:59:05', '2020-01-02 02:59:05'),
-(24, 8, 'Hotel Sayman', '2020-01-23', '2020-01-01', 5, 2, 'sdfsda', '15000.00', 6, 'Stander', 'Some Note For Hotel Sayman', 'Cox\'s Bazar, Bangladesh, Asia, Earth.', 2, 2, 3, 4, 5, '200.00', '310.00', '400.00', '500.00', '600.00', 16, '7220.00', 2, '300.00', '600.00', 4, '500.00', '2000.00', 6, '700.00', '4200.00', 8, '900.00', '7200.00', '21220.00', '2020-01-02 02:59:05', '2020-01-02 02:59:05');
-
 -- --------------------------------------------------------
 
 --
@@ -546,13 +548,6 @@ CREATE TABLE `hotel_bookings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `hotel_bookings`
---
-
-INSERT INTO `hotel_bookings` (`id`, `customer_name`, `total_net_price`, `total_price`, `client`, `sell_person`, `narration`, `created_at`, `updated_at`) VALUES
-(8, 'Rofiq, Salam, Borkot, Jabbar etc....', '16200.00', '31223.00', 8, 3, 'Narration Dilam', '2020-01-01 03:27:18', '2020-01-01 23:57:13');
 
 -- --------------------------------------------------------
 
@@ -687,7 +682,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (67, '2019_09_24_075228_create_packages_table', 51),
 (68, '2020_01_12_111107_create_package_net_prices_table', 52),
 (69, '2019_09_04_054449_create_agencies_table', 53),
-(70, '2020_01_16_062908_create_suplier_transactions_table', 54);
+(70, '2020_01_16_062908_create_suplier_transactions_table', 54),
+(71, '2020_01_23_093528_create_discounts_table', 55);
 
 -- --------------------------------------------------------
 
@@ -701,6 +697,7 @@ CREATE TABLE `money_receiveds` (
   `staff` int(10) UNSIGNED NOT NULL,
   `bill_amount` decimal(8,2) NOT NULL,
   `total_received_amount` decimal(8,2) NOT NULL,
+  `discount` decimal(10,2) DEFAULT NULL,
   `due_amount` decimal(8,2) NOT NULL,
   `narration` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `cash` tinyint(4) DEFAULT NULL,
@@ -816,13 +813,6 @@ CREATE TABLE `packages` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `packages`
---
-
-INSERT INTO `packages` (`id`, `guest`, `staff`, `package_type`, `country`, `query_date`, `destination`, `duration`, `adult_qty`, `child_qty`, `infant_qty`, `total_qty`, `hotel_cat`, `room_qty`, `room_cat`, `king_size`, `couple_size`, `twin_size`, `triple_size`, `quared_size`, `total_bed_qty`, `narration`, `iti_submit_to_guest_date`, `adult_service`, `child_service`, `infant_service`, `total_net_price`, `adult_price`, `child_price`, `infant_price`, `total_price`, `adult_total_price`, `child_total_price`, `infant_total_price`, `total_total_price`, `ex_night_qty`, `ex_night_net_price`, `ex_night_price`, `ex_night_total_price`, `ex_night_note`, `ex_site_seeing_qty`, `ex_site_seeing_net_price`, `ex_site_seeing_price`, `ex_site_seeing_total_price`, `ex_site_seeing_note`, `airport_rd_qty`, `airport_rd_net_price`, `airport_rd_price`, `airport_rd_total_price`, `airport_rd_note`, `others_qty`, `others_net_price`, `others_price`, `others_total_price`, `others_note`, `grand_total_net_price`, `grand_total_price`, `journey_date`, `return_date`, `visa_submit_to_us`, `visa_submit_to_em`, `visa_done_date`, `visa_delivery_to_guest`, `visa_confirmation`, `ticket_date`, `ticket_type`, `document_ready_date`, `document_delivery_date`, `state`, `extra_note`, `first_qty`, `first_price`, `first_total_price`, `second_qty`, `second_price`, `second_total_price`, `third_qty`, `third_price`, `third_total_price`, `created_at`, `updated_at`) VALUES
-(4, 3, 3, 3, 'India-Bangladesh-Nepal', '2020-01-10', 'Kashmir-Sikkim', '25 Days', 2, 2, 2, 6, 1, 3, 1, 2, 3, 4, 5, 6, 20, 'Narration Dilam', '2020-01-15', 'adult service', 'child service', 'infant service', '0.00', '200.00', '300.00', '400.00', '0.00', '400.00', '600.00', '800.00', '1800.00', 2, NULL, '500.00', '1000.00', 'Extra Night Service', 3, NULL, '600.00', '1800.00', 'Ex. Site Seeing Service', 4, NULL, '700.00', '2800.00', 'Airport Received Drop', 4, NULL, '800.00', '3200.00', 'Others Service', '4000.00', '14200.00', '2020-01-15', '2020-01-22', '2020-01-09', '2020-01-23', '2020-01-15', '2020-01-18', NULL, '2020-01-17', 'Air', '2020-01-15', '2020-01-16', 10, 'kisu ekta likhlam...', 3, '100.00', '300.00', 3, '400.00', '1200.00', 5, '500.00', '2500.00', '2020-01-09 04:48:19', '2020-01-14 03:02:14');
-
 -- --------------------------------------------------------
 
 --
@@ -842,14 +832,6 @@ CREATE TABLE `package_days` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `package_days`
---
-
-INSERT INTO `package_days` (`id`, `package_id`, `day`, `day_date`, `over_night`, `tour_itinerary`, `breakfast`, `lunch`, `dinner`, `created_at`, `updated_at`) VALUES
-(95, 4, 'Day-1', '2020-01-11', 'Kalkata', 'Tour Itinerary  daY ONE', 1, 1, 1, '2020-01-14 03:10:15', '2020-01-14 03:10:15'),
-(96, 4, 'Day-2', '2020-01-11', 'Kalkata', 'Day-2 Itinerary', 1, 1, 1, '2020-01-14 03:10:15', '2020-01-14 03:10:15');
 
 -- --------------------------------------------------------
 
@@ -871,8 +853,8 @@ CREATE TABLE `package_net_prices` (
 --
 
 INSERT INTO `package_net_prices` (`id`, `pack_id`, `suplier`, `amount`, `created_at`, `updated_at`) VALUES
-(21, 4, 3, '2000.00', '2020-01-14 03:10:15', '2020-01-14 03:10:15'),
-(22, 4, 7, '2000.00', '2020-01-14 03:10:15', '2020-01-14 03:10:15');
+(7, 1, 1, '1500.00', '2020-01-23 02:07:34', '2020-01-23 02:07:34'),
+(8, 1, 1, '2000.00', '2020-01-23 02:07:34', '2020-01-23 02:07:34');
 
 -- --------------------------------------------------------
 
@@ -1105,6 +1087,14 @@ CREATE TABLE `sub_airtickets` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `sub_airtickets`
+--
+
+INSERT INTO `sub_airtickets` (`id`, `airticket_id`, `issue_date`, `departure_date`, `return_date`, `air_lines`, `pnr`, `sector`, `net_price`, `price`, `suplier`, `created_at`, `updated_at`) VALUES
+(24, 6, '2020-01-23', '2020-01-17', '2020-01-23', 3, 'sfjkasjkldf', 'Dhaka-kalkata-Dhaka', '15000.00', '20000.00', 1, '2020-01-22 23:43:48', '2020-01-22 23:43:48'),
+(25, 6, '2020-01-17', '2020-01-22', '2020-01-24', 2, 'sfjkasjkldf', 'Dhaka-kalkata-Dhaka', '14000.00', '20000.00', 1, '2020-01-22 23:43:48', '2020-01-22 23:43:48');
+
 -- --------------------------------------------------------
 
 --
@@ -1144,6 +1134,7 @@ CREATE TABLE `transjactions` (
   `visa_id` int(10) UNSIGNED DEFAULT NULL,
   `hotel_id` int(10) UNSIGNED DEFAULT NULL,
   `received_id` int(10) UNSIGNED DEFAULT NULL,
+  `discount_id` int(10) UNSIGNED DEFAULT NULL,
   `transjaction_date` date NOT NULL,
   `narration` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `debit_amount` decimal(8,2) NOT NULL DEFAULT '0.00',
@@ -1400,6 +1391,12 @@ ALTER TABLE `departments`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `discounts`
+--
+ALTER TABLE `discounts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `expences`
 --
 ALTER TABLE `expences`
@@ -1638,7 +1635,7 @@ ALTER TABLE `agencies`
 -- AUTO_INCREMENT for table `airtickets`
 --
 ALTER TABLE `airtickets`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `air_lines`
@@ -1656,13 +1653,13 @@ ALTER TABLE `banks`
 -- AUTO_INCREMENT for table `bank_books`
 --
 ALTER TABLE `bank_books`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `cash_books`
 --
 ALTER TABLE `cash_books`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `cheque_books`
@@ -1674,7 +1671,7 @@ ALTER TABLE `cheque_books`
 -- AUTO_INCREMENT for table `contras`
 --
 ALTER TABLE `contras`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `departments`
@@ -1683,10 +1680,16 @@ ALTER TABLE `departments`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `discounts`
+--
+ALTER TABLE `discounts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `expences`
 --
 ALTER TABLE `expences`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `expence_heads`
@@ -1698,13 +1701,13 @@ ALTER TABLE `expence_heads`
 -- AUTO_INCREMENT for table `follow_u_pto_guests`
 --
 ALTER TABLE `follow_u_pto_guests`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `follow_u_p_to_supliers`
 --
 ALTER TABLE `follow_u_p_to_supliers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `guests`
@@ -1734,19 +1737,19 @@ ALTER TABLE `guest_titles`
 -- AUTO_INCREMENT for table `hotels`
 --
 ALTER TABLE `hotels`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `hotel_bookings`
 --
 ALTER TABLE `hotel_bookings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `incentives`
 --
 ALTER TABLE `incentives`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `installments`
@@ -1764,7 +1767,7 @@ ALTER TABLE `loans`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `money_receiveds`
@@ -1782,19 +1785,19 @@ ALTER TABLE `others`
 -- AUTO_INCREMENT for table `packages`
 --
 ALTER TABLE `packages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `package_days`
 --
 ALTER TABLE `package_days`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `package_net_prices`
 --
 ALTER TABLE `package_net_prices`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `package_supliers`
@@ -1806,13 +1809,13 @@ ALTER TABLE `package_supliers`
 -- AUTO_INCREMENT for table `passports`
 --
 ALTER TABLE `passports`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `paxes`
 --
 ALTER TABLE `paxes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -1824,13 +1827,13 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `profits`
 --
 ALTER TABLE `profits`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `salaries`
 --
 ALTER TABLE `salaries`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -1848,19 +1851,19 @@ ALTER TABLE `staff_designations`
 -- AUTO_INCREMENT for table `sub_airtickets`
 --
 ALTER TABLE `sub_airtickets`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `suplier_transactions`
 --
 ALTER TABLE `suplier_transactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transjactions`
 --
 ALTER TABLE `transjactions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -1896,7 +1899,7 @@ ALTER TABLE `visa_countries`
 -- AUTO_INCREMENT for table `visa_updateds`
 --
 ALTER TABLE `visa_updateds`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
