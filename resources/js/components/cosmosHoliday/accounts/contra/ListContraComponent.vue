@@ -70,9 +70,9 @@
                                                 <button class="btn btn-xs btn-success">
                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                 </button>
-<!--                                                <router-link :to="`/edit-contra/${contra.id}`" class="btn btn-xs btn-info">-->
-<!--                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>-->
-<!--                                                </router-link>-->
+                                                <router-link :to="`/edit-contra/${contra.id}`" class="btn btn-xs btn-info">
+                                                    <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </router-link>
 
                                                 <!--                                                <button @click.prevent="deleteGuestTitle(received.id)" class="btn btn-xs btn-danger">-->
                                                 <!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
