@@ -122,44 +122,40 @@ class IncentiveController extends Controller
     }
 
     protected function updateCash($request, $incentive){
-        $cash_books = CashBook::where('incentive_id', $request->id)->get();
-        foreach ($cash_books as $cash_book){
-            $cash_book->incentive_id = null;
-            $cash_book->narration = 'update incentive to debit (1st)';
-            $cash_book->update();
-            $pre_cash_book = CashBook::orderBy('id', 'desc')->select('credit_cash_amount', 'blance')->first();
-            $update_cash_book = new CashBook();
-            $update_cash_book->cash_date = $incentive->created_at->format('Y-m-d');
-            $update_cash_book->narration = $cash_book->id.' '. 'Update incentive to debit (2nd)';
-            $update_cash_book->debit_cash_amount = $cash_book->credit_cash_amount;
-            $update_cash_book->blance = $pre_cash_book->blance + $cash_book->credit_cash_amount;
-            $update_cash_book->save();
+        $cash_book = CashBook::where('incentive_id', $request->id)->first();
+        if($cash_book != null){
+            $next_cash_books = CashBook::where('id', '>', $cash_book->id)->get();
+            foreach ($next_cash_books as $next_cash_book){
+                if($cash_book->credit_cash_amount > 0){
+                    $next_cash_book->blance += $cash_book->credit_cash_amount;
+                }
+                $next_cash_book->update();
+            }
+            $cash_book->delete();
         }
     }
 
     protected function updateCheque($request){
         $bank_books = BankBook::where('incentive_id', $request->id)->get();
         foreach ($bank_books as $bank_book){
-            $bank_book->incentive_id = null;
-            $bank_book->narration = 'Update incentive to debit (1st)';
-            $bank_book->update();
-            $bank_blance = BankBook::orderBy('id', 'desc')->where('bank_name', $bank_book->bank_name)->first();
-            $pre_bank_book = BankBook::orderBy('id', 'desc')->select('credit_bank_amount', 'blance')->first();
-            $update_bank_book = new BankBook();
-            $update_bank_book->bank_name = $bank_book->bank_name;
-            $update_bank_book->bank_date = $bank_book->bank_date;
-            $update_bank_book->bank_cheque_number = $bank_book->bank_cheque_number;
-            $update_bank_book->narration = $bank_book->id.' '.'Udate incentive to debit (2nd)';
-            $update_bank_book->debit_bank_amount = $bank_book->credit_bank_amount;
-            $update_bank_book->blance = $pre_bank_book->blance + $bank_book->credit_bank_amount;
-            $update_bank_book->bank_blance = $bank_blance->bank_blance + $bank_book->credit_bank_amount;
-            $update_bank_book->save();
+            $next_bank_books = BankBook::where('id', '>', $bank_book->id)->get();
+            foreach ($next_bank_books as $next_bank_book){
+                if($bank_book->credit_bank_amount > 0){
+                    $next_bank_book->blance += $bank_book->credit_bank_amount;
+                    if($next_bank_book->bank_name == $bank_book->bank_name){
+                        $next_bank_book->bank_blance += $bank_book->credit_bank_amount;
+                    }
+                }
+                $next_bank_book->update();
+            }
+            $bank_book->delete();
         }
     }
     public function updateIncentive(Request $request){
         $this->incentiveValidation($request);
         $incentive = Incentive::where('id', $request->id)->first();
         $this->incentiveBasic($incentive, $request);
+        $incentive->update();
         $this->updateCash($request, $incentive);
         $this->updateCheque($request);
         $this->incentiveCash($incentive, $request);
