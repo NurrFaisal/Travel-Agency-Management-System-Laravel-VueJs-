@@ -6,10 +6,12 @@ use App\Airticket;
 use App\model\HotelBooking;
 use App\model\MoneyReceived;
 use App\model\Package;
+use App\model\Payment;
 use App\model\VisaUpdated;
 use PDF;
 use Illuminate\Http\Request;
 use Session;
+use function foo\func;
 
 
 class PrintController extends Controller
@@ -141,6 +143,41 @@ class PrintController extends Controller
         ])->setPaper('a4');
         return $pdf->stream('MoneyReceipt.pdf');
 
+    }
+
+    public function invoicePrintDebitVoucher($id){
+        $debit_voucher = Payment::with(['cheques' => function($q){$q->select('id', 'payment_id', 'credit_bank_amount');},'cashs' =>function($q){$q->select('id', 'payment_id', 'credit_cash_amount');},'supliert' => function($q){$q->select('id','name');}])->where('id', $id)->first();
+        $cash_amount = 0;
+        $bank_amount = 0;
+        foreach ($debit_voucher->cashs as $cash){
+            $cash_amount += $cash->credit_cash_amount;
+        }
+        foreach ($debit_voucher->cheques as $bank){
+            $bank_amount += $bank->credit_bank_amount;
+        }
+        $total_price = $this->convert_number_to_words($debit_voucher->total_payment_amount);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
+//        return view('cosmosHoliday.page.invoiceDebitVoucher', [
+//            'debit_voucher' => $debit_voucher,
+//            'cash_amount' => $cash_amount,
+//            'bank_amount' => $bank_amount,
+//            'clear_total_price' => $clear_total_price
+//        ]);
+        $pdf = PDF::loadView('cosmosHoliday.page.invoiceDebitVoucher',[
+            'debit_voucher' => $debit_voucher,
+            'cash_amount' => $cash_amount,
+            'bank_amount' => $bank_amount,
+            'clear_total_price' => $clear_total_price
+        ])->setPaper('a4');
+        return $pdf->stream('debit_voucher.pdf');
+    }
+
+    public function invoicePrintContraVoucher($id){
+
+//        return view('cosmosHoliday.page.invoiceContraVoucher');
+        $pdf = PDF::loadView('cosmosHoliday.page.invoiceContraVoucher')->setPaper('a4');
+        return $pdf->stream('contra_voucher.pdf');
     }
 
 

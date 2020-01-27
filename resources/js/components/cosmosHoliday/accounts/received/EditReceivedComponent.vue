@@ -358,7 +358,7 @@
                                                                 Discount <span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input @keyup="sumPrice()" v-model="form.discount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('discount') }"   class="col-xs-12 col-sm-12" id="discount" name="due_amount" placeholder="Enter Discount Amount" required="" type="number">
+                                                                <input @keyup="sumPrice()" v-model="form.discount"   :class="{ 'is-invalid': form.errors.has('discount') }"   class="col-xs-12 col-sm-12" id="discount" name="due_amount" placeholder="Enter Discount Amount"  type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">

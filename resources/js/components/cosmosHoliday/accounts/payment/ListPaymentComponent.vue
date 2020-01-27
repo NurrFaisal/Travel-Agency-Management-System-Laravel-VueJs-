@@ -60,7 +60,7 @@
                                         <td class="center">{{index+1}}</td>
                                         <td>{{payment.debit_voucher_date | timeformate}}</td>
                                         <td>{{payment.supliert.name}}</td>
-                                        <td>{{payment.narration}}</td>
+                                        <td>{{payment.narration.substring(0,25)+"...."}}</td>
                                         <td>{{payment.received_by}}</td>
                                         <td>{{payment.paid_by}}</td>
                                         <td>{{payment.approved_by}}</td>
