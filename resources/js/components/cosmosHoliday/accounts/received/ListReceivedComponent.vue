@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -76,9 +84,9 @@
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-<!--                                                <button @click.prevent="deleteGuestTitle(received.id)" class="btn btn-xs btn-danger">-->
-<!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
-<!--                                                </button>-->
+                                                <a @click.prevent="downLoadInvoice(received.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
+                                                    Receipt
+                                                </a>
 
                                             </div>
                                         </td>
@@ -105,13 +113,28 @@
 </template>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "ListReceivedComponent",
         mounted() {
+            this.isLoading = true
             this.getReceived()
+        },
+        components: {
+            Loading
         },
         data(){
             return {
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
                 pagination:{
                     current_page: 1,
                 },
@@ -124,8 +147,24 @@
                     .then(response => {
                         this.receiveds = response.data.receiveds.data
                         this.pagination = response.data.receiveds
+                        this.doAjax();
                     })
             },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
+            onCancel() {
+                console.log('User cancelled the loader.')
+            },
+            downLoadInvoice(id){
+                this.isLoading = true
+                axios.get('/invoice-print-money-receipt/'+id)
+                    .then(responese => {
+                        this.doAjax()
+                    })
+            }
         }
     }
 </script>

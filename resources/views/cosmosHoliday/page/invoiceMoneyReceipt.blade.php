@@ -49,15 +49,16 @@
                     <font size="2" face="Courier New" >
                         <div class="row" style="margin: 0px 5px">
 
-                            <div class="col-xs-4 col-md-4" style="float: left">MR Number : M-{{$money_receipt->id}}</div>
-
-                            <div class="col-xs-4 col-md-4" style="text-align: center; float: right" >Date : {{$money_receipt->created_at->format('d-m-Y')}}</div>
+                            <div class="col-xs-4 col-md-4" style="float: left">Money Receipt Number : M-{{$money_receipt->id}}</div>
+                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Date : {{$money_receipt->created_at->format('d-m-Y')}}</div>
                         </div>
                     </font>
                 </div>
             </div>
+            <div class="row" style="margin: 0px 5px">
+                <h4 style="text-align: center;">Customer Copy</h4>
+            </div>
             <div class="row">
-                <br/>
                 <div class="col-xs-12 col-md-12 table-responsive">
                     <font size="1" face="Courier New" >
                     <table class="table table-bordered">
@@ -128,16 +129,17 @@
                     <font size="2" face="Courier New" >
                         <div class="row" style="margin: 0px 5px">
 
-                            <div class="col-xs-4 col-md-4" style="float: left">MR Number : M-{{$money_receipt->id}}</div>
-
-                            <div class="col-xs-4 col-md-4" style="text-align: center; float: right" >Date : {{$money_receipt->created_at->format('d-m-Y')}}</div>
+                            <div class="col-xs-4 col-md-4" style="float: left">Money Receipt Number : M-{{$money_receipt->id}}</div>
+                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Date : {{$money_receipt->created_at->format('d-m-Y')}}</div>
                         </div>
                     </font>
                 </div>
             </div>
+            <div class="row" style="margin: 0px 5px">
+                <h4 style="text-align: center;">Accounts Copy</h4>
+            </div>
             <div class="row">
                 <div class="col-xs-12 col-md-12 table-responsive">
-                    <br>
                     <font size="1" face="Courier New" >
                         <table class="table table-bordered">
                             <tbody>
