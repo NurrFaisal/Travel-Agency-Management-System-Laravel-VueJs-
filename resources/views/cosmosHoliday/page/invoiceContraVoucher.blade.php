@@ -54,8 +54,8 @@
                     <font size="2" face="Courier New" >
                         <div class="row" style="margin: 0px 5px">
 
-                            <div class="col-xs-4 col-md-4" style="float: left">Contra Voucher Number : C - 1</div>
-                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Date : 27-01-2020</div>
+                            <div class="col-xs-4 col-md-4" style="float: left">Contra Voucher Number : C - {{$contra->id}}</div>
+                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Date : {{$contra->created_at->format('d-m-Y')}}</div>
                         </div>
                     </font>
                 </div>
@@ -67,7 +67,17 @@
                     <table class="table table-bordered">
                         <tbody>
                         <tr>
-                            <td colspan="3" height="5"   style="padding: 4px">Contra Type : Bank To Bank</td>
+                            <td height="5"   style="padding: 4px">Contra Date : {{date('d-m-Y', strtotime($contra->contra_date))}}</td>
+                            <td height="5"   style="padding: 4px ; border-top-color: white;"></td>
+                            <td height="5"   style="padding: 4px">Contra Type :
+                                @if($contra->contra_type == 1)
+                                    Cash To Bank
+                                @elseif($contra->contra_type == 2)
+                                    Bank To Cash
+                                @else
+                                    Bank To Bank
+                                @endif
+                            </td>
                         </tr>
 
                         <tr>
@@ -76,15 +86,34 @@
                             <th  height="5" width="33%" style="text-align: center; padding: 4px">Amount</th>
                         </tr>
                         <tr >
-                            <td  height="5"  style="text-align:center; padding: 4px">DBBL</td>
-                            <td  height="5"  style="text-align:center; padding: 4px">City Bank</td>
-                            <td  height="5"  style="text-align:right; padding: 4px">10000.00</td>
+                            <td  height="5"  style="text-align:center; padding: 4px">
+                                @if($contra->contra_type == 1)
+                                    Cash
+                                @elseif($contra->contra_type == 2)
+                                     {{$contra->bank->bank_name}}
+                                @else
+                                     {{$contra->from_bank->bank_name}}
+                                @endif
+
+
+
+                            </td>
+                            <td  height="5"  style="text-align:center; padding: 4px">
+                                @if($contra->contra_type == 1)
+                                    {{$contra->bank->bank_name}}
+                                @elseif($contra->contra_type == 2)
+                                       Cash
+                                @else
+                                    {{$contra->to_bank->bank_name}}
+                                @endif
+                            </td>
+                            <td  height="5"  style="text-align:center; padding: 4px">{{$contra->contra_amount}}</td>
                         </tr>
                         <tr >
-                            <td colspan="3" height="5" style="padding: 4px">Narration : </td>
+                            <td colspan="3" height="5" style="padding: 4px">Narration : {{$contra->narration}}</td>
                         </tr>
                         <tr >
-                            <td colspan="3" height="5" style="padding: 4px">BDT (in words) : taka only</td>
+                            <td colspan="3" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} taka only</td>
                         </tr>
 
                         </tbody>

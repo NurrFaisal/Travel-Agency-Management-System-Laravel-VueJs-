@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Airticket;
+use App\model\Contra;
+use App\model\Expence;
 use App\model\HotelBooking;
 use App\model\MoneyReceived;
 use App\model\Package;
@@ -174,10 +176,23 @@ class PrintController extends Controller
     }
 
     public function invoicePrintContraVoucher($id){
-
-//        return view('cosmosHoliday.page.invoiceContraVoucher');
-        $pdf = PDF::loadView('cosmosHoliday.page.invoiceContraVoucher')->setPaper('a4');
+        $contra = Contra::with(['bank', 'from_bank', 'to_bank'])->where('id', $id)->first();
+        $total_price = $this->convert_number_to_words($contra->contra_amount);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
+//        return view('cosmosHoliday.page.invoiceContraVoucher',[
+//            'contra' => $contra,
+//            'clear_total_price' => $clear_total_price
+//        ]);
+        $pdf = PDF::loadView('cosmosHoliday.page.invoiceContraVoucher', [
+            'contra' => $contra,
+            'clear_total_price' => $clear_total_price
+        ])->setPaper('a4');
         return $pdf->stream('contra_voucher.pdf');
+    }
+
+    public function invoicePrintExpense($id){
+        $expense = Expence::where('id', 'id')->first();
     }
 
 
