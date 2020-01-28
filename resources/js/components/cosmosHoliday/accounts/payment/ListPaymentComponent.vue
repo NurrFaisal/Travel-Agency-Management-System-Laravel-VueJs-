@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -75,6 +83,9 @@
                                                 <router-link :to="`/edit-payment/${payment.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
+                                                <a @click.prevent="downLoadInvoice(payment.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
+                                                    Voucher
+                                                </a>
 
                                                 <!--                                                <button @click.prevent="deleteGuestTitle(received.id)" class="btn btn-xs btn-danger">-->
                                                 <!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
@@ -105,13 +116,27 @@
 </template>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "ListPaymentComponent",
         mounted() {
+            this.isLoading = true
             this.getPayment()
+        },
+        components: {
+            Loading
         },
         data(){
             return {
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
                 pagination:{
                     current_page: 1,
                 },
@@ -124,8 +149,24 @@
                     .then(response => {
                         this.payments = response.data.payments.data
                         this.pagination = response.data.payments
+                        this.doAjax();
                     })
             },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
+            onCancel() {
+                console.log('User cancelled the loader.')
+            },
+            downLoadInvoice(id){
+                this.isLoading = true
+                axios.get('/invoice-print-debit-voucher/'+id)
+                    .then(responese => {
+                        this.doAjax()
+                    })
+            }
         }
     }
 </script>

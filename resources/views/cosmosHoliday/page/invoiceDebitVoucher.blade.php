@@ -69,17 +69,17 @@
 
                         <tr >
                             <th rowspan="3" height="5" width="70%"  style="padding: 4px; text-align: justify">Note : {{$debit_voucher->narration}}</th>
-                            <th  height="5" width="10%" style="padding: 4px">Cash</th>
-                            <th  height="5" width="10%" style="padding: 4px">Bank</th>
-                            <th  height="5" width="10%" style="padding: 4px">Total</th>
+                            <th  height="5" width="10%" style="padding: 4px; text-align: center">Cash</th>
+                            <th  height="5" width="10%" style="padding: 4px; text-align: center">Bank</th>
+                            <th  height="5" width="10%" style="padding: 4px; text-align: center">Total</th>
                         </tr>
                         <tr >
-                            <td  height="5" width="10%" style="text-align:right; padding: 4px">{{$cash_amount}}</td>
-                            <td  height="5" width="10%"  style="text-align:right; padding: 4px">{{$bank_amount}}</td>
+                            <td  height="5" width="10%" style="text-align:right; padding: 4px">{{$cash_amount}}.00</td>
+                            <td  height="5" width="10%"  style="text-align:right; padding: 4px">{{$bank_amount}}.00</td>
                             <td  height="5" width="10%" style="text-align:right; padding: 4px">{{$debit_voucher->total_payment_amount}}</td>
                         </tr>
                         <tr >
-                            <td colspan="3"  height="5"  style="padding: 4px">Grand Total : <span style="float: right"><strong>{{$debit_voucher->total_payment_amount}}</strong></span></td>
+                            <td colspan="3"  height="5"  style="padding: 4px"><strong>Grand Total :</strong> <span style="float: right"><strong>{{$debit_voucher->total_payment_amount}}</strong></span></td>
                         </tr>
                         <tr >
                             <td colspan="4" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} taka only</td>
