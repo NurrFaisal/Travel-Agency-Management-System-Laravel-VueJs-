@@ -291,6 +291,64 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="form-group ">
+                                                    <div class="col-md-3">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="received_by">
+                                                                Received By <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input v-model="form.received_by" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('received_by') }"   class="col-xs-12 col-sm-12" id="received_by" name="received_by" placeholder="Enter Received By Name" required="" type="text">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="received_by"></has-error>
+                                                            <span style="color: red">{{ errors.first('received_by') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="prepared_by">
+                                                                Prepared By <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input v-model="form.prepared_by" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('prepared_by') }"   class="col-xs-12 col-sm-12" id="prepared_by" name="prepared_by" placeholder="Enter Prepared By Name" required="" type="text">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="prepared_by"></has-error>
+                                                            <span style="color: red">{{ errors.first('prepared_by') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="paid_by">
+                                                                Paid By <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input v-model="form.paid_by" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('paid_by') }"   class="col-xs-12 col-sm-12" id="paid_by" name="paid_by" placeholder="Enter Paid By Name" required="" type="text">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="paid_by"></has-error>
+                                                            <span style="color: red">{{ errors.first('paid_by') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="approved_by">
+                                                                Approved By <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input v-model="form.approved_by" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('approved_by') }"   class="col-xs-12 col-sm-12" id="approved_by" name="approved_by" placeholder="Enter Approved By Name" required="" type="text">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="approved_by"></has-error>
+                                                            <span style="color: red">{{ errors.first('approved_by') }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="clearfix form-actions">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
@@ -344,7 +402,12 @@
                     from_bank_name:'',
                     to_bank_name:'',
                     contra_amount:'',
-                    narration: ''
+                    narration: '',
+
+                    received_by:'',
+                    prepared_by:'',
+                    paid_by:'',
+                    approved_by:'',
 
                 })
             }
@@ -358,6 +421,10 @@
                         this.form.bank_name = ''
                         this.form.contra_amount = ''
                         this.form.narration = ''
+                        this.form.received_by = ''
+                        this.form.prepared_by = ''
+                        this.form.paid_by = ''
+                        this.form.approved_by = ''
 
                         this.$router.push('/contra-list')
                         Toast.fire({
