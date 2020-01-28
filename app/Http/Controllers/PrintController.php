@@ -192,7 +192,31 @@ class PrintController extends Controller
     }
 
     public function invoicePrintExpense($id){
-        $expense = Expence::where('id', 'id')->first();
+        $expense = Expence::with(['expenceHeadt', 'cashs' =>function($q){$q->select('id', 'expence_id', 'credit_cash_amount');}, 'cheques' => function($q){$q->select('id', 'expence_id', 'credit_bank_amount');}])->where('id', $id)->first();
+        $cash_amount = 0;
+        $bank_amount = 0;
+        foreach ($expense->cashs as $cash){
+            $cash_amount += $cash->credit_cash_amount;
+        }
+        foreach ($expense->cheques as $bank){
+            $bank_amount += $bank->credit_bank_amount;
+        }
+        $total_price = $this->convert_number_to_words($expense->total_expence_amount);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
+//        return view('cosmosHoliday.page.invoiceExpense', [
+//            'expense' => $expense,
+//            'cash_amount' => $cash_amount,
+//            'bank_amount' => $bank_amount,
+//            'clear_total_price' => $clear_total_price
+//        ]);
+            $pdf = PDF::loadView('cosmosHoliday.page.invoiceExpense',[
+                'expense' => $expense,
+                'cash_amount' => $cash_amount,
+                'bank_amount' => $bank_amount,
+                'clear_total_price' => $clear_total_price
+            ])->setPaper('a4');
+        return $pdf->stream('expense_voucher.pdf');
     }
 
 
