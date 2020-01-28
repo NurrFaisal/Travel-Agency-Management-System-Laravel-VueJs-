@@ -22,6 +22,11 @@ class CreateContrasTable extends Migration
             $table->tinyInteger('to_bank_name')->nullable();
             $table->tinyInteger('bank_name')->nullable();
             $table->text('narration');
+
+            $table->string('received_by');
+            $table->string('prepared_by');
+            $table->string('paid_by');
+            $table->string('approved_by');
             $table->timestamps();
         });
     }
