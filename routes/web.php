@@ -464,6 +464,8 @@ Route::get('/api/get-all-received', 'ReceivedController@getAllReceived');
 Route::get('/api/edit-received/{id}', 'ReceivedController@editReceived');
 Route::post('/api/update-received', 'ReceivedController@updateReceived');
 
+Route::get('/api/get-guest-last-balance/{id}', 'ReceivedController@getGuestLastBalance');
+
 // ReceivedController End
 
 

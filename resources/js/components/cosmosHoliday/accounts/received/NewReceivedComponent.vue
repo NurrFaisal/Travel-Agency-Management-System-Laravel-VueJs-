@@ -145,12 +145,12 @@
                                                                    Cash Amount<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <input @keyup="sumPrice()" v-model="form.cashs[0].debit_cash_amount" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('debit_cash_amount') }"   class="col-xs-12 col-sm-12" id="debit_cash_amount" name="debit_cash_amount" placeholder="Enter Cash Payment Amount" required="" type="number">
+                                                                <input @keyup="sumPrice()" v-model="form.cashs[0].debit_cash_amount" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('debit_cash_amount') }"   class="col-xs-12 col-sm-12" id="debit_cash_amount" name="debit_cash_amount" placeholder="Enter Cash Payment Amount"  type="number">
                                                             </span>
                                                             </div>
                                                             <div class="col-xs-offset-2 col-xs-9 text-danger">
-                                                                <has-error style="color:red" :form="form" field="debit_cash_amount"></has-error>
-                                                                <span style="color: red">{{ errors.first('debit_cash_amount') }}</span>
+                                                                <has-error style="color:red" :form="form" field="cashs.0.debit_cash_amount"></has-error>
+                                                                <span style="color: red">{{ errors.first('cashs.0.debit_cash_amount') }}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -167,7 +167,7 @@
                                                                     Bank Name<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                               <select v-validate="'required'" v-model="bank.bank_name" :class="{ 'is-invalid': form.errors.has('bank_name') }"  id="bank_name" name="bank_name" class="col-xs-12 col-sm-12" >
+                                                               <select v-validate="'required'" v-model="bank.bank_name" :class="{ 'is-invalid': form.errors.has('bank_name') }" required  id="bank_name" name="bank_name" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Bank--</option>
                                                                     <option :value="bank.id" v-for="bank in get_all_banks " >{{bank.bank_name}}</option>
                                                                 </select>
@@ -254,7 +254,7 @@
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
 
-                                                                    <select v-validate="'required'" v-model="cheque.cheque_type" :class="{ 'is-invalid': form.errors.has('cheque_type') }"  id="cheque_type" name="cheque_type" class="col-xs-12 col-sm-12" >
+                                                                    <select v-validate="'required'" v-model="cheque.cheque_type" :class="{ 'is-invalid': form.errors.has('cheque_type') }" required id="cheque_type" name="cheque_type" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Cheque Type--</option>
                                                                     <option value="1"  >Cash Cheque</option>
                                                                     <option value="2"  >Account Payee Cheque</option>
@@ -346,7 +346,7 @@
                                                                 Total Received Amount<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input disabled v-model="form.total_received_amount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('total_received_amount') }"   class="col-xs-12 col-sm-12" id="total_received_amount" name="total_received_amount" placeholder="Enter Total Received Amount" required="" type="number">
+                                                                <input disabled v-model="form.total_received_amount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('total_received_amount') }"   class="col-xs-12 col-sm-12" id="total_received_amount" name="total_received_amount" placeholder="Enter Total Received Amount" required type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -488,7 +488,7 @@
 
                     cashs:[
                         {
-                            debit_cash_amount:0,
+                            debit_cash_amount:'',
                         }
                     ],
 
@@ -496,7 +496,7 @@
                         {
                             bank_name:'',
                             bank_date:'',
-                            debit_bank_amount:0,
+                            debit_bank_amount:'',
                         }
                     ],
                     cheques:[
@@ -504,7 +504,7 @@
                             cheque_bank_name:'',
                             cheque_type:'',
                             cheque_number:'',
-                            cheque_amount:0,
+                            cheque_amount:'',
                             cheque_date:'',
                         }
                     ],
@@ -521,7 +521,7 @@
             cashMark(){
                     this.form.cashs = [
                         {
-                            debit_cash_amount:0
+                            debit_cash_amount:''
                         }
                     ]
                 this.sumPrice()
@@ -531,7 +531,7 @@
                         {
                             bank_name:'',
                             bank_date:'',
-                            debit_bank_amount:0,
+                            debit_bank_amount:'',
                         }
                     ]
                 this.sumPrice()
@@ -540,7 +540,7 @@
                     this.form.others = [
                         {
                             others_name:'',
-                            others_amount:0,
+                            others_amount:'',
                         }
                     ]
                 this.sumPrice()
@@ -552,7 +552,7 @@
                             cheque_date:'',
                             cheque_type:'',
                             cheque_number:'',
-                            cheque_amount:0,
+                            cheque_amount:'',
                         }
                     ]
                 this.sumPrice()
@@ -564,7 +564,7 @@
                     this.form.banks.push({
                         bank_name:'',
                         bank_date:'',
-                        debit_bank_amount:0,
+                        debit_bank_amount:'',
                     })
                 }else{
                     // $('.btnAddNew').hide()
@@ -583,7 +583,7 @@
                         cheque_date:'',
                         cheque_type:'',
                         cheque_number:'',
-                        cheque_amount:0,
+                        cheque_amount:'',
                     })
                 }else{
                     // $('.btnAddNew').hide()
@@ -599,7 +599,7 @@
                 if(this.form.others.length <= 4){
                     this.form.others.push({
                         others_name:'',
-                        others_amount:0,
+                        others_amount:'',
                     })
                 }else{
                     // $('.btnAddNew').hide()
@@ -639,14 +639,14 @@
                         this.form.narration = ''
                         this.form.cashs = [
                             {
-                                debit_cash_amount:0
+                                debit_cash_amount:''
                             }
                         ]
                         this.form.banks = [
                             {
                                 bank_name:'',
                                 bank_date:'',
-                                debit_bank_amount:0,
+                                debit_bank_amount:'',
                             }
                         ],
                         this.form.cheques = [
@@ -655,13 +655,13 @@
                                 cheque_date:'',
                                 cheque_type:'',
                                 cheque_number:'',
-                                cheque_amount:0,
+                                cheque_amount:'',
                             }
                         ]
                         this.form.others = [
                             {
                                 others_name:'',
-                                others_amount:0,
+                                others_amount:'',
                             }
                         ]
 
@@ -707,6 +707,20 @@
 
             customerSelected(customer){
                 this.form.guest = customer.id;
+                this.getGeustLastBalance(customer.id)
+            },
+            getGeustLastBalance(id){
+                axios.get('/api/get-guest-last-balance/'+id)
+                    .then(response => {
+                        let guest_blance = response.data.transaction.guest_blance
+                        if(this.guest_blance == null){
+                            this.guest_blance = ''
+                        }
+                        this.form.bill_amount = guest_blance
+                    })
+                    .catch((response) => {
+                        this.form.bill_amount = ''
+                    })
             },
 
             // onchange(query){

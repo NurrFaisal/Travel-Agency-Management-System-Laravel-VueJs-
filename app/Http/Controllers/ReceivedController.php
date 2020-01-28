@@ -22,7 +22,6 @@ class ReceivedController extends Controller
             'bill_amount' => 'required',
             // array validation defined in down
             'total_received_amount' =>'required',
-            'due_amount' =>'required',
             'narration' =>'required',
         ]);
     }
@@ -149,6 +148,39 @@ class ReceivedController extends Controller
     }
     public function addReceived(Request $request){
         $this->receivedValidation($request);
+        if($request->cash == 1){
+            $request->validate([
+                'cash' => 'required|numeric',
+                'cashs.*.debit_cash_amount' => 'required|numeric',
+            ]);
+        }elseif($request->bank == 1) {
+            $request->validate([
+                'bank' => 'required',
+                'banks.*.bank_name' => 'required|numeric',
+                'banks.*.bank_date' => 'required|date',
+                'banks.*.debit_bank_amount' => 'required|numeric',
+            ]);
+        }elseif($request->cheque == 1) {
+            $request->validate([
+                'cheque' => 'required',
+                'cheques.*.cheque_bank_name' => 'required',
+                'cheques.*.cheque_type' => 'required|numeric',
+                'cheques.*.cheque_number' => 'required|numeric',
+                'cheques.*.cheque_amount' => 'required|numeric',
+                'cheques.*.cheque_date' => 'required',
+            ]);
+        }elseif($request->other == 1) {
+            $request->validate([
+                'other' => 'required',
+                'others.*.others_name' => 'required',
+                'others.*.others_amount' => 'required',
+            ]);
+        }else{
+            $request->validate([
+                'cash' => 'required|numeric',
+                'cashs.*.debit_cash_amount' => 'required|numeric',
+            ]);
+        }
         $received = new MoneyReceived();
         $this->receivedBasic($received, $request);
         $received->save();
@@ -440,4 +472,15 @@ class ReceivedController extends Controller
             }
         }
     }
+
+
+
+    public function getGuestLastBalance($id){
+        $transaction = Transjaction::orderBy('id', 'desc')->where('guest_id', $id)->select('id', 'guest_id', 'guest_blance')->first();
+        return response()->json([
+            'transaction' => $transaction
+        ]);
+    }
+
+
 }
