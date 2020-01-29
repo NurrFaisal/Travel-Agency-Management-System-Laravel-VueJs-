@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class BankBookController extends Controller
 {
     public function getAllBankBook(){
-        $bank_books = BankBook::orderBy('id')->paginate(10);
+        $bank_books = BankBook::orderBy('bank_date')->paginate(10);
         return response()->json([
             'bank_books' => $bank_books
         ]);

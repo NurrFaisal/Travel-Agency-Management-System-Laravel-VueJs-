@@ -48,7 +48,7 @@ class GuestController extends Controller
     }
 
     public function getAllGuest(){
-        $guests = Guest::with(['transjactions'=>function($q){$q->select('guest_id', 'guest_blance')->orderBy('id', 'desc')->first();}])->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'status')->paginate(10);
+        $guests = Guest::with(['transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'status')->paginate(10);
         return response()->json([
             'guests' => $guests
         ]);

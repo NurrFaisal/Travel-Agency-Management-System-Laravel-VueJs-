@@ -54,7 +54,7 @@
 
                                     <tbody>
                                     <tr v-for="(bank_book, index) in  bank_books">
-                                        <td>{{bank_book.created_at | timeformate}}</td>
+                                        <td>{{bank_book.bank_date | timeformate}}</td>
                                         <td v-if="bank_book.received_id != null"> M-{{bank_book.received_id}}</td>
                                         <td v-else-if="bank_book.payment_id != null"> DV-{{bank_book.payment_id}}</td>
                                         <td v-else> Updated</td>
