@@ -300,7 +300,6 @@ class ReceivedController extends Controller
         $received->save();
         $this->saveallbooks($request, $received);
         $this->saveReceivedTransaction($request, $received);
-
         // Discount Start
         if($request->discount > 0){
             $this->saveRecivedDiscount($request, $received);
@@ -324,227 +323,153 @@ class ReceivedController extends Controller
             'received' => $received
         ]);
     }
-
-    public function updateReceived(Request $request){
-        $this->receivedValidation($request);
-        if($request->cash == 1){
-            $request->validate([
-                'cash' => 'required|numeric',
-                'cashs.*.debit_cash_amount' => 'required|numeric',
-            ]);
-        }elseif($request->bank == 1) {
-            $request->validate([
-                'bank' => 'required',
-                'banks.*.bank_name' => 'required|numeric',
-                'banks.*.bank_date' => 'required|date',
-                'banks.*.debit_bank_amount' => 'required|numeric',
-            ]);
-        }elseif($request->cheque == 1) {
-            $request->validate([
-                'cheque' => 'required',
-                'cheques.*.cheque_bank_name' => 'required',
-                'cheques.*.cheque_type' => 'required|numeric',
-                'cheques.*.cheque_number' => 'required|numeric',
-                'cheques.*.cheque_amount' => 'required|numeric',
-                'cheques.*.cheque_date' => 'required',
-            ]);
-        }elseif($request->other == 1) {
-            $request->validate([
-                'other' => 'required',
-                'others.*.others_name' => 'required',
-                'others.*.others_amount' => 'required',
-            ]);
+    public function updateCashBook($request, $received){
+        $cash_book = CashBook::where('received_id', $received->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance', 'narration')->first();
+        if($cash_book != null){
+            $increment = $request->cashs[0]['debit_cash_amount'] - $cash_book->debit_cash_amount;
+            $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
+            $cash_book->blance += $increment;
+            $cash_book->narration = $received->narration;
+            $cash_book->update();
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            foreach ($next_same_date_cashs as $next_same_date_cash){
+                $next_same_date_cash->blance += $increment;
+                $next_same_date_cash->update();
+            }
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
+            foreach ($next_date_cashs as $next_date_cash){
+                $next_date_cash->blance +=$increment;
+                $next_date_cash->update();
+            }
         }else{
-            $request->validate([
-                'cash' => 'required|numeric',
-                'cashs.*.debit_cash_amount' => 'required|numeric',
-            ]);
+            if($request->cash == 1){
+                $this->cashBookFunction($request, $received);
+            }
         }
-        $received = MoneyReceived::where('id', $request->id)->first();
-        $this->receivedBasic($received, $request);
-
-       // Cash Book Start
-       $cash_book = CashBook::where('received_id', $received->id)->first();
-       $increment_balance = $request->cashs[0]['debit_cash_amount'] - $cash_book->debit_cash_amount;
-       $cash_book->narration = $request->narration;
-       $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
-       $cash_book->blance = $cash_book->blance + $increment_balance;
-       $cash_book->update();
-       $cash_book_blances = CashBook::where('id', '>', $cash_book->id)->get();
-       foreach ($cash_book_blances as $cash_book_blance){
-           $cash_book_blance->blance += $increment_balance;
-           $cash_book_blance->update();
-       }
-       // Cash Book End
-        // Bank Book Start
-       $bank_books = BankBook::where('received_id', $request->id)->get();
-       foreach ($bank_books as $bank_book){
-           $next_bank_books = BankBook::where('id', '>', $bank_book->id)->get();
-           foreach ($next_bank_books as $next_bank_book){
-               $next_bank_book->blance -= $bank_book->debit_bank_amount;
-               if($next_bank_book->bank_name == $bank_book->bank_name){
-                   $next_bank_book->bank_blance -= $bank_book->debit_bank_amount;
-               }
-               $next_bank_book->update();
-           }
-           $bank_book->delete();
-       }
-        $this->bankBookFunction($request, $received);
-
-       // Bank Book End
-
-        // Cheque Book Start
-       $cheque_books = ChequeBook::where('received_id', $request->id)->get();
+    }
+    protected function updateBankBook($request, $received){
+        $bank_books = BankBook::where('received_id', $received->id)->select('id', 'received_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->get();
+        foreach ($bank_books as $bank_book){
+            $decrement = $bank_book->debit_bank_amount;
+            $next_same_date_banks = BankBook::where('id', '>', $bank_book->id)->select('id', 'received_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->where('bank_date', $bank_book->bank_date)->get();
+            foreach ($next_same_date_banks as $next_same_date_bank){
+                $next_same_date_bank->blance -= $decrement;
+                if($next_same_date_bank->bank_name == $bank_book->bank_name){
+                    $next_same_date_bank->bank_blance -= $decrement;
+                }
+                $next_same_date_bank->update();
+            }
+            $next_date_banks = BankBook::where('bank_date', '>', $bank_book->bank_date)->select('id', 'received_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->get();
+            foreach ($next_date_banks as $next_date_bank){
+                $next_date_bank->blance -= $decrement;
+                if($next_date_bank->bank_name == $bank_book->bank_name){
+                    $next_date_bank->bank_blance -= $decrement;
+                }
+                $next_date_bank->update();
+            }
+            $bank_book->delete();
+        }
+        if($request->bank == 1) {
+            $this->bankBookFunction($request, $received);
+        }
+    }
+    protected function updateChequeBook($request, $received){
+        $cheque_books = ChequeBook::where('received_id', $received->id)->get();
         foreach ($cheque_books as $cheque_book){
             $cheque_book->delete();
         }
-        $this->chequeBookFunction($request, $received);
+        if($request->cheque == 1) {
+            $this->chequeBookFunction($request, $received);
+        }
+    }
+    protected function updateOtherBook($request, $received){
+        $other_books = Other::where('received_id', $received->id)->get();
+        foreach ($other_books as $other_book){
+            $other_book->delete();
+        }
+        if($request->other == 1) {
+            $this->othersBookFunction($request, $received);
+        }
+    }
+    protected function updateReceivedTransaction($request, $received){
+        $transjaction = Transjaction::where('received_id', $received->id)->select('id', 'guest_id', 'staff_id', 'received_id', 'transjaction_date', 'narration', 'credit_amount', 'blance', 'guest_blance', 'staff_blance')->first();
+        $old_amount = $transjaction->credit_amount;
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction){
+            $next_same_date_transaction->blance += $old_amount;
+            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+                $next_same_date_transaction->guest_blance += $old_amount;
+            }
+            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+                $next_same_date_transaction->staff_blance += $old_amount;
+            }
+            $next_same_date_transaction->update();
+        }
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction){
+            $next_date_transaction->blance += $old_amount;
+            if($next_date_transaction->guest_id == $transjaction->guest_id){
+                $next_date_transaction->guest_blance += $old_amount;
+            }
+            if($next_date_transaction->staff_id == $transjaction->staff_id){
+                $next_date_transaction->staff_blance += $old_amount;
+            }
+            $next_date_transaction->update();
+        }
+        $transjaction->delete();
+        $this->saveReceivedTransaction($request, $received);
+    }
+    protected function updateReceivedDiscount($request, $received){
+        $discount = Discount::where('received_id', $received->id)->first();
+        $old_amount = $discount->amount;
+        if ($discount != null){
+            $discount_transaction = Transjaction::where('discount_id', $discount->id)->first();
+            $next_same_date_discount_trans = Transjaction::where('id', '>', $discount_transaction->id)->where('transjaction_date', $discount_transaction->transjaction_date)->get();
+            foreach ($next_same_date_discount_trans as $next_same_date_discount_tran){
+                $next_same_date_discount_tran->blance += $old_amount;
+                if($next_same_date_discount_tran->guest_id == $discount_transaction->guest_id){
+                    $next_same_date_discount_tran->guest_blance += $old_amount;
+                }
+                if ($next_same_date_discount_tran->staff_id == $discount_transaction->staff_id){
+                    $next_same_date_discount_tran->satff_blance += $old_amount;
+                }
+                $next_same_date_discount_tran->update();
+            }
+            $next_date_dis_transactions = Transjaction::where('transjaction_date', '>', $discount_transaction->transaction_date)->get();
+            foreach ($next_date_dis_transactions as $next_date_dis_transaction){
+                $next_date_dis_transaction->blance += $old_amount;
+                if($next_date_dis_transaction->guest_id == $discount_transaction->guest_id){
+                    $next_date_dis_transaction->guest_blance += $old_amount;
+                }
+                if ($next_date_dis_transaction->staff_id == $discount_transaction->staff_id){
+                    $next_date_dis_transaction->staff_blance += $old_amount;
+                }
+                $next_date_dis_transaction->update();
+            }
+            $discount_transaction->delete();
+        }
+        // Discount Start
+        if($request->discount > 0){
+            $this->saveRecivedDiscount($request, $received);
+        }
+        // Discount End
+    }
 
-        // Cheque Book End
-
-        // Others Book Start
-       $others = Other::where('received_id', $request->id)->get();
-       foreach ($others as $other){
-           $other->delete();
-       }
-        $this->othersBookFunction($request, $received);
-       // Others Book End
+    public function updateReceived(Request $request){
+        $this->receivedValidation($request);
+        $this->allValidation($request);
+        $received = MoneyReceived::where('id', $request->id)->first();
+        $this->receivedBasic($received, $request);
         $received->update();
-
-
-        // Transaction Update Start
-        $this->updateTransjactionBlance($request);
-        $this->updateTransactionDiscount($request);
-        // Transaction Update End
-        $discount = Discount::where('money_receipt_id', $received->id)->first();
-        if($discount != null){
-            if($request->discount > 0){
-                $discount->delete();
-                $new_discount = new Discount();
-                $new_discount->guest_id = $request->guest;
-                $new_discount->staff_id = $request->staff;
-                $new_discount->money_receipt_id = $received->id;
-                $new_discount->discount_date = $received->created_at->format('Y-m-d');
-                $new_discount->amount = $request->discount;
-                $new_discount->save();
-            }else{
-                $discount->amount = 0;
-                $discount->update();
-            }
-        }
-
-    }
-    public function updateTransjactionBlance($request){
-        $transjaction = Transjaction::where('received_id', $request->id)->first();
-        $decrement_blance = $request->total_received_amount - $transjaction->credit_amount;
-        $old_transjaction_credit = $transjaction->credit_amount;
-        $old_staff_id = $transjaction->staff_id;
-        $old_guest_id = $transjaction->guest_id;
-
-
-        $transjaction->guest_id = $request->guest;
-        $transjaction->narration = $request->narration;
-        $transjaction->credit_amount = $request->total_received_amount;
-        $transjaction->blance = $transjaction->blance - $decrement_blance;
-        $blance_transjactions = Transjaction::where('id', '>', $transjaction->id)->get();
-        foreach ($blance_transjactions as $blance_transjaction){
-            $blance_transjaction->blance = $blance_transjaction->blance - $decrement_blance;
-            $blance_transjaction->update();
-        }
-        $transjaction->staff_blance = $transjaction->staff_blance - $decrement_blance;
-        $staff_blance_tranjactions = Transjaction::where('id', '>', $transjaction->id)->where('staff_id', $transjaction->staff_id)->get();
-        foreach ($staff_blance_tranjactions as $staff_blance_tranjaction){
-            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance - $decrement_blance;
-            $staff_blance_tranjaction->update();
-        }
-
-        if($old_guest_id == $request->guest){
-            $transjaction->guest_blance = $transjaction->guest_blance - $decrement_blance;
-            $transjaction->update();
-            $guest_blances = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($guest_blances as $guest_blance){
-                $guest_blance->guest_blance = $guest_blance->guest_blance - $decrement_blance;
-                $guest_blance->update();
-            }
-        }else{
-            $pre_guest_transjaction = Transjaction::where('id', '<', $transjaction->id)->where('guest_id', $request->guest)->orderBy('id', 'desc')->first();
-            if($pre_guest_transjaction){
-                $transjaction->guest_blance = $pre_guest_transjaction->guest_blance - $request->total_received_amount;
-            }else{
-                $transjaction->guest_blance = $request->total_received_amount;
-            }
-            $transjaction->update();
-            $next_old_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($next_old_guest_transjactions as $next_old_guest_transjaction){
-                $next_old_guest_transjaction->guest_blance = $next_old_guest_transjaction->guest_blance + $old_transjaction_credit;
-                $next_old_guest_transjaction->update();
-            }
-            $next_new_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $request->guest)->get();
-            foreach ($next_new_guest_transjactions as $next_new_guest_transjaction){
-                $next_new_guest_transjaction->guest_blance = $next_new_guest_transjaction->guest_blance - $request->total_received_amount;
-                $next_new_guest_transjaction->update();
-            }
-        }
+        $this->updateCashBook($request, $received);
+        $this->updateBankBook($request, $received);
+        $this->updateChequeBook($request, $received);
+        $this->updateOtherBook($request, $received);
+        $this->updateReceivedTransaction($request, $received);
+        $this->updateReceivedDiscount($request, $received);
+        return "Success Update";
     }
 
-    protected  function updateTransactionDiscount($request){
-        if($request->discount == ''){
-            $discount = 0;
-        }else{
-            $discount = $request->discount;
-        }
-
-        $transjaction = Transjaction::where('discount_id', $request->id)->first();
-        if($transjaction !=null){
-            $decrement_blance = $discount - $transjaction->credit_amount;
-            $old_transjaction_credit = $transjaction->credit_amount;
-            $old_staff_id = $transjaction->staff_id;
-            $old_guest_id = $transjaction->guest_id;
-        }
-        $transjaction->guest_id = $request->guest;
-        $transjaction->narration = $request->narration;
-        $transjaction->credit_amount = $discount;
-        $transjaction->blance = $transjaction->blance - $decrement_blance;
-        $blance_transjactions = Transjaction::where('id', '>', $transjaction->id)->get();
-        foreach ($blance_transjactions as $blance_transjaction){
-            $blance_transjaction->blance = $blance_transjaction->blance - $decrement_blance;
-            $blance_transjaction->update();
-        }
-        $transjaction->staff_blance = $transjaction->staff_blance - $decrement_blance;
-        $staff_blance_tranjactions = Transjaction::where('id', '>', $transjaction->id)->where('staff_id', $transjaction->staff_id)->get();
-        foreach ($staff_blance_tranjactions as $staff_blance_tranjaction){
-            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance - $decrement_blance;
-            $staff_blance_tranjaction->update();
-        }
-
-        if($old_guest_id == $request->guest){
-            $transjaction->guest_blance = $transjaction->guest_blance - $decrement_blance;
-            $transjaction->update();
-            $guest_blances = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($guest_blances as $guest_blance){
-                $guest_blance->guest_blance = $guest_blance->guest_blance - $decrement_blance;
-                $guest_blance->update();
-            }
-        }else{
-            $pre_guest_transjaction = Transjaction::where('id', '<', $transjaction->id)->where('guest_id', $request->guest)->orderBy('id', 'desc')->first();
-            if($pre_guest_transjaction){
-                $transjaction->guest_blance = $pre_guest_transjaction->guest_blance - $discount;
-            }else{
-                $transjaction->guest_blance = $discount;
-            }
-            $transjaction->update();
-            $next_old_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($next_old_guest_transjactions as $next_old_guest_transjaction){
-                $next_old_guest_transjaction->guest_blance = $next_old_guest_transjaction->guest_blance + $old_transjaction_credit;
-                $next_old_guest_transjaction->update();
-            }
-            $next_new_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $request->guest)->get();
-            foreach ($next_new_guest_transjactions as $next_new_guest_transjaction){
-                $next_new_guest_transjaction->guest_blance = $next_new_guest_transjaction->guest_blance - $discount;
-                $next_new_guest_transjaction->update();
-            }
-        }
-    }
 
 
 
