@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -323,10 +331,17 @@
 </template>
 
 <script>
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "NewContraComponent",
+        components: {Loading},
         mounted(){
+            this.isLoading = true
             this.$store.dispatch('allBanks')
+            this.doAjax()
         },
         computed:{
             get_all_banks(){
@@ -337,6 +352,12 @@
         data(){
 
             return {
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
+
                 form: new Form({
                     contra_type:'1',
                     contra_date:'',
@@ -350,6 +371,7 @@
         },
         methods:{
             addContra(){
+                this.isLoading = true
                 this.form.post('/api/add-contra')
                     .then((response) => {
                         this.form.contra_type = ''
@@ -358,15 +380,19 @@
                         this.form.contra_amount = ''
                         this.form.narration = ''
 
-
+                        this.isLoading = false
                         this.$router.push('/contra-list')
                         Toast.fire({
                             type: 'success',
                             title: 'New Contra Voucher Added successfully'
                         })
                     })
-
-            }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },1000)
+            },
 
         }
     }

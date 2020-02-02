@@ -68,7 +68,10 @@ class ReceivedController extends Controller
         $banks_arry = $request->banks;
         $banks_arry_count = count($banks_arry);
         for ($i = 0; $i < $banks_arry_count; $i++){
-            $bank_blance = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_name',  $banks_arry[$i]['bank_name'] )->first();
+            $bank_blance = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', $banks_arry[$i]['bank_date'])->where('bank_name',  $banks_arry[$i]['bank_name'] )->first();
+            if($bank_blance == null){
+                $bank_blance = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', '<', $banks_arry[$i]['bank_date'])->where('bank_name',  $banks_arry[$i]['bank_name'] )->first();
+            }
             $pre_bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', $banks_arry[$i]['bank_date'])->first();
             if($pre_bank_book == null){
                 $pre_bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', '<', $banks_arry[$i]['bank_date'])->first();
@@ -326,21 +329,18 @@ class ReceivedController extends Controller
     public function updateCashBook($request, $received){
         $cash_book = CashBook::where('received_id', $received->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance', 'narration')->first();
         if($cash_book != null){
-            $increment = $request->cashs[0]['debit_cash_amount'] - $cash_book->debit_cash_amount;
-            $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
-            $cash_book->blance += $increment;
-            $cash_book->narration = $received->narration;
-            $cash_book->update();
+            $old_amount = $cash_book->debit_cash_amount;
             $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_date_cashs as $next_same_date_cash){
-                $next_same_date_cash->blance += $increment;
+                $next_same_date_cash->blance -= $old_amount;
                 $next_same_date_cash->update();
             }
             $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
             foreach ($next_date_cashs as $next_date_cash){
-                $next_date_cash->blance +=$increment;
+                $next_date_cash->blance -=$old_amount;
                 $next_date_cash->update();
             }
+            $cash_book->delete();
         }else{
             if($request->cash == 1){
                 $this->cashBookFunction($request, $received);
@@ -359,7 +359,7 @@ class ReceivedController extends Controller
                 }
                 $next_same_date_bank->update();
             }
-            $next_date_banks = BankBook::where('bank_date', '>', $bank_book->bank_date)->select('id', 'received_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->get();
+            $next_date_banks = BankBook::orderBy('bank_date', 'asc')->where('bank_date', '>', $bank_book->bank_date)->select('id', 'received_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->get();
             foreach ($next_date_banks as $next_date_bank){
                 $next_date_bank->blance -= $decrement;
                 if($next_date_bank->bank_name == $bank_book->bank_name){
@@ -469,10 +469,6 @@ class ReceivedController extends Controller
         $this->updateReceivedDiscount($request, $received);
         return "Success Update";
     }
-
-
-
-
     public function getGuestLastBalance($id){
         $transaction = Transjaction::orderBy('id', 'desc')->where('guest_id', $id)->select('id', 'guest_id', 'guest_blance')->first();
         return response()->json([

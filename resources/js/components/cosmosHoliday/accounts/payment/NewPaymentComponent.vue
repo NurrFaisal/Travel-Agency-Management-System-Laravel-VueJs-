@@ -108,7 +108,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div id="cashDiv" style="background-color: #f6f6f6; padding: 15px; margin: 20px;padding-bottom: 55px; cursor: pointer;">
+                                                <div v-if="form.cash == 1"  style="background-color: #f6f6f6; padding: 15px; margin: 20px;padding-bottom: 55px; cursor: pointer;">
                                                     <h4>Cash Payment Info</h4>
                                                     <div class="form-group ">
                                                         <div class="col-md-12">
@@ -128,7 +128,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="chequeDiv" v-for="(cheque,index) in form.cheques" style="background-color: #f6f6f6; padding: 15px; margin: 20px;padding-bottom: 55px; cursor: pointer;">
+                                                <div v-if="form.cheque == 1"  v-for="(cheque,index) in form.cheques" style="background-color: #f6f6f6; padding: 15px; margin: 20px;padding-bottom: 55px; cursor: pointer;">
                                                     <h4>Cheque Payment Info (Bank)</h4>
                                                     <div class="row">
                                                         <button v-if="index > 0"  @click.prevent="deleteCheque(index)" class="float-right" style="float: right;background: #dff0d8;margin-top: -14px">X</button>
@@ -139,7 +139,7 @@
                                                                 <label for="bank_name">
                                                                     Bank Name<span class="text-danger">*</span> :
                                                                 </label>
-                                                                <select v-validate="'required'" v-model="cheque.bank_name" :class="{ 'is-invalid': form.errors.has('bank_name') }"  id="bank_name" name="bank_name" class="col-xs-12 col-sm-12" >
+                                                                <select v-validate="'required'" v-model="cheque.bank_name" :class="{ 'is-invalid': form.errors.has('bank_name') }" required  id="bank_name" name="bank_name" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Bank--</option>
                                                                     <option :value="bank.id" v-for="bank in get_all_banks " >{{bank.bank_name}}</option>
                                                                 </select>
@@ -186,7 +186,7 @@
                                                                     Cheque Amount<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <input @keyup="sumPrice()" v-model="cheque.credit_bank_amount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('credit_bank_amount') }"   class="col-xs-12 col-sm-12" id="credit_bank_amount" name="credit_bank_amount" placeholder="Enter Bank Cheque Amount" required="" type="number">
+                                                                <input  @keyup="sumPrice()" v-model="cheque.credit_bank_amount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('credit_bank_amount') }"   class="col-xs-12 col-sm-12" id="credit_bank_amount" name="credit_bank_amount" placeholder="Enter Bank Cheque Amount" required="" type="number">
                                                             </span>
                                                             </div>
                                                             <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -207,7 +207,7 @@
                                                                 Total Payment Amount<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input disabled v-model="form.total_payment_amount" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('total_payment_amount') }"   class="col-xs-12 col-sm-12" id="total_payment_amount" name="total_payment_amount" placeholder="Enter Total Payment Amount" required="" type="number">
+                                                                <input disabled v-model="form.total_payment_amount" v-validate="'required'" required :class="{ 'is-invalid': form.errors.has('total_payment_amount') }"   class="col-xs-12 col-sm-12" id="total_payment_amount" name="total_payment_amount" placeholder="Enter Total Payment Amount" required="" type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -317,23 +317,19 @@
         components: {Loading},
         mounted(){
             this.isLoading = true
-
             // this.$store.dispatch('allSuplier')
             this.$store.dispatch('allBanks')
-            this.chequeDivFunction()
             this.getAllSuplier()
         },
         computed:{
             get_all_banks(){
                 return this.$store.getters.get_banks
             }
-
         },
         data(){
 
             return {
                 supliers: '',
-
                 width:128,
                 height:128,
                 isLoading: false,
@@ -349,7 +345,6 @@
                     received_by:'',
                     paid_by:'',
                     approved_by:'',
-
                     cashs:[
                         {
                             credit_cash_amount:'',
@@ -372,19 +367,24 @@
 
             //Checked Unchecked Start
             cashDivFunction(){
-                if($('#cash').prop('checked') == true){
-                    $('#cashDiv').show()
-                }else{
-                    $('#cashDiv').hide()
-                }
+                this.form.cashs = [
+                    {
+                        credit_cash_amount:''
+                    }
+                ]
+                this.sumPrice()
 
             },
             chequeDivFunction(){
-                if($('#cheque').prop('checked') == true){
-                    $('.chequeDiv').show()
-                }else{
-                    $('.chequeDiv').hide()
-                }
+                this.form.cheques = [
+                    {
+                        bank_name:'',
+                        bank_date:'',
+                        bank_cheque_number:'',
+                        credit_bank_amount:'',
+                    }
+                ]
+                this.sumPrice()
             },
             //Checked Unchecked End
             addCheque(){
@@ -406,13 +406,12 @@
                 }
             },
             deleteCheque(index){
-
                 this.$delete(this.form.cheques, index)
-                console.log(this.form.cheques)
             },
             addPayment(){
                 this.isLoading = true
                 this.form.post('/api/add-payment')
+
                     .then((response) => {
                         this.form.debit_voucher_date = ''
                         this.form.suplier = ''
@@ -428,8 +427,7 @@
                                 credit_cash_amount:''
                             }
                         ]
-
-                            this.form.cheques = [
+                        this.form.cheques = [
                                 {
                                     bank_name:'',
                                     bank_date:'',
@@ -437,9 +435,6 @@
                                     credit_bank_amount:'',
                                 }
                             ]
-
-
-
                         this.$router.push('/payment-list')
                         this.isLoading = false
                         Toast.fire({
@@ -457,7 +452,6 @@
                         this.supliers = response.data.supliers
                     })
                 this.doAjax()
-
             },
             doAjax() {
                 setTimeout(() => {
@@ -467,19 +461,12 @@
             onCancel() {
                 console.log('User cancelled the loader.')
             },
-
-
-
-
-
-
             sumPrice(){
                 this.form.due_amount = 0
                 this.form.total_payment_amount = 0
                 if(this.form.cashs[0].credit_cash_amount != ''){
                     this.form.total_payment_amount += parseInt(this.form.cashs[0].credit_cash_amount)
                 }
-
                 for(let i = 0; i < this.form.cheques.length; i++){
                     if(this.form.cheques[i].credit_bank_amount != ''){
                         this.form.total_payment_amount += parseInt(this.form.cheques[i].credit_bank_amount)

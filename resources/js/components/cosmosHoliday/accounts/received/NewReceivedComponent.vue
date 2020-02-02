@@ -469,10 +469,6 @@
                 isLoading: false,
                 fullPage: false,
 
-
-
-
-
                 form: new Form({
                     guest:'',
                     staff:'',
@@ -627,47 +623,46 @@
                 // this.isLoading = true
                 this.form.post('/api/add-received')
                     .then((response) => {
-                        console.log(response.data)
-                        // this.form.guest = ''
-                        // this.form.staff = ''
-                        // this.form.bill_amount = ''
-                        // this.form.cash = ''
-                        // this.form.bank = ''
-                        // this.form.cheque = ''
-                        // this.form.other = ''
-                        // this.form.total_received_amount = ''
-                        // this.form.discount = ''
-                        // this.form.due_amount = ''
-                        // this.form.narration = ''
-                        // this.form.cashs = [
-                        //     {
-                        //         debit_cash_amount:''
-                        //     }
-                        // ]
-                        // this.form.banks = [
-                        //     {
-                        //         bank_name:'',
-                        //         bank_date:'',
-                        //         debit_bank_amount:'',
-                        //     }
-                        // ],
-                        // this.form.cheques = [
-                        //     {
-                        //         cheque_bank_name:'',
-                        //         cheque_date:'',
-                        //         cheque_type:'',
-                        //         cheque_number:'',
-                        //         cheque_amount:'',
-                        //     }
-                        // ]
-                        // this.form.others = [
-                        //     {
-                        //         others_name:'',
-                        //         others_amount:'',
-                        //     }
-                        // ]
+                        this.form.guest = ''
+                        this.form.staff = ''
+                        this.form.bill_amount = ''
+                        this.form.cash = ''
+                        this.form.bank = ''
+                        this.form.cheque = ''
+                        this.form.other = ''
+                        this.form.total_received_amount = ''
+                        this.form.discount = ''
+                        this.form.due_amount = ''
+                        this.form.narration = ''
+                        this.form.cashs = [
+                            {
+                                debit_cash_amount:''
+                            }
+                        ]
+                        this.form.banks = [
+                            {
+                                bank_name:'',
+                                bank_date:'',
+                                debit_bank_amount:'',
+                            }
+                        ],
+                        this.form.cheques = [
+                            {
+                                cheque_bank_name:'',
+                                cheque_date:'',
+                                cheque_type:'',
+                                cheque_number:'',
+                                cheque_amount:'',
+                            }
+                        ]
+                        this.form.others = [
+                            {
+                                others_name:'',
+                                others_amount:'',
+                            }
+                        ]
 
-                        // this.$router.push('/received-list')
+                        this.$router.push('/received-list')
                         this.doAjax()
                         Toast.fire({
                             type: 'success',
