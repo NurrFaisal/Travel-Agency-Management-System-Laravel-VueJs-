@@ -275,7 +275,8 @@ class ContraController extends Controller
         $contra->contra_amount = $request->contra_amount;
         $contra->narration = $request->narration;
     }
-    protected function saveContra($request){
+
+    public function addContra(Request $request){
         $this->contraValidation($request);
         $contra = new Contra();
         $this->contraBasic($request, $contra);
@@ -313,10 +314,6 @@ class ContraController extends Controller
             //From Bank Book End (credit)
             return 'Bank To Bank';
         }
-    }
-    public function addContra(Request $request){
-        $response = $this->saveContra($request);
-        return $response;
     }
 
     public function getAllContra(){
@@ -411,7 +408,7 @@ class ContraController extends Controller
         }
         $next_from_bank_dates = BankBook::where('bank_date', '>', $from_bank_book->bank_date)->get();
         foreach ($next_from_bank_dates as $next_from_bank_date){
-            $next_from_bank_date->bank_blance += $old_amount;
+            $next_from_bank_date->blance += $old_amount;
             if($next_from_bank_date->bank_name == $from_bank_book->bank_name){
                 $next_from_bank_date->bank_blance += $old_amount;
             }
@@ -444,20 +441,55 @@ class ContraController extends Controller
         $contra = Contra::where('id', $request->id)->first();
         $old_amount  = $contra->contra_amount;
         if($contra->contra_type == 1){
-            $this->typeOneDeleteCash($contra, $old_amount);
             $this->typeOneBankDelete($contra, $old_amount);
+            $this->typeOneDeleteCash($contra, $old_amount);
         }
         if($contra->contra_type == 2){
-            $this->typeTwoBankDelete($contra, $old_amount);
             $this->typeTwoCashDelete($contra, $old_amount);
+            $this->typeTwoBankDelete($contra, $old_amount);
         }
         if($contra->contra_type == 3){
-            $this->typeThreeFromBank($contra, $old_amount);
             $this->typeThreeToBank($contra, $old_amount);
-        }
-//        $response = $this->saveContra($request);
-//        return $response;
+            $this->typeThreeFromBank($contra, $old_amount);
 
+        }
+
+        // Saved contra for update
+        $this->contraBasic($request, $contra);
+        if($request->contra_type == 1){
+            $request->validate([
+                'bank_name' => 'required'
+            ]);
+            $contra->bank_name = $request->bank_name;
+            $contra->update();
+            $this->contraCashToBank($request, $contra);
+            return 'Cash To Bank';
+        }
+        if($request->contra_type == 2){
+            $request->validate([
+                'bank_name' => 'required'
+            ]);
+            $contra->bank_name = $request->bank_name;
+            $contra->update();
+            $this->contraBankToCash($request, $contra);
+            return 'Bank To Cash';
+        }
+        if($request->contra_type == 3){
+            $request->validate([
+                'to_bank_name' => 'required',
+                'from_bank_name' => 'required'
+            ]);
+            $contra->to_bank_name = $request->to_bank_name;
+            $contra->from_bank_name = $request->from_bank_name;
+            $contra->update();
+            // To Bank Book Start (Debit)
+            $this->toBank($request, $contra);
+            // To Bank Book End (Debit)
+            //FromBank Start (credit)
+            $this->fromBank($request, $contra);
+            //From Bank Book End (credit)
+            return 'Bank To Bank';
+        }
 
     }
 }
