@@ -55,7 +55,7 @@ class ContraController extends Controller
         $pre_cash_book = $this->preCashQuery($contra);
         $cash_book = new CashBook();
         $cash_book->contra_id = $contra->id;
-        $cash_book->cash_date = $contra->created_at->format('Y-m-d');
+        $cash_book->cash_date = $contra->contra_date;
         $cash_book->narration = $request->narration;
         $cash_book->debit_cash_amount = $request->contra_amount;
         if($pre_cash_book == null){
@@ -141,14 +141,14 @@ class ContraController extends Controller
         $bank_book->narration = $request->narration;
         $bank_book->credit_bank_amount = $request->contra_amount;
         if($pre_bank_book == null){
-            $bank_book->blance = -$request->contra_amount;
+            $bank_book->blance = -$contra->contra_amount;
         }else{
-            $bank_book->blance = $pre_bank_book->blance - $request->contra_amount;
+            $bank_book->blance = $pre_bank_book->blance - $contra->contra_amount;
         }
         if($bank_blance == null){
-            $bank_book->bank_blance = -$request->contra_amount;
+            $bank_book->bank_blance = -$contra->contra_amount;
         }else{
-            $bank_book->bank_blance = $bank_blance->bank_blance - $request->contra_amount;
+            $bank_book->bank_blance = $bank_blance->bank_blance - $contra->contra_amount;
         }
         $bank_book->save();
 
@@ -164,7 +164,7 @@ class ContraController extends Controller
         foreach ($next_dates as $next_date){
             $next_date->blance -= $request->contra_amount;
             if($next_date->bank_name == $bank_book->bank_name){
-                $next_date->bank_blance -= $request->amount;
+                $next_date->bank_blance -= $request->contra_amount;
             }
             $next_date->update();
         }
@@ -178,6 +178,87 @@ class ContraController extends Controller
     protected function contraBankToCash($request, $contra){
         $this->bankBookCredit($request, $contra);
         $this->cashBookDebit($request, $contra);
+    }
+    protected function fromBank($request, $contra){
+        $from_bank_blance = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->contra_date)->where('bank_name', $request->from_bank_name)->first();
+        if($from_bank_blance == null){
+            $from_bank_blance = BankBook::orderBy('id', 'desc')->orderBy('bank_date', 'desc')->where('bank_date', '<', $contra->contra_date)->where('bank_name', $request->from_bank_name)->first();
+        }
+
+        $from_pre_bank_book = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->bank_date)->first();
+        if($from_pre_bank_book == null){
+            $from_pre_bank_book = BankBook::orderBy('id', 'desc')->orderBy('bank_date', 'desc')->where('bank_date','<', $contra->contra_date)->first();
+        }
+        $from_bank_book = new BankBook();
+        $from_bank_book->contra_id = $contra->id;
+        $from_bank_book->bank_date = $request->contra_date;
+        $from_bank_book->bank_name = $request->from_bank_name;
+        $from_bank_book->narration = $request->narration;
+        $from_bank_book->credit_bank_amount = $request->contra_amount;
+        if($from_pre_bank_book == null){
+            $from_bank_book->blance = -$request->contra_amount;
+        }else{
+            $from_bank_book->blance = $from_pre_bank_book->blance - $request->contra_amount;
+        }
+        if($from_bank_blance == null){
+            $from_bank_book->bank_blance = -$request->contra_amount;
+        }else{
+            $from_bank_book->bank_blance = $from_bank_blance->bank_blance - $request->contra_amount;
+        }
+        $from_bank_book->save();
+
+        $next_same_dates = BankBook::where('id', '>', $from_bank_book->id)->where('bank_date', $from_bank_book->bank_date)->get();
+        foreach ($next_same_dates as $next_same_date){
+            $next_same_date->blance -= $request->contra_amount;
+            if($next_same_date->bank_name == $from_bank_book->bank_name){
+                $next_same_date->bank_blance -= $request->contra_amount;
+            }
+            $from_bank_book->update();
+        }
+
+        $next_dates = BankBook::where('bank_date', '>', $from_bank_book->bank_date)->get();
+        foreach ($next_dates as $next_date){
+            $next_date->blance -= $request->contra_amount;
+            if($from_bank_book->bank_name == $next_date->bank_name){
+                $next_date->bank_blance -= $request->contra_amount;
+            }
+            $next_date->update();
+        }
+    }
+    protected function toBank($request, $contra){
+        $to_bank_blance = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->contra_date)->where('bank_name', $request->to_bank_name)->first();
+        if($to_bank_blance == null){
+            $to_bank_blance = BankBook::orderBy('id', 'desc')->orderBy('bank_date', 'desc')->where('bank_date', '<', $contra->contra_date)->where('bank_name', $request->to_bank_name)->first();
+        }
+        $to_pre_bank_book = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->contra_date)->first();
+        if($to_pre_bank_book == null){
+            $to_pre_bank_book = BankBook::orderBy('id', 'desc')->orderBy('bank_date', 'desc')->where('bank_date','<', $contra->contra_date)->first();
+        }
+        $to_bank_book = new BankBook();
+        $to_bank_book->contra_id = $contra->id;
+        $to_bank_book->bank_date = $request->contra_date;
+        $to_bank_book->bank_name = $request->to_bank_name;
+        $to_bank_book->narration = $request->narration;
+        $to_bank_book->debit_bank_amount = $request->contra_amount;
+        if($to_pre_bank_book == null){
+            $to_bank_book->blance = $request->contra_amount;
+        }else{
+            $to_bank_book->blance = $to_pre_bank_book->blance + $request->contra_amount;
+        }
+        if($to_bank_blance == null){
+            $to_bank_book->bank_blance = $request->contra_amount;
+        }else{
+            $to_bank_book->bank_blance = $to_bank_blance->bank_blance + $request->contra_amount;
+        }
+        $to_bank_book->save();
+        $next_same_dates = BankBook::where('id', '>', $to_bank_book->id)->where('bank_date', $to_bank_book->bank_date)->get();
+        foreach ($next_same_dates as $next_same_date){
+            $next_same_date->blance += $request->contra_amount;
+            if($next_same_date->bank_name == $to_bank_book->bank_name){
+                $next_same_date->bank_blance += $request->contra_amount;
+            }
+            $next_same_date->update();
+        }
     }
     public function addContra(Request $request){
         $this->contraValidation($request);
@@ -204,6 +285,7 @@ class ContraController extends Controller
             $contra->bank_name = $request->bank_name;
             $contra->save();
             $this->contraBankToCash($request, $contra);
+            return 'Bank To Cash';
         }
         if($request->contra_type == 3){
             $request->validate([
@@ -213,91 +295,14 @@ class ContraController extends Controller
             $contra->to_bank_name = $request->to_bank_name;
             $contra->from_bank_name = $request->from_bank_name;
             $contra->save();
-
             //FromBank Start (credit)
-            $from_bank_blance = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->contra_date)->where('bank_name', $request->from_bank_name)->first();
-            if($from_bank_blance == null){
-                $from_bank_blance = BankBook::orderBy('id', 'desc')->where('bank_date', 'desc')->where('bank_date', '<', $contra->contra_date)->where('bank_name', $request->from_bank_name)->first();
-            }
-            $from_pre_bank_book = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->bank_date)->first();
-            if($from_pre_bank_book == null){
-                $from_pre_bank_book = BankBook::orderBy('id', 'desc')->where('bank_date', 'desc')->where('bank_date','<', $contra->contra_date)->first();
-            }
-            $from_bank_book = new BankBook();
-            $from_bank_book->contra_id = $contra->id;
-            $from_bank_book->bank_date = $request->contra_date;
-            $from_bank_book->bank_name = $request->from_bank_name;
-            $from_bank_book->narration = $request->narration;
-            $from_bank_book->credit_bank_amount = $request->contra_amount;
-            if($from_pre_bank_book == null){
-                $from_bank_book->blance = -$request->contra_amount;
-            }else{
-                $from_bank_book->blance = $from_pre_bank_book->blance - $request->contra_amount;
-            }
-            if($from_bank_blance == null){
-                $from_bank_book->bank_blance = -$request->contra_amount;
-            }else{
-                $from_bank_book->bank_blance = $from_bank_blance->bank_blance - $request->contra_amount;
-            }
-            $from_bank_book->save();
-
-            $next_same_dates = BankBook::where('id', '>', $from_bank_book->id)->where('bank_date', $from_bank_book->bank_date)->get();
-            foreach ($next_same_dates as $next_same_date){
-                $next_same_date->blance -= $request->contra_amount;
-                if($next_same_date->bank_name == $from_bank_book->bank_name){
-                    $next_same_date->bank_blance -= $request->contra_amount;
-                }
-                $from_bank_book->update();
-            }
-            $next_dates = BankBook::where('bank_date', '>', $from_bank_book->bank_date)->get();
-            foreach ($next_dates as $next_date){
-                $next_date->blance -= $request->contra_amount;
-                if($from_bank_book->bank_name == $next_date->bank_name){
-                    $next_date->bank_blance -= $request->contra_amount;
-                }
-                $next_date->update();
-            }
+            $this->fromBank($request, $contra);
             //From Bank Book End (credit)
-
             // To Bank Book Start (Debit)
-            $to_bank_blance = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->contra_date)->where('bank_name', $request->to_bank_name)->first();
-            if($to_bank_blance == null){
-                $to_bank_blance = BankBook::orderBy('id', 'desc')->where('bank_date', 'desc')->where('bank_date', '<', $contra->contra_date)->where('bank_name', $request->to_bank_name)->first();
-            }
-            $to_pre_bank_book = BankBook::orderBy('id', 'desc')->where('bank_date', $contra->bank_date)->first();
-            if($to_pre_bank_book == null){
-                $to_pre_bank_book = BankBook::orderBy('id', 'desc')->where('bank_date', 'desc')->where('bank_date','<', $contra->contra_date)->first();
-            }
-            $to_bank_book = new BankBook();
-            $to_bank_book->contra_id = $contra->id;
-            $to_bank_book->bank_date = $request->contra_date;
-            $to_bank_book->bank_name = $request->to_bank_name;
-            $to_bank_book->narration = $request->narration;
-            $to_bank_book->debit_bank_amount = $request->contra_amount;
-            if($to_pre_bank_book == null){
-                $to_bank_book->blance = $request->contra_amount;
-            }else{
-                $to_bank_book->blance = $to_pre_bank_book->blance + $request->contra_amount;
-            }
-            if($to_bank_blance == null){
-                $to_bank_book->bank_blance = $request->contra_amount;
-            }else{
-                $to_bank_book->bank_blance = $to_bank_blance->bank_blance + $request->contra_amount;
-            }
-            $to_bank_book->save();
-            $next_same_dates = BankBook::where('id', '>', $to_bank_book->id)->where('bank_date', $to_bank_book->bank_date)->get();
-            foreach ($next_same_dates as $next_same_date){
-                $next_same_date->blance += $request->contra_amount;
-                if($next_same_date->bank_name == $to_bank_book->bank_name){
-                    $next_same_date->bank_blance += $request->contra_amount;
-                }
-                $next_same_date->update();
-            }
+            $this->toBank($request, $contra);
+            // To Bank Book End (Debit)
+            return 'Bank To Bank';
          }
-
-
-
-        // To Bank Book End (Debit)
     }
 
     public function getAllContra(){
