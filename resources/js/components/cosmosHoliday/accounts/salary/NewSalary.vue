@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -292,11 +300,18 @@
 </template>
 
 <script>
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "NewSalary",
+        components: {Loading},
         mounted(){
+            this.isLoading = true
             this.$store.dispatch('allBanks')
             this.getStaff();
+            this.doAjax()
         },
         computed:{
             get_all_banks(){
@@ -307,6 +322,12 @@
         data(){
 
             return {
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
+
                 staffs:'',
                 form: new Form({
                     salary_date:'',
@@ -392,6 +413,11 @@
                 }
 
 
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },1000)
             },
             getStaff(){
                 axios.get('/api/get-salary-staff')
