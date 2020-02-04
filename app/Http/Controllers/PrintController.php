@@ -10,6 +10,7 @@ use App\model\MoneyReceived;
 use App\model\Package;
 use App\model\Payment;
 use App\model\VisaUpdated;
+use App\Salary;
 use PDF;
 use Illuminate\Http\Request;
 use Session;
@@ -217,6 +218,33 @@ class PrintController extends Controller
                 'clear_total_price' => $clear_total_price
             ])->setPaper('a4');
         return $pdf->stream('expense_voucher.pdf');
+    }
+    public function invoicePrintSalary($id){
+        $salary = Salary::with(['stafft'=> function($q){$q->select('id', 'first_name', 'last_name');}, 'cashs' =>function($q){$q->select('id', 'salary_id', 'credit_cash_amount');}, 'cheques' => function($q){$q->select('id', 'salary_id', 'credit_bank_amount');}])->where('id', $id)->first();
+        $cash_amount = 0;
+        $bank_amount = 0;
+        foreach ($salary->cashs as $cash){
+            $cash_amount += $cash->credit_cash_amount;
+        }
+        foreach ($salary->cheques as $bank){
+            $bank_amount += $bank->credit_bank_amount;
+        }
+        $total_price = $this->convert_number_to_words($salary->total_salary_amount);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
+//        return view('cosmosHoliday.page.invoiceSalary', [
+//            'salary' => $salary,
+//            'cash_amount' => $cash_amount,
+//            'bank_amount' => $bank_amount,
+//            'clear_total_price' => $clear_total_price
+//        ]);
+        $pdf = PDF::loadView('cosmosHoliday.page.invoiceSalary',[
+            'salary' => $salary,
+            'cash_amount' => $cash_amount,
+            'bank_amount' => $bank_amount,
+            'clear_total_price' => $clear_total_price
+        ])->setPaper('a4');
+        return $pdf->stream('salary_voucher.pdf');
     }
 
 

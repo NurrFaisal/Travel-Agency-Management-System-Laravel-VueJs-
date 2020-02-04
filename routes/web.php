@@ -29,6 +29,7 @@ Route::get('/invoice-print-money-receipt/{id}', 'PrintController@invoicePrintMon
 Route::get('/invoice-print-debit-voucher/{id}', 'PrintController@invoicePrintDebitVoucher');
 Route::get('/invoice-print-contra-voucher/{id}', 'PrintController@invoicePrintContraVoucher');
 Route::get('/invoice-print-expense/{id}', 'PrintController@invoicePrintExpense');
+Route::get('/invoice-print-salary/{id}', 'PrintController@invoicePrintSalary');
 // airTicketInvoice
 
 
