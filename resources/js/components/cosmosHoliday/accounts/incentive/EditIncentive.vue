@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -82,14 +90,14 @@
                                                             <span class="block input-icon input-icon-right">
                                                                 <div class="radio col-md-6">
                                                                     <label>
-                                                                        <input v-model="form.cash" id="cash"  class="ace input-sm"  name="cash" type="checkbox" value="1">
+                                                                        <input v-model="form.cash" id="cash" @click="cashDivFunction()"  class="ace input-sm"  name="cash" type="checkbox" value="1">
                                                                         <span class="lbl"> By Cash</span>
                                                                     </label>
                                                                 </div>
 
                                                                 <div class="radio col-md-6">
                                                                     <label>
-                                                                        <input v-model="form.cheque" id="cheque" class="ace input-sm" name="cheque" type="checkbox" value="1">
+                                                                        <input v-model="form.cheque" id="cheque" @click="chequeDivFunction()" class="ace input-sm" name="cheque" type="checkbox" value="1">
                                                                         <span class="lbl"> By Cheque</span>
                                                                     </label>
                                                                 </div>
@@ -291,12 +299,19 @@
 </template>
 
 <script>
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "EditIncentive",
+        components: {Loading},
         mounted(){
+            this.isLoading = true
             this.$store.dispatch('allBanks')
             this.getStaff();
             this.getIncentive();
+            this.doAjax()
         },
         computed:{
             get_all_banks(){
@@ -307,6 +322,11 @@
         data(){
 
             return {
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
                 staffs:'',
                 form: new Form({
                     id:'',
@@ -381,16 +401,19 @@
             },
             sumPrice(){
                 this.form.due_amount = 0
-                this.form.total_incentive_amount = 0
-                if(this.form.cashs[0].credit_cash_amount != ''){
-                    this.form.total_incentive_amount += parseInt(this.form.cashs[0].credit_cash_amount)
+                this.form.total_salary_amount = 0
+                if(this.form.cash == true) {
+                    if (this.form.cashs[0].credit_cash_amount != '') {
+                        this.form.total_salary_amount += parseInt(this.form.cashs[0].credit_cash_amount)
+                    }
                 }
 
                 for(let i = 0; i < this.form.cheques.length; i++){
                     if(this.form.cheques[i].credit_bank_amount != ''){
-                        this.form.total_incentive_amount += parseInt(this.form.cheques[i].credit_bank_amount)
+                        this.form.total_salary_amount += parseInt(this.form.cheques[i].credit_bank_amount)
                     }
                 }
+
 
             },
             getStaff(){
@@ -404,6 +427,31 @@
                     .then(response => {
                         this.form.fill(response.data.incentive)
                     })
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },1000)
+            },
+            cashDivFunction(){
+                this.form.cashs = [
+                    {
+                        credit_cash_amount:''
+                    }
+                ]
+                this.sumPrice()
+
+            },
+            chequeDivFunction(){
+                this.form.cheques = [
+                    {
+                        bank_name:'',
+                        bank_date:'',
+                        bank_cheque_number:'',
+                        credit_bank_amount:'',
+                    }
+                ]
+                this.sumPrice()
             },
         }
     }
