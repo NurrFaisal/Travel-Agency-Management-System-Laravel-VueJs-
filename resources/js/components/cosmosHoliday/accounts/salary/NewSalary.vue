@@ -90,14 +90,14 @@
                                                             <span class="block input-icon input-icon-right">
                                                                 <div class="radio col-md-6">
                                                                     <label>
-                                                                        <input v-model="form.cash" id="cash"  class="ace input-sm"  name="cash" type="checkbox" value="1">
+                                                                        <input v-model="form.cash" id="cash" @click="cashDivFunction()"  class="ace input-sm"  name="cash" type="checkbox" value="1">
                                                                         <span class="lbl"> By Cash</span>
                                                                     </label>
                                                                 </div>
 
                                                                 <div class="radio col-md-6">
                                                                     <label>
-                                                                        <input v-model="form.cheque" id="cheque" class="ace input-sm" name="cheque" type="checkbox" value="1">
+                                                                        <input v-model="form.cheque" id="cheque" @click="chequeDivFunction()" class="ace input-sm" name="cheque" type="checkbox" value="1">
                                                                         <span class="lbl"> By Cheque</span>
                                                                     </label>
                                                                 </div>
@@ -402,8 +402,10 @@
             sumPrice(){
                 this.form.due_amount = 0
                 this.form.total_salary_amount = 0
-                if(this.form.cashs[0].credit_cash_amount != ''){
-                    this.form.total_salary_amount += parseInt(this.form.cashs[0].credit_cash_amount)
+                if(this.form.cash == true) {
+                    if (this.form.cashs[0].credit_cash_amount != '') {
+                        this.form.total_salary_amount += parseInt(this.form.cashs[0].credit_cash_amount)
+                    }
                 }
 
                 for(let i = 0; i < this.form.cheques.length; i++){
@@ -424,6 +426,26 @@
                     .then(response => {
                         this.staffs = response.data.staffs
                     })
+            },
+            cashDivFunction(){
+                this.form.cashs = [
+                    {
+                        credit_cash_amount:''
+                    }
+                ]
+                this.sumPrice()
+
+            },
+            chequeDivFunction(){
+                this.form.cheques = [
+                    {
+                        bank_name:'',
+                        bank_date:'',
+                        bank_cheque_number:'',
+                        credit_bank_amount:'',
+                    }
+                ]
+                this.sumPrice()
             },
         }
     }
