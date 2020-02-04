@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -82,14 +90,14 @@
                                                             <span class="block input-icon input-icon-right">
                                                                 <div class="radio col-md-6">
                                                                     <label>
-                                                                        <input v-model="form.cash" id="cash"  class="ace input-sm"  name="cash" type="checkbox" value="1">
+                                                                        <input v-model="form.cash" id="cash" @click="cashDivFunction()"  class="ace input-sm"  name="cash" type="checkbox" value="1">
                                                                         <span class="lbl"> By Cash</span>
                                                                     </label>
                                                                 </div>
 
                                                                 <div class="radio col-md-6">
                                                                     <label>
-                                                                        <input v-model="form.cheque" id="cheque" class="ace input-sm" name="cheque" type="checkbox" value="1">
+                                                                        <input v-model="form.cheque" id="cheque" @click="chequeDivFunction()" class="ace input-sm" name="cheque" type="checkbox" value="1">
                                                                         <span class="lbl"> By Cheque</span>
                                                                     </label>
                                                                 </div>
@@ -97,7 +105,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div v-if="form.cash"  style="background-color: #f6f6f6; padding: 15px; margin: 20px;padding-bottom: 55px; cursor: pointer;">
+                                                <div v-if="form.cash == true"  style="background-color: #f6f6f6; padding: 15px; margin: 20px;padding-bottom: 55px; cursor: pointer;">
                                                     <h4>Cash Payment Info</h4>
                                                     <div class="form-group ">
                                                         <div class="col-md-12">
@@ -291,11 +299,18 @@
 </template>
 
 <script>
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "NewExpence",
+        components: {Loading},
         mounted(){
+            this.isLoading = true
             this.$store.dispatch('allBanks')
             this.getExpenceHead();
+            this.doAjax()
         },
         computed:{
             get_all_banks(){
@@ -306,6 +321,12 @@
         data(){
 
             return {
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
+
                 expence_heads:'',
                 form: new Form({
                     expence_date:'',
@@ -338,6 +359,7 @@
         },
         methods:{
             //Checked Unchecked End
+            // this.isLoading = true
             addExpence(){
                 this.form.post('/api/add-expence')
                     .then((response) => {
@@ -365,7 +387,7 @@
                             }
                         ]
 
-
+                        // this.isLoading = false
                         this.$router.push('/expence-list')
                         Toast.fire({
                             type: 'success',
@@ -395,6 +417,31 @@
                     .then(response => {
                         this.expence_heads = response.data.expence_heads
                     })
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },1000)
+            },
+            cashDivFunction(){
+                this.form.cashs = [
+                    {
+                        credit_cash_amount:''
+                    }
+                ]
+                this.sumPrice()
+
+            },
+            chequeDivFunction(){
+                this.form.cheques = [
+                    {
+                        bank_name:'',
+                        bank_date:'',
+                        bank_cheque_number:'',
+                        credit_bank_amount:'',
+                    }
+                ]
+                this.sumPrice()
             },
         }
     }

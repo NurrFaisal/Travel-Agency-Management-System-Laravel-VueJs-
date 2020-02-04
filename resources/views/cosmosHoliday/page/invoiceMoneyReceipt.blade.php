@@ -88,7 +88,7 @@
                             <td  height="5"  style="padding: 4px">Total Dues : {{$money_receipt->due_amount}}</td>
                         </tr>
                         <tr >
-                            <td colspan="4" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} taka only</td>
+                            <td colspan="4" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} Taka Only</td>
                         </tr>
                         <tr >
                             <td colspan="4" height="5" style="padding: 4px">Narration : {{$money_receipt->narration}}</td>

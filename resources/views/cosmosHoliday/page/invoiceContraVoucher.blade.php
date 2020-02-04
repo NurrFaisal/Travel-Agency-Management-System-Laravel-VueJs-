@@ -113,7 +113,7 @@
                             <td colspan="3" height="5" style="padding: 4px">Narration : {{$contra->narration}}</td>
                         </tr>
                         <tr >
-                            <td colspan="3" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} taka only</td>
+                            <td colspan="3" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} Taka Only</td>
                         </tr>
 
                         </tbody>

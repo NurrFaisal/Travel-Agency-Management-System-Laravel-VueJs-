@@ -168,19 +168,41 @@ class ExpenceController extends Controller
     protected function updateCash($request, $expence){
         $cash_book = CashBook::where('expence_id', $request->id)->first();
         if($cash_book != null){
-            $next_cash_books = CashBook::where('id', '>', $cash_book->id)->get();
-            foreach ($next_cash_books as $next_cash_book){
-                if($cash_book->credit_cash_amount > 0){
-                    $next_cash_book->blance += $cash_book->credit_cash_amount;
-                }
-                $next_cash_book->update();
+            $old_credit_amount = $cash_book->credit_cash_amount;
+            $next_same_dates = CashBook::where('cash_date', $cash_book->cash_date)->where('id', '>', $cash_book->id)->get();
+            foreach ($next_same_dates as $next_same_date){
+                $next_same_date->blance += $old_credit_amount;
+                $next_same_date->update();
+            }
+            $next_dates = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
+            foreach ($next_dates as $next_date){
+                $next_date->blance += $old_credit_amount;
+                $next_date->update();
             }
             $cash_book->delete();
+
         }
     }
 
     protected function updateCheque($request){
         $bank_books = BankBook::where('expence_id', $request->id)->get();
+        foreach ($bank_books as $bank_book){
+            $old_amount = $bank_book->credit_bank_amount;
+            $next_same_bank_books = BankBook::where('bank_date', $bank_book->bank_date)->where('id', '>', $bank_book->id)->get();
+            foreach ($next_same_bank_books as $next_same_bank_book){
+                $next_same_bank_book->blance += $old_amount;
+                $next_same_bank_book->update();
+            }
+            $next_bank_books = BankBook::where('bank_date','>', $bank_book->bank_date)->get();
+            foreach ($next_bank_books as $next_bank_book){
+                $next_bank_book->blance += $old_amount;
+                $next_bank_book->update();
+            }
+            $bank_book->delete();
+        }
+
+
+
         foreach ($bank_books as $bank_book){
             $next_bank_books = BankBook::where('id', '>', $bank_book->id)->get();
             foreach ($next_bank_books as $next_bank_book){

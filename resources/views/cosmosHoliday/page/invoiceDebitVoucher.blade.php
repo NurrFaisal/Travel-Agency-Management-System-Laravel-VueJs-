@@ -82,7 +82,7 @@
                             <td colspan="3"  height="5"  style="padding: 4px"><strong>Grand Total :</strong> <span style="float: right"><strong>{{$debit_voucher->total_payment_amount}}</strong></span></td>
                         </tr>
                         <tr >
-                            <td colspan="4" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} taka only</td>
+                            <td colspan="4" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} Taka Only</td>
                         </tr>
 
                         </tbody>

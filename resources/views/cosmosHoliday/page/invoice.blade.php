@@ -185,7 +185,7 @@
                     </table>
                     </font>
                     <div class="row" >
-                        <h5 style="border-bottom: 1px solid black; margin: 0px 15px"><strong>BDT (In Word) : {{$clear_total_price}} taka only</strong></h5>
+                        <h5 style="border-bottom: 1px solid black; margin: 0px 15px"><strong>BDT (In Word) : {{$clear_total_price}} Taka Only</strong></h5>
                     </div>
                     <br/>
                     <br/>

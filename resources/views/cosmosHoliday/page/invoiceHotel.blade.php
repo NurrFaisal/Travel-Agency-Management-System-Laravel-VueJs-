@@ -184,7 +184,7 @@
             <font size="1" face="Courier New" >
                 <table class="table table-bordered" style="margin-top: -21px;">
                     <tr >
-                        <td height="5" colspan="6" style=" padding: 2px"><b>In word : {{$clear_total_price}} taka only.</b></td>
+                        <td height="5" colspan="6" style=" padding: 2px"><b>In word : {{$clear_total_price}} Taka Only.</b></td>
                         <td height="5" colspan="2" style="text-align:right; padding: 2px"><strong>Grand Total :</strong></td>
                         <td height="5" style="text-align:right; padding: 2px"><strong>{{$hotel_booking->total_price}}</strong></td>
                     </tr>
