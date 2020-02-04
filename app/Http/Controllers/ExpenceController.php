@@ -49,10 +49,14 @@ class ExpenceController extends Controller
                 'cash' => 'required',
                 'cashs.*.credit_cash_amount' => 'required'
             ]);
-            $pre_cash_book = CashBook::orderBy('id', 'desc')->select('credit_cash_amount', 'blance')->first();
+
+            $pre_cash_book = CashBook::orderBy('id', 'desc')->where('cash_date', $request->expence_date)->first();
+            if($pre_cash_book == null){
+                $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $request->expence_date)->first();
+            }
             $cash_book = new CashBook();
             $cash_book->expence_id = $expence->id;
-            $cash_book->cash_date = $expence->created_at->format('Y-m-d');
+            $cash_book->cash_date = $expence->expence_date;
             $cash_book->narration = $request->narration;
             $cash_book->credit_cash_amount = $request->cashs[0]['credit_cash_amount'];
             if($pre_cash_book == null ){
@@ -61,6 +65,17 @@ class ExpenceController extends Controller
                 $cash_book->blance = $pre_cash_book->blance - $request->cashs[0]['credit_cash_amount'];
             }
             $cash_book->save();
+
+            $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
+            foreach ($next_same_dates as $next_same_date){
+                $next_same_date->blance -= $request->cashs[0]['credit_cash_amount'];
+                $next_same_date->update();
+            }
+            $next_dates = CashBook::where('cash_date','>', $cash_book->cash_date)->get();
+            foreach ($next_dates as $next_date){
+                $next_date->blance -= $request->cashs[0]['credit_cash_amount'];
+                $next_date->update();
+            }
         }
     }
     public function expenceCheque($expence, $request){
@@ -76,8 +91,15 @@ class ExpenceController extends Controller
             $cheques_arry = $request->cheques;
             $cheques_arry_count = count($cheques_arry);
             for ($i = 0; $i < $cheques_arry_count; $i++){
-                $bank_blance = BankBook::orderBy('id', 'desc')->where('bank_name', $cheques_arry[$i]['bank_name'])->first();
-                $pre_bank_book = BankBook::orderBy('id', 'desc')->select('credit_bank_amount', 'blance')->first();
+
+                $bank_blance = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', $cheques_arry[$i]['bank_date'])->where('bank_name',  $cheques_arry[$i]['bank_name'] )->first();
+                if($bank_blance == null){
+                    $bank_blance = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', '<', $cheques_arry[$i]['bank_date'])->where('bank_name',  $cheques_arry[$i]['bank_name'] )->first();
+                }
+                $pre_bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', $cheques_arry[$i]['bank_date'])->first();
+                if($pre_bank_book == null){
+                    $pre_bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->where('bank_date', '<', $cheques_arry[$i]['bank_date'])->first();
+                }
                 $bank_book = new BankBook();
                 $bank_book->expence_id = $expence->id;
                 $bank_book->narration = $expence->narration;
@@ -90,14 +112,31 @@ class ExpenceController extends Controller
                 }else{
                     $bank_book->blance = $pre_bank_book->blance - $cheques_arry[$i]['credit_bank_amount'];
                 }
-
                 if($bank_blance == null){
                     $bank_book->bank_blance = -$cheques_arry[$i]['credit_bank_amount'];
                 }else{
                     $bank_book->bank_blance = $bank_blance->bank_blance - $cheques_arry[$i]['credit_bank_amount'];
                 }
-
                 $bank_book->save();
+
+                $next_same_dates = BankBook::where('id','>', $bank_book->id)->where('bank_date', $cheques_arry[$i]['bank_date'])->get();
+                foreach ($next_same_dates as $next_same_date){
+                    $next_same_date->blance -= $bank_book->credit_bank_amount;
+                    if($next_same_date->bank_name == $bank_book->bank_name){
+                        $next_same_date->bank_blance -= $bank_book->credit_bank_amount;
+                    }
+                    $next_same_date->update();
+                }
+
+                $next_dates = BankBook::where('bank_date', '>', $cheques_arry[$i]['bank_date'])->get();
+                foreach ($next_dates as $next_date){
+                    $next_date->blance -= $bank_book->credit_bank_amount;
+                    if($next_date->bank_name == $bank_book->bank_name){
+                        $next_date->bank_blance -= $bank_book->credit_bank_amount;
+                    }
+                    $next_date->update();
+                }
+
             }
 
         }

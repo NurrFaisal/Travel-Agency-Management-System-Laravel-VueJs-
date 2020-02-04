@@ -453,7 +453,6 @@ class ContraController extends Controller
             $this->typeThreeFromBank($contra, $old_amount);
 
         }
-
         // Saved contra for update
         $this->contraBasic($request, $contra);
         if($request->contra_type == 1){

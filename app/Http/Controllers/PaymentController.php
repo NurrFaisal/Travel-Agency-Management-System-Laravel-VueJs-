@@ -76,6 +76,11 @@ class PaymentController extends Controller
             $cash_book->blance = $pre_cash_book->blance - $request->cashs[0]['credit_cash_amount'];
         }
         $cash_book->save();
+        $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $payment->debit_voucher_date)->get();
+        foreach ($next_same_dates as $next_same_date){
+            $next_same_date->blance -= $cash_book->credit_cash_amount;
+            $next_same_date->update();
+        }
         $next_dates = CashBook::orderBy('cash_date', 'asc')->where('cash_date', '>', $payment->debit_voucher_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $cash_book->credit_cash_amount;
@@ -122,7 +127,16 @@ class PaymentController extends Controller
             }
             $bank_book->save();
 
-            $next_dates = BankBook::orderBy('bank_date', 'asc')->where('bank_date', '>', $cheques_arry[$i]['bank_date'])->get();
+            $next_same_dates = BankBook::where('id','>', $bank_book->id)->where('bank_date', $cheques_arry[$i]['bank_date'])->get();
+            foreach ($next_same_dates as $next_same_date){
+                $next_same_date->blance -= $bank_book->credit_bank_amount;
+                if($next_same_date->bank_name == $bank_book->bank_name){
+                    $next_same_date->bank_blance -= $bank_book->credit_bank_amount;
+                }
+                $next_same_date->update();
+            }
+
+            $next_dates = BankBook::where('bank_date', '>', $cheques_arry[$i]['bank_date'])->get();
             foreach ($next_dates as $next_date){
                 $next_date->blance -= $bank_book->credit_bank_amount;
                 if($next_date->bank_name == $bank_book->bank_name){
@@ -162,6 +176,14 @@ class PaymentController extends Controller
             $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance + $payment->total_payment_amount;
         }
         $suplier_transaction->save();
+        $next_same_dates = SuplierTransaction::where('id', '>', $suplier_transaction->id)->where('transaction_date', $payment->debit_voucher_date)->get();
+        foreach ($next_same_dates as $next_same_date){
+            $next_same_date->balance += $request->total_payment_amount;
+            if($next_same_date->staff_id == $request->staff){
+                $next_same_date->suplier_balance += $request->total_payment_amount;
+            }
+            $next_same_date->update();
+        }
         $next_dates = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $payment->debit_voucher_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->balance += $request->total_payment_amount;
