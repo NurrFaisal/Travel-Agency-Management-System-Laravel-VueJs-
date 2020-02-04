@@ -401,16 +401,16 @@
             },
             sumPrice(){
                 this.form.due_amount = 0
-                this.form.total_salary_amount = 0
+                this.form.total_incentive_amount = 0
                 if(this.form.cash == true) {
                     if (this.form.cashs[0].credit_cash_amount != '') {
-                        this.form.total_salary_amount += parseInt(this.form.cashs[0].credit_cash_amount)
+                        this.form.total_incentive_amount += parseInt(this.form.cashs[0].credit_cash_amount)
                     }
                 }
 
                 for(let i = 0; i < this.form.cheques.length; i++){
                     if(this.form.cheques[i].credit_bank_amount != ''){
-                        this.form.total_salary_amount += parseInt(this.form.cheques[i].credit_bank_amount)
+                        this.form.total_incentive_amount += parseInt(this.form.cheques[i].credit_bank_amount)
                     }
                 }
 
