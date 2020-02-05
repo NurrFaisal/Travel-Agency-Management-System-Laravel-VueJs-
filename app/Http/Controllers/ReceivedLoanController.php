@@ -205,7 +205,7 @@ class ReceivedLoanController extends Controller
             $next_date->update();
         }
     }
-    protected function addReceivedLoan(Request $request){
+    public function addReceivedLoan(Request $request){
         $this->receivedLoanValidation($request);
         $this->allValidation($request);
         $received_loan = new ReceivedLoan();
@@ -214,5 +214,20 @@ class ReceivedLoanController extends Controller
         $this->saveallbooks($request, $received_loan);
         $this->saveReceivedLoanTransaction($request, $received_loan);
         return 'Saved All Book And Transaction';
+    }
+    public function getAllReceivedLoan(){
+        $received_loans = ReceivedLoan::with('head')->orderBy('id', 'desc')->paginate(10);
+        return response()->json([
+            'received_loans' => $received_loans
+        ]);
+    }
+    public function editReceivedLoan($id){
+        $received_loan = ReceivedLoan::with('cashs', 'banks', 'cheques', 'head')->where('id', $id)->first();
+        return response()->json([
+            'received_loan' => $received_loan
+        ]);
+    }
+    public function updateReceivedLoan(Request $request){
+        return $request;
     }
 }

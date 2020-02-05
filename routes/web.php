@@ -100,6 +100,7 @@ Route::get('/add-package-visa-update-new/{anypath}', 'DashboardController@index'
 Route::get('/package-net-price/{anypath}', 'DashboardController@index');
 Route::get('/edit-package-net-price/{anypath}', 'DashboardController@index');
 Route::get('/edit-received-loan-head/{anypath}', 'DashboardController@index');
+Route::get('/edit-received-loan/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -637,6 +638,9 @@ Route::post('/api/update-received-loan-head', 'ReceivedLoanHeadController@update
 
 // ReceivedLoanController Start
 Route::post('/api/add-received-loan', 'ReceivedLoanController@addReceivedLoan');
+Route::get('/api/get-all-received-loan', 'ReceivedLoanController@getAllReceivedLoan');
+Route::get('/api/edit-received-loan/{id}', 'ReceivedLoanController@editReceivedLoan');
+Route::get('/api/update-received-loan', 'ReceivedLoanController@updateReceivedLoan');
 // ReceivedLoanController End
 
 // NewLoan End

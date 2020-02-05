@@ -53,26 +53,20 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Date</th>
-                                        <th>Guest Name</th>
-                                        <th>Staff Name</th>
+                                        <th>Head</th>
                                         <th>Narration</th>
-                                        <th>Bill Amount</th>
                                         <th>Received Amount</th>
-                                        <th>Due Amount</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
 
                                     <tbody>
-                                    <tr v-for="(received, index) in  receiveds">
+                                    <tr v-for="(received_loan, index) in  received_loans">
                                         <td class="center">{{index+1}}</td>
-                                        <td>{{received.created_at | timeformate}}</td>
-                                        <td>{{received.guestt.name}}</td>
-                                        <td>{{received.stafft.first_name+' '+received.stafft.last_name}}</td>
-                                        <td>{{received.narration}}</td>
-                                        <td>{{received.bill_amount}}</td>
-                                        <td>{{received.total_received_amount}}</td>
-                                        <td>{{received.due_amount}}</td>
+                                        <td>{{received_loan.rl_date | timeformate}}</td>
+                                        <td>{{received_loan.head.name}}</td>
+                                        <td>{{received_loan.narration}}</td>
+                                        <td>{{received_loan.total_received_loan_amount}}</td>
 
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
@@ -80,11 +74,11 @@
                                                 <button class="btn btn-xs btn-success">
                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                 </button>
-                                                <router-link :to="`/edit-received/${received.id}`" class="btn btn-xs btn-info">
+                                                <router-link :to="`/edit-received-loan/${received_loan.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <a @click.prevent="downLoadInvoice(received.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
+                                                <a @click.prevent="downLoadInvoice(received_loan.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                     Receipt
                                                 </a>
 
@@ -98,7 +92,7 @@
                                 <pagination v-if="pagination.last_page > 1"
                                             :pagination="pagination"
                                             :offset="5"
-                                            @paginate="getReceived()"
+                                            @paginate="getReceivedLoan()"
                                 ></pagination>
                             </div>
 
@@ -122,7 +116,7 @@
         name: "ListRecivedLoan",
         mounted() {
             this.isLoading = true
-            this.getReceived()
+            this.getReceivedLoan()
         },
         components: {
             Loading
@@ -138,15 +132,15 @@
                 pagination:{
                     current_page: 1,
                 },
-                receiveds: '',
+                received_loans: '',
             }
         },
         methods:{
-            getReceived(){
-                axios.get('/api/get-all-received?page='+this.pagination.current_page)
+            getReceivedLoan(){
+                axios.get('/api/get-all-received-loan?page='+this.pagination.current_page)
                     .then(response => {
-                        this.receiveds = response.data.receiveds.data
-                        this.pagination = response.data.receiveds
+                        this.received_loans = response.data.received_loans.data
+                        this.pagination = response.data.received_loans
                         this.doAjax();
                     })
             },
