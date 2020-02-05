@@ -44,15 +44,15 @@
                 <p style="text-align: center">Plaza A.R (4th Floor), Beside Sobhanbag Mosque, Dhanmondi, Dhaka, Bangladesh.</p>
             </div>
             <div class="row">
-                <h4 style="text-align: center">Salary Voucher</h4>
+                <h4 style="text-align: center">Incentive Voucher</h4>
             </div>
             <div class="row">
                 <div>
                     <font size="2" face="Courier New" >
                         <div class="row" style="margin: 0px 5px">
 
-                            <div class="col-xs-4 col-md-4" style="float: left">Salary Voucher Number : S-{{$salary->id}}</div>
-                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Date : {{$salary->created_at->format('d-m-Y')}}</div>
+                            <div class="col-xs-4 col-md-4" style="float: left">Salary Voucher Number : I-{{$incentive->id}}</div>
+                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Date : {{$incentive->created_at->format('d-m-Y')}}</div>
                         </div>
                     </font>
                 </div>
@@ -64,11 +64,11 @@
                     <table class="table table-bordered">
                         <tbody>
                         <tr >
-                            <td colspan="4" height="5"   style="padding: 4px">Saff Name : {{$salary->stafft->first_name. ' '.$salary->stafft->last_name}}</td>
+                            <td colspan="4" height="5"   style="padding: 4px">Saff Name : {{$incentive->stafft->first_name. ' '.$incentive->stafft->last_name}}</td>
                         </tr>
 
                         <tr >
-                            <th rowspan="3" height="5" width="70%"  style="padding: 4px; text-align: justify">Note : {{$salary->narration}}</th>
+                            <th rowspan="3" height="5" width="70%"  style="padding: 4px; text-align: justify">Note : {{$incentive->narration}}</th>
                             <th  height="5" width="10%" style="padding: 4px; text-align: center">Cash</th>
                             <th  height="5" width="10%" style="padding: 4px; text-align: center">Bank</th>
                             <th  height="5" width="10%" style="padding: 4px; text-align: center">Total</th>
@@ -76,10 +76,10 @@
                         <tr >
                             <td  height="5" width="10%" style="text-align:right; padding: 4px">{{$cash_amount}}.00</td>
                             <td  height="5" width="10%"  style="text-align:right; padding: 4px">{{$bank_amount}}.00</td>
-                            <td  height="5" width="10%" style="text-align:right; padding: 4px">{{$salary->total_salary_amount}}</td>
+                            <td  height="5" width="10%" style="text-align:right; padding: 4px">{{$incentive->total_incentive_amount}}</td>
                         </tr>
                         <tr >
-                            <td colspan="3"  height="5"  style="padding: 4px"><strong>Grand Total :</strong> <span style="float: right"><strong>{{$salary->total_salary_amount}}</strong></span></td>
+                            <td colspan="3"  height="5"  style="padding: 4px"><strong>Grand Total :</strong> <span style="float: right"><strong>{{$incentive->total_incentive_amount}}</strong></span></td>
                         </tr>
                         <tr >
                             <td colspan="4" height="5" style="padding: 4px">BDT (in words) : {{$clear_total_price}} Taka Only</td>
