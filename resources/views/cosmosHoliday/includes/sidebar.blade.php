@@ -331,20 +331,51 @@
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tag"></i>
-                <span class="menu-text"> Loan </span>
+                <span class="menu-text">Received Loan </span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
                 <li class="">
-                    <router-link to="/loan-list">
+                    <router-link to="/received-loan-list">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Loan List
+                        Received Loan List
                     </router-link>
                     <b class="arrow"></b>
                 </li>
+                <li class="">
+                    <router-link to="/received-loan-head-list">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Received Loan Head List
+                    </router-link>
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-tag"></i>
+                <span class="menu-text">Payment Loan </span>
 
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+                <li class="">
+                    <router-link to="/payment-loan-list">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Payment Loan List
+                    </router-link>
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <router-link to="/payment-loan-head-list">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Payment Loan Head List
+                    </router-link>
+                    <b class="arrow"></b>
+                </li>
             </ul>
         </li>
 
