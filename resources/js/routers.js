@@ -134,6 +134,9 @@ import ListReceivedLoanHead
 import NewReceivedLoanHead from "./components/cosmosHoliday/accounts/receivedLoan/ReceivedLoanHead/NewReceivedLoanHead";
 import EditReceivedLoanHead
     from "./components/cosmosHoliday/accounts/receivedLoan/ReceivedLoanHead/EditReceivedLoanHead";
+import ListRecivedLoan from "./components/cosmosHoliday/accounts/receivedLoan/ListRecivedLoan";
+import NewReceivedLoan from "./components/cosmosHoliday/accounts/receivedLoan/NewReceivedLoan";
+import EditReceivedLoan from "./components/cosmosHoliday/accounts/receivedLoan/EditReceivedLoan";
 
 
 
@@ -853,7 +856,23 @@ export const routes = [
         path:'/edit-received-loan-head/:id',
         component: EditReceivedLoanHead
     },
+
+    {
+        path:'/received-loan-list',
+        component:ListRecivedLoan
+    },
+    {
+        path:'/new-received-loan',
+        component: NewReceivedLoan
+    },
+    {
+        path:'/edit-received-loan/:id',
+        component: EditReceivedLoan
+    }
+
     // Received Loan End
+
+
 
 
 

@@ -94,6 +94,15 @@ class ReceivedController extends Controller
             }
             $bank_book->save();
 
+            $next_same_dates = BankBook::where('id', '>', $bank_book->id)->where('bank_date', $banks_arry[$i]['bank_date'])->get();
+            foreach ($next_same_dates as $next_same_date){
+                $next_same_date->blance += $bank_book->debit_bank_amount;
+                if($next_same_date->bank_name == $bank_book->bank_name){
+                    $next_same_date->bank_blance += $bank_book->debit_bank_amount;
+                }
+                $next_same_date->update();
+            }
+
             $next_dates = BankBook::orderBy('bank_date', 'asc')->where('bank_date', '>', $banks_arry[$i]['bank_date'])->get();
             foreach ($next_dates as $next_date){
                 $next_date->blance += $bank_book->debit_bank_amount;
@@ -223,7 +232,7 @@ class ReceivedController extends Controller
         }
         $transjaction->save();
 
-        $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $received->created_at->format('Y-m-d'))->get();
+        $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $request->total_received_amount;
             if($next_date->guest_id == $request->guest){

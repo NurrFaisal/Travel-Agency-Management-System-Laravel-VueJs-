@@ -29,6 +29,9 @@ class ReceivedLoanHeadController extends Controller
         ]);
     }
     public function updateReceivedLoanHead(Request $request){
+        $request->validate([
+            'name' => 'required',
+        ]);
         $rl_head = ReceivedLoanHead::where('id', $request->id)->first();
         $rl_head->name = $request->name;
         $rl_head->update();
