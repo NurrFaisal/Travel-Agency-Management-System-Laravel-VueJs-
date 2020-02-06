@@ -640,7 +640,7 @@ Route::post('/api/update-received-loan-head', 'ReceivedLoanHeadController@update
 Route::post('/api/add-received-loan', 'ReceivedLoanController@addReceivedLoan');
 Route::get('/api/get-all-received-loan', 'ReceivedLoanController@getAllReceivedLoan');
 Route::get('/api/edit-received-loan/{id}', 'ReceivedLoanController@editReceivedLoan');
-Route::get('/api/update-received-loan', 'ReceivedLoanController@updateReceivedLoan');
+Route::post('/api/update-received-loan', 'ReceivedLoanController@updateReceivedLoan');
 // ReceivedLoanController End
 
 // NewLoan End

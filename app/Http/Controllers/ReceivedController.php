@@ -350,10 +350,9 @@ class ReceivedController extends Controller
                 $next_date_cash->update();
             }
             $cash_book->delete();
-        }else{
-            if($request->cash == 1){
-                $this->cashBookFunction($request, $received);
-            }
+        }
+        if($request->cash == 1){
+            $this->cashBookFunction($request, $received);
         }
     }
     protected function updateBankBook($request, $received){

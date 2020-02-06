@@ -227,7 +227,93 @@ class ReceivedLoanController extends Controller
             'received_loan' => $received_loan
         ]);
     }
+    public function updateCashBook($request, $received_loan){
+        $cash_book = CashBook::where('received_loan_id', $received_loan->id)->select('id', 'received_loan_id', 'debit_cash_amount', 'cash_date', 'blance', 'narration')->first();
+        if($cash_book != null){
+            $old_amount = $cash_book->debit_cash_amount;
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_loan_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            foreach ($next_same_date_cashs as $next_same_date_cash){
+                $next_same_date_cash->blance -= $old_amount;
+                $next_same_date_cash->update();
+            }
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
+            foreach ($next_date_cashs as $next_date_cash){
+                $next_date_cash->blance -=$old_amount;
+                $next_date_cash->update();
+            }
+            $cash_book->delete();
+        }
+        if($request->cash == 1){
+            $this->cashBookFunction($request, $received_loan);
+        }
+    }
+    protected function updateBankBook($request, $received_loan){
+        $bank_books = BankBook::where('received_loan_id', $received_loan->id)->select('id', 'received_loan_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->get();
+        foreach ($bank_books as $bank_book){
+            $decrement = $bank_book->debit_bank_amount;
+            $next_same_date_banks = BankBook::where('id', '>', $bank_book->id)->select('id', 'received_loan_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->where('bank_date', $bank_book->bank_date)->get();
+            foreach ($next_same_date_banks as $next_same_date_bank){
+                $next_same_date_bank->blance -= $decrement;
+                if($next_same_date_bank->bank_name == $bank_book->bank_name){
+                    $next_same_date_bank->bank_blance -= $decrement;
+                }
+                $next_same_date_bank->update();
+            }
+            $next_date_banks = BankBook::where('bank_date', '>', $bank_book->bank_date)->select('id', 'received_loan_id', 'debit_bank_amount', 'bank_date', 'blance', 'bank_blance', 'bank_name')->get();
+            foreach ($next_date_banks as $next_date_bank){
+                $next_date_bank->blance -= $decrement;
+                if($next_date_bank->bank_name == $bank_book->bank_name){
+                    $next_date_bank->bank_blance -= $decrement;
+                }
+                $next_date_bank->update();
+            }
+            $bank_book->delete();
+        }
+        if($request->bank == 1) {
+            $this->bankBookFunction($request, $received_loan);
+        }
+    }
+    protected function updateChequeBook($request, $received_loan){
+        $cheque_books = ChequeBook::where('received_loan_id', $received_loan->id)->get();
+        foreach ($cheque_books as $cheque_book){
+            $cheque_book->delete();
+        }
+        if($request->cheque == 1) {
+            $this->chequeBookFunction($request, $received_loan);
+        }
+    }
+    protected function updateReceivedTransaction($request, $received_loan){
+        $transjaction = ReceivedLoanTransaction::where('received_loan_id', $received_loan->id)->first();
+        $old_amount = $transjaction->credit_amount;
+        $next_same_date_transactions = ReceivedLoanTransaction::where('id', '>', $transjaction->id)->where('transaction_date', $transjaction->transaciton_date)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction){
+            $next_same_date_transaction->blance += $old_amount;
+            if($next_same_date_transaction->rl_head == $transjaction->rl_head){
+                $next_same_date_transaction->rl_head_blance += $old_amount;
+            }
+            $next_same_date_transaction->update();
+        }
+        $next_date_transactions = ReceivedLoanTransaction::where('transaction_date', '>', $transjaction->transaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction){
+            $next_date_transaction->blance += $old_amount;
+            if($next_date_transaction->rl_head == $transjaction->rl_head){
+                $next_date_transaction->rl_head_blance += $old_amount;
+            }
+            $next_date_transaction->update();
+        }
+        $transjaction->delete();
+        $this->saveReceivedLoanTransaction($request, $received_loan);
+    }
     public function updateReceivedLoan(Request $request){
-        return $request;
+        $this->receivedLoanValidation($request);
+        $this->allValidation($request);
+        $received_loan = ReceivedLoan::where('id', $request->id)->first();
+        $this->receivedLoanBasic($request, $received_loan);
+        $received_loan->update();
+        $this->updateCashBook($request, $received_loan);
+        $this->updateBankBook($request, $received_loan);
+        $this->updateChequeBook($request, $received_loan);
+        $this->updateReceivedTransaction($request, $received_loan);
+        return 'Received Loan Updated Successfully';
     }
 }
