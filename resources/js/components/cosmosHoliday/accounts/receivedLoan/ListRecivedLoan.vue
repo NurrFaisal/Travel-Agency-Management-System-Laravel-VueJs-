@@ -71,9 +71,6 @@
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
 
-                                                <button class="btn btn-xs btn-success">
-                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
-                                                </button>
                                                 <router-link :to="`/edit-received-loan/${received_loan.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
@@ -81,6 +78,10 @@
                                                 <a @click.prevent="downLoadInvoice(received_loan.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                     Receipt
                                                 </a>
+                                                <router-link :to="`/list-received-loan-installment/${received_loan.id}`" class="btn btn-xs btn-success">
+                                                    <!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
+                                                    Installment
+                                                </router-link>
 
                                             </div>
                                         </td>

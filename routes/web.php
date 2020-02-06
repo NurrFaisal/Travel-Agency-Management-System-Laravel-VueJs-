@@ -101,6 +101,9 @@ Route::get('/package-net-price/{anypath}', 'DashboardController@index');
 Route::get('/edit-package-net-price/{anypath}', 'DashboardController@index');
 Route::get('/edit-received-loan-head/{anypath}', 'DashboardController@index');
 Route::get('/edit-received-loan/{anypath}', 'DashboardController@index');
+Route::get('/list-received-loan-installment/{anypath}', 'DashboardController@index');
+Route::get('/new-received-loan-installment/{anypath}', 'DashboardController@index');
+Route::get('/edit-received-loan-installment/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -642,6 +645,10 @@ Route::get('/api/get-all-received-loan', 'ReceivedLoanController@getAllReceivedL
 Route::get('/api/edit-received-loan/{id}', 'ReceivedLoanController@editReceivedLoan');
 Route::post('/api/update-received-loan', 'ReceivedLoanController@updateReceivedLoan');
 // ReceivedLoanController End
+
+// RLInstallment Start
+Route::post('/api/add-received-loan-installment', 'RLInstallmentController@addReceivedLoanInstallment');
+// RLInstallment End
 
 // NewLoan End
 
