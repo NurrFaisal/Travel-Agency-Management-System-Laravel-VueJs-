@@ -184,6 +184,7 @@ class ReceivedLoanController extends Controller
         $transjaction->narration = $received_loan->narration;
         $transjaction->transaction_date = $received_loan->rl_date;
         $transjaction->credit_amount = $received_loan->total_received_loan_amount;
+        $transjaction->loan_blance = -$received_loan->total_received_loan_amount;
         if($head_blance == null){
             $transjaction->rl_head_blance = -$request->total_received_loan_amount;
         }else{

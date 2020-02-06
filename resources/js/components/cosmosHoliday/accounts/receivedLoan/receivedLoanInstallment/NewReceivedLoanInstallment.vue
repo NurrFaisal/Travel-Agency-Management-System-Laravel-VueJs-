@@ -45,7 +45,7 @@
                                     </div>
                                     <div class="widget-body justify-content-center">
                                         <div class="widget-main justify-content-center" style="margin: 0px 100px;">
-                                            <form @submit.prevent="addInstallment()" class="form-horizontal" method="post" role="form">
+                                            <form @submit.prevent="addRLInstallment()" class="form-horizontal" method="post" role="form">
                                                 <div class="form-group ">
                                                     <div class="col-md-12">
                                                         <div class="col-xs-12 col-sm-12">
@@ -162,16 +162,16 @@
                                                 <div class="form-group ">
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
-                                                            <label for="total_received_installment_amount">
+                                                            <label for="total_received_loan_installment_amount">
                                                                 Total Installment Amount<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input disabled v-model="form.total_received_installment_amount" v-validate="'required'" required :class="{ 'is-invalid': form.errors.has('total_received_installment_amount') }"   class="col-xs-12 col-sm-12" id="total_received_installment_amount" name="total_received_installment_amount" placeholder="Enter Total Installment Amount" required="" type="number">
+                                                                <input disabled v-model="form.total_received_loan_installment_amount" v-validate="'required'" required :class="{ 'is-invalid': form.errors.has('total_received_loan_installment_amount') }"   class="col-xs-12 col-sm-12" id="total_received_loan_installment_amount" name="total_received_loan_installment_amount" placeholder="Enter Total Installment Amount" required="" type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
-                                                            <has-error style="color:red" :form="form" field="total_received_installment_amount"></has-error>
-                                                            <span style="color: red">{{ errors.first('total_received_installment_amount') }}</span>
+                                                            <has-error style="color:red" :form="form" field="total_received_loan_installment_amount"></has-error>
+                                                            <span style="color: red">{{ errors.first('total_received_loan_installment_amount') }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
@@ -316,7 +316,7 @@
                     rl_installment_date:'',
                     cash:'1',
                     cheque:'',
-                    total_received_installment_amount:'',
+                    total_received_loan_installment_amount:'',
                     narration:'',
                     received_by:'',
                     paid_by:'',
@@ -363,34 +363,34 @@
                 this.sumPrice()
             },
             //Checked Unchecked End
-            addPayment(){
+            addRLInstallment(){
                 this.isLoading = true
                 this.form.post('/api/add-received-loan-installment')
-
                     .then((response) => {
-                        this.form.rl_id = ''
-                        this.form.rl_installment_date = ''
-                        this.form.cash = ''
-                        this.form.cheque = ''
-                        this.form.total_received_loan_installment_amount = ''
-                        this.form.narration = ''
-                        this.form.received_by = ''
-                        this.form.paid_by = ''
-                        this.form.approved_by = ''
-                        this.form.cashs = [
-                            {
-                                credit_cash_amount:''
-                            }
-                        ]
-                        this.form.cheques = [
-                            {
-                                bank_name:'',
-                                bank_date:'',
-                                bank_cheque_number:'',
-                                credit_bank_amount:'',
-                            }
-                        ]
-                        this.$router.push('/payment-list')
+                        console.log(response.data)
+                        // this.form.rl_id = ''
+                        // this.form.rl_installment_date = ''
+                        // this.form.cash = ''
+                        // this.form.cheque = ''
+                        // this.form.total_received_loan_installment_amount = ''
+                        // this.form.narration = ''
+                        // this.form.received_by = ''
+                        // this.form.paid_by = ''
+                        // this.form.approved_by = ''
+                        // this.form.cashs = [
+                        //     {
+                        //         credit_cash_amount:''
+                        //     }
+                        // ]
+                        // this.form.cheques = [
+                        //     {
+                        //         bank_name:'',
+                        //         bank_date:'',
+                        //         bank_cheque_number:'',
+                        //         credit_bank_amount:'',
+                        //     }
+                        // ]
+                        // this.$router.push('/payment-list')
                         this.isLoading = false
                         Toast.fire({
                             type: 'success',
@@ -410,14 +410,13 @@
                 console.log('User cancelled the loader.')
             },
             sumPrice(){
-                this.form.due_amount = 0
-                this.form.total_received_installment_amount = 0
+                this.form.total_received_loan_installment_amount = 0
                 if(this.form.cashs[0].credit_cash_amount != ''){
-                    this.form.total_received_installment_amount += parseInt(this.form.cashs[0].credit_cash_amount)
+                    this.form.total_received_loan_installment_amount += parseInt(this.form.cashs[0].credit_cash_amount)
                 }
                 for(let i = 0; i < this.form.cheques.length; i++){
                     if(this.form.cheques[i].credit_bank_amount != ''){
-                        this.form.total_received_installment_amount += parseInt(this.form.cheques[i].credit_bank_amount)
+                        this.form.total_received_loan_installment_amount += parseInt(this.form.cheques[i].credit_bank_amount)
                     }
                 }
 
