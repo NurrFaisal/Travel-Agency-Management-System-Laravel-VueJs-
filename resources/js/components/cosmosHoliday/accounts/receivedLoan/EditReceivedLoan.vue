@@ -436,7 +436,7 @@
                 this.sumPrice()
             },
             updateReceivedLoan(){
-                // this.isLoading = true
+                this.isLoading = true
                 this.form.post('/api/update-received-loan')
                     .then((response) => {
                         this.form.id = ''

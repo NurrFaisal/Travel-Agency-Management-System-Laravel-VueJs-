@@ -39,13 +39,45 @@
                                     <div class="widget-header">
                                         <h5 class="widget-title">Add Installment</h5>
                                         <div class="card-tools" style="float:right">
-                                            <router-link :to="`/list-received-loan-installment/${this.$route.params.id}`" class="btn btn-success">Debit Voucher List</router-link>
+                                            <router-link :to="`/list-received-loan-installment`" class="btn btn-success">Debit Voucher List</router-link>
                                         </div>
                                         <br/>
                                     </div>
                                     <div class="widget-body justify-content-center">
                                         <div class="widget-main justify-content-center" style="margin: 0px 100px;">
                                             <form @submit.prevent="addRLInstallment()" class="form-horizontal" method="post" role="form">
+                                                <div class="form-group ">
+                                                    <div class="col-md-6">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="rl_installment_date">
+                                                                Date<span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input v-model="form.rl_installment_date" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('rl_installment_date') }"   class="col-xs-12 col-sm-12" id="rl_installment_date" name="rl_installment_date" required="" type="date">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="rl_installment_date"></has-error>
+                                                            <span style="color: red">{{ errors.first('rl_installment_date') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                    <div class="col-xs-12 col-sm-12">
+                                                        <label for="loan_name">
+                                                            Loan Name<span class="text-danger">*</span> :
+                                                        </label>
+                                                        <select v-validate="'required'" v-model="form.loan_id" :class="{ 'is-invalid': form.errors.has('loan_name') }" required  id="loan_name" name="loan_name" class="col-xs-12 col-sm-12" >
+                                                            <option value="">--Select Loan Name--</option>
+                                                            <option :value="rl.id" v-for="rl in received_loans " >{{rl.rl_head}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                        <has-error style="color:red" :form="form" field="loan_name"></has-error>
+                                                        <span style="color: red">{{ errors.first('loan_name') }}</span>
+                                                    </div>
+                                                </div>
+
+                                                </div>
                                                 <div class="form-group ">
                                                     <div class="col-md-12">
                                                         <div class="col-xs-12 col-sm-12">
@@ -176,23 +208,6 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
-                                                            <label for="rl_installment_date">
-                                                                Date<span class="text-danger">*</span> :
-                                                            </label>
-                                                            <span class="block input-icon input-icon-right">
-                                                                <input v-model="form.rl_installment_date" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('rl_installment_date') }"   class="col-xs-12 col-sm-12" id="rl_installment_date" name="rl_installment_date" required="" type="date">
-                                                            </span>
-                                                        </div>
-                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
-                                                            <has-error style="color:red" :form="form" field="rl_installment_date"></has-error>
-                                                            <span style="color: red">{{ errors.first('rl_installment_date') }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                                <div class="form-group ">
-                                                    <div class="col-md-12">
-                                                        <div class="col-xs-12 col-sm-12">
                                                             <label for="narration">
                                                                 Narration<span class="text-danger">*</span> :
                                                             </label>
@@ -205,8 +220,8 @@
                                                             <span style="color: red">{{ errors.first('narration') }}</span>
                                                         </div>
                                                     </div>
-                                                </div>
 
+                                                </div>
                                                 <div class="form-group ">
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
@@ -294,6 +309,7 @@
         components: {Loading},
         mounted(){
             this.isLoading = true
+            this.getLoanName();
             this.$store.dispatch('allBanks')
             this.isLoading = false
         },
@@ -311,9 +327,11 @@
                 isLoading: false,
                 fullPage: false,
 
+                received_loans:'',
+
                 form: new Form({
-                    rl_id:`${this.$route.params.id}`,
                     rl_installment_date:'',
+                    loan_id:'',
                     cash:'1',
                     cheque:'',
                     total_received_loan_installment_amount:'',
@@ -363,34 +381,41 @@
                 this.sumPrice()
             },
             //Checked Unchecked End
+            getLoanName(){
+                axios.get('/api/get-all-received-loan-name')
+                    .then(response => {
+                        this.received_loans = response.data.received_loans
+                        this.doAjax();
+                    })
+            },
             addRLInstallment(){
                 this.isLoading = true
                 this.form.post('/api/add-received-loan-installment')
                     .then((response) => {
                         console.log(response.data)
-                        // this.form.rl_id = ''
-                        // this.form.rl_installment_date = ''
-                        // this.form.cash = ''
-                        // this.form.cheque = ''
-                        // this.form.total_received_loan_installment_amount = ''
-                        // this.form.narration = ''
-                        // this.form.received_by = ''
-                        // this.form.paid_by = ''
-                        // this.form.approved_by = ''
-                        // this.form.cashs = [
-                        //     {
-                        //         credit_cash_amount:''
-                        //     }
-                        // ]
-                        // this.form.cheques = [
-                        //     {
-                        //         bank_name:'',
-                        //         bank_date:'',
-                        //         bank_cheque_number:'',
-                        //         credit_bank_amount:'',
-                        //     }
-                        // ]
-                        // this.$router.push('/payment-list')
+                        this.form.rl_id = ''
+                        this.form.rl_installment_date = ''
+                        this.form.cash = ''
+                        this.form.cheque = ''
+                        this.form.total_received_loan_installment_amount = ''
+                        this.form.narration = ''
+                        this.form.received_by = ''
+                        this.form.paid_by = ''
+                        this.form.approved_by = ''
+                        this.form.cashs = [
+                            {
+                                credit_cash_amount:''
+                            }
+                        ]
+                        this.form.cheques = [
+                            {
+                                bank_name:'',
+                                bank_date:'',
+                                bank_cheque_number:'',
+                                credit_bank_amount:'',
+                            }
+                        ]
+                        this.$router.push('/payment-list')
                         this.isLoading = false
                         Toast.fire({
                             type: 'success',

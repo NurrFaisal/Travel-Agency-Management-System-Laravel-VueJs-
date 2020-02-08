@@ -15,7 +15,7 @@ class CreateRLInstallmentsTable extends Migration
     {
         Schema::create('r_l_installments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('rl_id');
+            $table->unsignedBigInteger('loan_id');
             $table->date('rl_installment_date');
             $table->tinyInteger('cash')->nullable();
             $table->tinyInteger('cheque')->nullable();

@@ -179,7 +179,7 @@ class PaymentController extends Controller
         $next_same_dates = SuplierTransaction::where('id', '>', $suplier_transaction->id)->where('transaction_date', $payment->debit_voucher_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->balance += $request->total_payment_amount;
-            if($next_same_date->staff_id == $request->staff){
+            if($next_same_date->suplier_id == $suplier_transaction->suplier_id){
                 $next_same_date->suplier_balance += $request->total_payment_amount;
             }
             $next_same_date->update();
@@ -187,7 +187,7 @@ class PaymentController extends Controller
         $next_dates = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $payment->debit_voucher_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->balance += $request->total_payment_amount;
-            if($next_date->staff_id == $request->staff){
+            if($next_date->suplier_id == $suplier_transaction->suplier_id){
                 $next_date->suplier_balance += $request->total_payment_amount;
             }
             $next_date->update();
@@ -256,11 +256,17 @@ class PaymentController extends Controller
             $next_same_bank_books = BankBook::where('bank_date', $bank_book->bank_date)->where('id', '>', $bank_book->id)->get();
             foreach ($next_same_bank_books as $next_same_bank_book){
                 $next_same_bank_book->blance += $old_amount;
+                if($next_same_bank_book->bank_name == $bank_book->bank_name){
+                    $next_same_bank_book->bank_blance += $old_amount;
+                }
                 $next_same_bank_book->update();
             }
             $next_bank_books = BankBook::where('bank_date','>', $bank_book->bank_date)->orderBy('bank_date', 'asc')->get();
             foreach ($next_bank_books as $next_bank_book){
                 $next_bank_book->blance += $old_amount;
+                if($next_bank_book->bank_name == $bank_book->bank_name){
+                    $next_bank_book->bank_blance += $old_amount;
+                }
                 $next_bank_book->update();
             }
             $bank_book->delete();
@@ -277,11 +283,17 @@ class PaymentController extends Controller
         $next_same_date_sup_transactions = SuplierTransaction::where('transaction_date', $suplier_transaction->transaction_date)->where('id', '>', $suplier_transaction->id)->get();
         foreach ($next_same_date_sup_transactions as $next_same_date_sup_transaction){
             $next_same_date_sup_transaction->balance -= $old_debit_amount;
+            if($next_same_date_sup_transaction->suplier_id == $suplier_transaction->suplier_id){
+                $next_same_date_sup_transaction->suplier_balance -= $old_debit_amount;
+            }
             $next_same_date_sup_transaction->update();
         }
         $next_date_sup_transactions = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $suplier_transaction->transaction_date)->get();
         foreach ($next_date_sup_transactions as $next_date_sup_transaction){
             $next_date_sup_transaction->balance -= $old_debit_amount;
+            if($next_date_sup_transaction->suplier_id == $suplier_transaction->suplier_id){
+                $next_date_sup_transaction->suplier_balance -= $old_debit_amount;
+            }
             $next_date_sup_transaction->update();
         }
         $suplier_transaction->delete();

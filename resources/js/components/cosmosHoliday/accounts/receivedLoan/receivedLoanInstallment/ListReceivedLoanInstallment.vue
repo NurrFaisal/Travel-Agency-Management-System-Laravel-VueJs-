@@ -37,7 +37,7 @@
                     <h1>
                         Received Loan Install List
                         <div class="card-tools" style="float:right">
-                            <router-link :to="`/new-received-loan-installment/${this.$route.params.id}`" class="btn btn-success">Add Installment</router-link>
+                            <router-link :to="`/new-received-loan-installment`" class="btn btn-success">Add Installment</router-link>
                         </div>
                         <br/>
                     </h1>
@@ -53,7 +53,7 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Date</th>
-                                        <th>Head</th>
+                                        <th>Installment By</th>
                                         <th>Narration</th>
                                         <th>Received Amount</th>
                                         <th>Action</th>
@@ -61,27 +61,23 @@
                                     </thead>
 
                                     <tbody>
-                                    <tr v-for="(received_loan, index) in  received_loans">
+                                    <tr v-for="(installment, index) in  installments">
                                         <td class="center">{{index+1}}</td>
-                                        <td>{{received_loan.rl_date | timeformate}}</td>
-                                        <td>{{received_loan.head.name}}</td>
-                                        <td>{{received_loan.narration}}</td>
-                                        <td>{{received_loan.total_received_loan_amount}}</td>
+                                        <td>{{installment.rl_installment_date | timeformate}}</td>
+                                        <td>{{installment.cash == 1 ? 'Cash-' : ''}}{{installment.cheque == 1 ? 'Cheque' : ''}}</td>
+                                        <td>{{installment.narration}}</td>
+                                        <td>{{installment.total_received_loan_installment_amount}}</td>
 
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
 
-                                                <router-link :to="`/edit-received-loan/${received_loan.id}`" class="btn btn-xs btn-info">
+                                                <router-link :to="`/edit-received-loan-installment/${installment.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <a @click.prevent="downLoadInvoice(received_loan.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
+                                                <a @click.prevent="downLoadInvoice(installment.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                     Receipt
                                                 </a>
-                                                <router-link :to="`/list-received-loan-installment/${received_loan.id}`" class="btn btn-xs btn-success">
-                                                    <!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
-                                                    Installment
-                                                </router-link>
 
                                             </div>
                                         </td>
@@ -93,7 +89,7 @@
                                 <pagination v-if="pagination.last_page > 1"
                                             :pagination="pagination"
                                             :offset="5"
-                                            @paginate="getReceivedLoan()"
+                                            @paginate="getRLInstallment()"
                                 ></pagination>
                             </div>
 
@@ -117,7 +113,8 @@
         name: "ListReceivedLoanInstallment",
         mounted() {
             this.isLoading = true
-            this.getReceivedLoan()
+            this.getRLInstallment()
+            this.doAjax()
         },
         components: {
             Loading
@@ -133,15 +130,15 @@
                 pagination:{
                     current_page: 1,
                 },
-                received_loans: '',
+                installments: '',
             }
         },
         methods:{
-            getReceivedLoan(){
-                axios.get('/api/get-all-received-loan?page='+this.pagination.current_page)
+            getRLInstallment(){
+                axios.get('/api/get-all-rl-installment?page='+this.pagination.current_page)
                     .then(response => {
-                        this.received_loans = response.data.received_loans.data
-                        this.pagination = response.data.received_loans
+                        this.installments = response.data.installments.data
+                        this.pagination = response.data.installments
                         this.doAjax();
                     })
             },

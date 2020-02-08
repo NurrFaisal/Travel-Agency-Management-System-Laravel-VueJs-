@@ -346,7 +346,6 @@
         mounted(){
             this.isLoading = true
             this.$store.dispatch('allBanks')
-            this.getAllReceivedHead()
             this.doAjax()
 
 
@@ -435,8 +434,7 @@
                 this.sumPrice()
             },
             addReceivedLoan(){
-                // this.isLoading = true
-
+                this.isLoading = true
                 this.form.post('/api/add-received-loan')
                     .then((response) => {
                         this.form.rl_date = ''
@@ -506,12 +504,6 @@
                 console.log('User cancelled the loader.')
             },
 
-            getAllReceivedHead(){
-                axios.get('/api/get-all-received-loan-head')
-                    .then(response => {
-                        this.rl_heads = response.data.rl_heads
-                    })
-            }
 
 
         }

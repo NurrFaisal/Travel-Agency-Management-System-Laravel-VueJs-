@@ -632,12 +632,6 @@ Route::get('/api/get-all-staff', 'VisaUpdatedController@getAlltaff');
 
 // NewLoan Start
 
-// ReceivedLoanheadController Start
-Route::post('/api/add-received-loan-head', 'ReceivedLoanHeadController@addReceivedLoanHead');
-Route::get('/api/get-all-received-loan-head', 'ReceivedLoanHeadController@getAllReceivedLoanHead');
-Route::get('/api/edit-received-loan-head/{id}', 'ReceivedLoanHeadController@getReceivedLoanHead');
-Route::post('/api/update-received-loan-head', 'ReceivedLoanHeadController@updateReceivedLoanHead');
-// ReceivedLoanHeadController End
 
 // ReceivedLoanController Start
 Route::post('/api/add-received-loan', 'ReceivedLoanController@addReceivedLoan');
@@ -648,6 +642,10 @@ Route::post('/api/update-received-loan', 'ReceivedLoanController@updateReceivedL
 
 // RLInstallment Start
 Route::post('/api/add-received-loan-installment', 'RLInstallmentController@addReceivedLoanInstallment');
+Route::get('/api/get-all-received-loan-name', 'RLInstallmentController@getAllReceivedLoanName');
+Route::get('/api/get-all-rl-installment', 'RLInstallmentController@getAllRLInstallment');
+Route::get('/api/edit-rl-installment/{id}', 'RLInstallmentController@editRLInstallment');
+Route::post('/api/update-received-loan-installment', 'RLInstallmentController@updateRLInstallment');
 // RLInstallment End
 
 // NewLoan End

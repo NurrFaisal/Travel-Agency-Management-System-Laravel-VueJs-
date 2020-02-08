@@ -129,11 +129,6 @@ import AddGuestConfirmationComponent from "./components/cosmosHoliday/package/ad
 import AddPackageVisaUpdateNew from "./components/cosmosHoliday/package/additional/AddPackageVisaUpdateNew";
 import AddNetPrice from "./components/cosmosHoliday/package/additional/AddNetPrice";
 import EditPackageNetPrice from "./components/cosmosHoliday/package/pages/EditPackageNetPrice";
-import ListReceivedLoanHead
-    from "./components/cosmosHoliday/accounts/receivedLoan/ReceivedLoanHead/ListReceivedLoanHead";
-import NewReceivedLoanHead from "./components/cosmosHoliday/accounts/receivedLoan/ReceivedLoanHead/NewReceivedLoanHead";
-import EditReceivedLoanHead
-    from "./components/cosmosHoliday/accounts/receivedLoan/ReceivedLoanHead/EditReceivedLoanHead";
 import ListRecivedLoan from "./components/cosmosHoliday/accounts/receivedLoan/ListRecivedLoan";
 import NewReceivedLoan from "./components/cosmosHoliday/accounts/receivedLoan/NewReceivedLoan";
 import EditReceivedLoan from "./components/cosmosHoliday/accounts/receivedLoan/EditReceivedLoan";
@@ -850,18 +845,6 @@ export const routes = [
     // Accounts All Router End
 
     // Received Loan Start
-    {
-        path:'/received-loan-head-list',
-        component: ListReceivedLoanHead
-    },
-    {
-      path:'/new-received-loan-head',
-      component: NewReceivedLoanHead
-    },
-    {
-        path:'/edit-received-loan-head/:id',
-        component: EditReceivedLoanHead
-    },
 
     {
         path:'/received-loan-list',
@@ -878,11 +861,11 @@ export const routes = [
 
     //Received Loan Installment start
     {
-        path:'/new-received-loan-installment/:id',
+        path:'/new-received-loan-installment',
         component: NewReceivedLoanInstallment
     },
     {
-        path:'/list-received-loan-installment/:id',
+        path:'/list-received-loan-installment',
         component:ListReceivedLoanInstallment
     },
     {

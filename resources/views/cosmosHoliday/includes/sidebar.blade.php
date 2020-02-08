@@ -345,12 +345,13 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <router-link to="/received-loan-head-list">
+                    <router-link to="/list-received-loan-installment">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Received Loan Head List
+                        Installment List
                     </router-link>
                     <b class="arrow"></b>
                 </li>
+
             </ul>
         </li>
         <li class="">
