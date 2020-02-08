@@ -16,7 +16,7 @@ class CreateReceivedLoansTable extends Migration
         Schema::create('received_loans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('rl_date');
-            $table->unsignedBigInteger('rl_head');
+            $table->string('rl_head');
             $table->tinyInteger('cash')->nullable();
             $table->tinyInteger('bank')->nullable();
             $table->tinyInteger('cheque')->nullable();

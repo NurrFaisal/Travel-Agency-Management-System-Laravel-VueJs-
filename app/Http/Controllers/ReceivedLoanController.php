@@ -170,38 +170,35 @@ class ReceivedLoanController extends Controller
         }
     }
     protected function saveReceivedLoanTransaction($request, $received_loan){
-        $head_blance = ReceivedLoanTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $received_loan->rl_date )->where('rl_head',  $received_loan->rl_head )->first();
-        if($head_blance == null){
-            $head_blance = ReceivedLoanTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $received_loan->rl_date)->where('rl_head',  $received_loan->rl_head )->first();
-        }
         $pre_transaction = ReceivedLoanTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $received_loan->rl_date)->first();
         if($pre_transaction == null){
             $pre_transaction = ReceivedLoanTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $received_loan->rl_date)->first();
         }
         $transjaction = new ReceivedLoanTransaction();
-        $transjaction->rl_head = $request->rl_head;
         $transjaction->received_loan_id = $received_loan->id;
         $transjaction->narration = $received_loan->narration;
         $transjaction->transaction_date = $received_loan->rl_date;
         $transjaction->credit_amount = $received_loan->total_received_loan_amount;
         $transjaction->loan_blance = -$received_loan->total_received_loan_amount;
-        if($head_blance == null){
-            $transjaction->rl_head_blance = -$request->total_received_loan_amount;
-        }else{
-            $transjaction->rl_head_blance = $head_blance->rl_head_blance - $request->total_received_loan_amount;
-        }
         if($pre_transaction == null){
             $transjaction->blance = -$request->total_received_loan_amount;
         }else{
             $transjaction->blance = $pre_transaction->blance - $request->total_received_loan_amount;
         }
         $transjaction->save();
-
+        $next_same_dates = ReceivedLoanTransaction::where('id', '>', $transjaction->id)->where('transaction_date', $transjaction->transaction_date)->get();
+        foreach ($next_same_dates as $next_same_date){
+            $next_same_date->blance -= $request->total_received_loan_amount;
+            if($next_same_date->ins_loan_id == $transjaction->received_loan_id){
+                $next_same_date->loan_blance -= $request->total_received_loan_amount;
+            }
+            $next_same_date->update();
+        }
         $next_dates = ReceivedLoanTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $transjaction->transaction_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $request->total_received_loan_amount;
-            if($next_date->rl_head == $request->rl_head){
-                $next_date->rl_head_blance -= $request->total_received_loan_amount;
+            if($next_date->ins_loan_id == $transjaction->received_loan_id){
+                $next_date->loan_blance -= $request->total_received_loan_amount;
             }
             $next_date->update();
         }
@@ -212,18 +209,18 @@ class ReceivedLoanController extends Controller
         $received_loan = new ReceivedLoan();
         $this->receivedLoanBasic($request, $received_loan);
         $received_loan->save();
-        $this->saveallbooks($request, $received_loan);
         $this->saveReceivedLoanTransaction($request, $received_loan);
+        $this->saveallbooks($request, $received_loan);
         return 'Saved All Book And Transaction';
     }
     public function getAllReceivedLoan(){
-        $received_loans = ReceivedLoan::with('head')->orderBy('id', 'desc')->paginate(10);
+        $received_loans = ReceivedLoan::orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'received_loans' => $received_loans
         ]);
     }
     public function editReceivedLoan($id){
-        $received_loan = ReceivedLoan::with('cashs', 'banks', 'cheques', 'head')->where('id', $id)->first();
+        $received_loan = ReceivedLoan::with('cashs', 'banks', 'cheques')->where('id', $id)->first();
         return response()->json([
             'received_loan' => $received_loan
         ]);
@@ -289,16 +286,16 @@ class ReceivedLoanController extends Controller
         $next_same_date_transactions = ReceivedLoanTransaction::where('id', '>', $transjaction->id)->where('transaction_date', $transjaction->transaciton_date)->get();
         foreach ($next_same_date_transactions as $next_same_date_transaction){
             $next_same_date_transaction->blance += $old_amount;
-            if($next_same_date_transaction->rl_head == $transjaction->rl_head){
-                $next_same_date_transaction->rl_head_blance += $old_amount;
+            if($next_same_date_transaction->ins_loan_id == $transjaction->received_loan_id){
+                $next_same_date_transaction->loan_blance += $old_amount;
             }
             $next_same_date_transaction->update();
         }
         $next_date_transactions = ReceivedLoanTransaction::where('transaction_date', '>', $transjaction->transaction_date)->get();
         foreach ($next_date_transactions as $next_date_transaction){
             $next_date_transaction->blance += $old_amount;
-            if($next_date_transaction->rl_head == $transjaction->rl_head){
-                $next_date_transaction->rl_head_blance += $old_amount;
+            if($next_date_transaction->ins_loan_id == $transjaction->received_loan_id){
+                $next_date_transaction->loan_blance += $old_amount;
             }
             $next_date_transaction->update();
         }

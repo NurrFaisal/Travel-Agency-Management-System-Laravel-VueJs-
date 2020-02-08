@@ -71,10 +71,7 @@
                                                                 Head<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <select v-model="form.rl_head" v-validate="'required'" :class="{ 'is-invalid': form.errors.has('rl_head') }" required  id="rl_head" name="rl_head" class="col-xs-12 col-sm-12" >
-                                                                    <option value="">--Select Head--</option>
-                                                                    <option  :value="rl_h.id" v-for="rl_h in rl_heads " >{{rl_h.name}}</option>
-                                                                </select>
+                                                                <input v-model="form.rl_head" v-validate="'required'"  :class="{ 'is-invalid': form.errors.has('rl_head') }"   class="col-xs-12 col-sm-12" id="rl_head" name="rl_head"  required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">

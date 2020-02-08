@@ -9,10 +9,6 @@ class ReceivedLoan extends Model
 {
     protected $guarded = [];
 
-    public function head(){
-        return $this->belongsTo(ReceivedLoanHead::class, 'rl_head');
-    }
-
     public function cashs(){
         return $this->hasMany(CashBook::class, 'received_loan_id', 'id');
     }
