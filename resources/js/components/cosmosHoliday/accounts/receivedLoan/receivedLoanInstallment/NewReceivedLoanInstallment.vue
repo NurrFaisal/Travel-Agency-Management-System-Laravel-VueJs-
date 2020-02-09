@@ -415,7 +415,7 @@
                                 credit_bank_amount:'',
                             }
                         ]
-                        this.$router.push('/payment-list')
+                        this.$router.push('/list-received-loan-installment')
                         this.isLoading = false
                         Toast.fire({
                             type: 'success',

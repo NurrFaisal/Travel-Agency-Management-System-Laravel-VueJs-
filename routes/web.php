@@ -104,6 +104,7 @@ Route::get('/edit-received-loan/{anypath}', 'DashboardController@index');
 Route::get('/list-received-loan-installment/{anypath}', 'DashboardController@index');
 Route::get('/new-received-loan-installment/{anypath}', 'DashboardController@index');
 Route::get('/edit-received-loan-installment/{anypath}', 'DashboardController@index');
+Route::get('/edit-payment-loan/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -647,6 +648,15 @@ Route::get('/api/get-all-rl-installment', 'RLInstallmentController@getAllRLInsta
 Route::get('/api/edit-rl-installment/{id}', 'RLInstallmentController@editRLInstallment');
 Route::post('/api/update-received-loan-installment', 'RLInstallmentController@updateRLInstallment');
 // RLInstallment End
+
+
+// PaymentLoanController Start
+Route::post('/api/add-payment-loan', 'PaymentLoanController@addPaymentLoan');
+Route::get('/api/get-all-payment-loan', 'PaymentLoanController@getAllPaymentLoans');
+Route::get('/api/edit-payment-loan/{id}', 'PaymentLoanController@editPaymentLoan');
+Route::post('/api/update-payment-loan', 'PaymentLoanController@updatePaymentLoan');
+// PaymentLoanController End
+
 
 // NewLoan End
 
