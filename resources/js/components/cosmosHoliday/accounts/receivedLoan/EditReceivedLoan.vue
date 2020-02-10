@@ -334,18 +334,16 @@
 </template>
 
 <script>
-    import GuestAutoComplate from "../../searchSelect/GuestAutoComplate";
     import Loading from 'vue-loading-overlay';
     // Import stylesheet
     import 'vue-loading-overlay/dist/vue-loading.css';
     import _ from "lodash";
     export default {
         name: "EditReceivedLoan",
-        components: {GuestAutoComplate, Loading},
+        components: {Loading},
         mounted(){
             this.isLoading = true
             this.$store.dispatch('allBanks')
-            this.getAllReceivedHead()
             this.editReceivedLoan()
             this.doAjax()
 
@@ -507,12 +505,6 @@
                 console.log('User cancelled the loader.')
             },
 
-            getAllReceivedHead(){
-                axios.get('/api/get-all-received-loan-head')
-                    .then(response => {
-                        this.rl_heads = response.data.rl_heads
-                    })
-            },
             editReceivedLoan(){
                 axios.get(`/api/edit-received-loan/${this.$route.params.id}`)
                     .then((respose) => {

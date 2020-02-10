@@ -657,6 +657,11 @@ Route::get('/api/edit-payment-loan/{id}', 'PaymentLoanController@editPaymentLoan
 Route::post('/api/update-payment-loan', 'PaymentLoanController@updatePaymentLoan');
 // PaymentLoanController End
 
+// PLInstallment Start
+Route::get('/api/get-all-payment-loan-name', 'PLInstallmentController@getAllPaymentLoanName');
+Route::post('/api/add-payment-loan-installment', 'PLInstallmentController@addPaymentLoanInstallment');
+// PLInstallment End
+
 
 // NewLoan End
 

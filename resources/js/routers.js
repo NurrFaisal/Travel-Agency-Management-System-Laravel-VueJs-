@@ -141,6 +141,12 @@ import EditReceivedLoanInstallment
 import ListPaymentLoan from "./components/cosmosHoliday/accounts/paymentLoan/ListPaymentLoan";
 import NewPaymentLoan from "./components/cosmosHoliday/accounts/paymentLoan/NewPaymentLoan";
 import EditPaymentLoan from "./components/cosmosHoliday/accounts/paymentLoan/EditPaymentLoan";
+import ListPaymentInstallment
+    from "./components/cosmosHoliday/accounts/paymentLoan/paymentLoanInstallment/ListPaymentInstallment";
+import NewPaymentInstallment
+    from "./components/cosmosHoliday/accounts/paymentLoan/paymentLoanInstallment/NewPaymentInstallment";
+import EditPaymentInstallment
+    from "./components/cosmosHoliday/accounts/paymentLoan/paymentLoanInstallment/EditPaymentInstallment";
 
 
 
@@ -891,9 +897,26 @@ export const routes = [
     {
         path:'/edit-payment-loan/:id',
         component: EditPaymentLoan
-    }
+    },
 
-    // Received Loan End
+    //payment loan installment start
+    {
+        path:'/payment-loan-installment-list',
+        component: ListPaymentInstallment
+    },
+    {
+        path:'/new-payment-loan-installment',
+        component: NewPaymentInstallment
+    },
+    {
+        path:'/edit-payment-loan-installment/:id',
+        component: EditPaymentInstallment
+    },
+    // Payment Loan installment end
+    // Payment Loan End
+
+
+
 
 
 

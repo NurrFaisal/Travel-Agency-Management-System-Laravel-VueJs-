@@ -371,9 +371,9 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <router-link to="/payment-loan-head-list">
+                    <router-link to="/payment-loan-installment-list">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        Payment Loan Head List
+                        Installment
                     </router-link>
                     <b class="arrow"></b>
                 </li>

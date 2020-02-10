@@ -17,7 +17,7 @@
                     </li>
 
                     <li>
-                        <router-link to="/payment-loan-list">Payment Loan List</router-link>
+                        <router-link to="/payment-loan-installment-list">Payment Loan List</router-link>
                     </li>
                 </ul><!-- /.breadcrumb -->
 

@@ -335,14 +335,13 @@
 </template>
 
 <script>
-    import GuestAutoComplate from "../../searchSelect/GuestAutoComplate";
     import Loading from 'vue-loading-overlay';
     // Import stylesheet
     import 'vue-loading-overlay/dist/vue-loading.css';
     import _ from "lodash";
     export default {
         name: "NewReceivedLoanInstallment",
-        components: {GuestAutoComplate, Loading},
+        components: {Loading},
         mounted(){
             this.isLoading = true
             this.$store.dispatch('allBanks')
