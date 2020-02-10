@@ -17,7 +17,7 @@
                     </li>
 
                     <li>
-                        <router-link to="/payment-loan-installment-list">PL Installment List</router-link>
+                        <router-link to="/payment-loan-installment-list"><strong>Payment Loan Installment List</strong></router-link>
                     </li>
                 </ul><!-- /.breadcrumb -->
 
@@ -35,9 +35,9 @@
 
                 <div class="page-header">
                     <h1>
-                        PL Installment List
+                        Payment Loan Installment List
                         <div class="card-tools" style="float:right">
-                            <router-link to="/new-payment-loan-installment" class="btn btn-success">Add PL Installment</router-link>
+                            <router-link :to="`/new-payment-loan-installment`" class="btn btn-success">Add Installment</router-link>
                         </div>
                         <br/>
                     </h1>
@@ -53,7 +53,7 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Date</th>
-                                        <th>Head</th>
+                                        <th>Installment By</th>
                                         <th>Narration</th>
                                         <th>Received Amount</th>
                                         <th>Action</th>
@@ -61,27 +61,23 @@
                                     </thead>
 
                                     <tbody>
-                                    <tr v-for="(payment_loan, index) in  payment_loans">
+                                    <tr v-for="(installment, index) in  installments">
                                         <td class="center">{{index+1}}</td>
-                                        <td>{{payment_loan.pl_date | timeformate}}</td>
-                                        <td>{{payment_loan.pl_name}}</td>
-                                        <td>{{payment_loan.narration}}</td>
-                                        <td>{{payment_loan.total_payment_loan_amount}}</td>
+                                        <td>{{installment.pl_installment_date | timeformate}}</td>
+                                        <td>{{installment.cash == 1 ? 'Cash-' : ''}}{{installment.cheque == 1 ? 'Cheque' : ''}}</td>
+                                        <td>{{installment.narration}}</td>
+                                        <td>{{installment.total_payment_loan_installment_amount}}</td>
 
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
 
-                                                <router-link :to="`/edit-payment-loan/${payment_loan.id}`" style="margin-right: 2px;" class="btn btn-xs btn-info">
+                                                <router-link :to="`/edit-payment-loan-installment/${installment.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <a @click.prevent="downLoadInvoice(payment_loan.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
+                                                <a @click.prevent="downLoadInvoice(installment.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                     Receipt
                                                 </a>
-                                                <!--                                                <router-link :to="`/list-received-loan-installment/${received_loan.id}`" class="btn btn-xs btn-success">-->
-                                                <!--                                                    &lt;!&ndash;                                                    <i class="ace-icon fa fa-eye bigger-120"></i>&ndash;&gt;-->
-                                                <!--                                                    Installment-->
-                                                <!--                                                </router-link>-->
 
                                             </div>
                                         </td>
@@ -93,7 +89,7 @@
                                 <pagination v-if="pagination.last_page > 1"
                                             :pagination="pagination"
                                             :offset="5"
-                                            @paginate="getPaymentLoan()"
+                                            @paginate="getPLInstallment()"
                                 ></pagination>
                             </div>
 
@@ -116,8 +112,9 @@
     export default {
         name: "ListPaymentInstallment",
         mounted() {
-            // this.isLoading = true
-            this.getPaymentLoan()
+            this.isLoading = true
+            this.getPLInstallment()
+            this.doAjax()
         },
         components: {
             Loading
@@ -133,15 +130,15 @@
                 pagination:{
                     current_page: 1,
                 },
-                payment_loans: '',
+                installments: '',
             }
         },
         methods:{
-            getPaymentLoan(){
-                axios.get('/api/get-all-payment-loan?page='+this.pagination.current_page)
+            getPLInstallment(){
+                axios.get('/api/get-all-payment-loan-installment?page='+this.pagination.current_page)
                     .then(response => {
-                        this.payment_loans = response.data.payment_loans.data
-                        this.pagination = response.data.payment_loans
+                        this.installments = response.data.installments.data
+                        this.pagination = response.data.installments
                         this.doAjax();
                     })
             },

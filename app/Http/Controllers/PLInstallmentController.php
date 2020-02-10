@@ -89,19 +89,19 @@ class PLInstallmentController extends Controller
         $cash_book->narration = $request->narration;
         $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
         if($pre_cash_book == null ){
-            $cash_book->blance = -$request->cashs[0]['debit_cash_amount'];
+            $cash_book->blance = $request->cashs[0]['debit_cash_amount'];
         }else{
-            $cash_book->blance = $pre_cash_book->blance - $request->cashs[0]['debit_cash_amount'];
+            $cash_book->blance = $pre_cash_book->blance + $request->cashs[0]['debit_cash_amount'];
         }
         $cash_book->save();
         $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $pl_installment->pl_installment_date)->get();
         foreach ($next_same_dates as $next_same_date){
-            $next_same_date->blance -= $cash_book->debit_cash_amount;
+            $next_same_date->blance += $cash_book->debit_cash_amount;
             $next_same_date->update();
         }
         $next_dates = CashBook::orderBy('cash_date', 'asc')->where('cash_date', '>', $pl_installment->pl_installment_date)->get();
         foreach ($next_dates as $next_date){
-            $next_date->blance -= $cash_book->debit_cash_amount;
+            $next_date->blance += $cash_book->debit_cash_amount;
             $next_date->update();
         }
     }
@@ -236,6 +236,106 @@ class PLInstallmentController extends Controller
             $this->chequeBookFunction($request, $pl_installment);
         }
         return 'Payment Loan Installment Saved Successfully...';
-
+    }
+    public function getAllPaymentLoanInstallment(){
+        $installments = PLInstallment::orderBy('id', 'desc')->paginate(10);
+        return response()->json([
+            'installments' => $installments
+        ]);
+    }
+    public function editPaymentLoanInstallment($id){
+        $installment = PLInstallment::with('cashs', 'banks', 'cheques')->where('id', $id)->first();
+        return response()->json([
+            'installment' => $installment
+        ]);
+    }
+    public function updatePLCashBook($request, $pl_installment){
+        $cash_book = CashBook::where('pl_installment_id', $pl_installment->id)->first();
+        if($cash_book != null){
+            $old_amount = $cash_book->debit_cash_amount;
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'pl_installment_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            foreach ($next_same_date_cashs as $next_same_date_cash){
+                $next_same_date_cash->blance -= $old_amount;
+                $next_same_date_cash->update();
+            }
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'pl_installment_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
+            foreach ($next_date_cashs as $next_date_cash){
+                $next_date_cash->blance -=$old_amount;
+                $next_date_cash->update();
+            }
+            $cash_book->delete();
+        }
+        if($request->cash){
+            $this->savePLInstallmentCash($request, $pl_installment);
+        }
+    }
+    public function updatePLInstallmentBank($request, $pl_installment){
+        $bank_books = BankBook::where('pl_installment_id', $request->id)->get();
+        foreach ($bank_books as $bank_book){
+            $old_amount = $bank_book->debit_bank_amount;
+            $next_same_bank_books = BankBook::where('bank_date', $bank_book->bank_date)->where('id', '>', $bank_book->id)->get();
+            foreach ($next_same_bank_books as $next_same_bank_book){
+                $next_same_bank_book->blance -= $old_amount;
+                if($next_same_bank_book->bank_name == $bank_book->bank_name){
+                    $next_same_bank_book->bank_blance -= $old_amount;
+                }
+                $next_same_bank_book->update();
+            }
+            $next_bank_books = BankBook::where('bank_date','>', $bank_book->bank_date)->orderBy('bank_date', 'asc')->get();
+            foreach ($next_bank_books as $next_bank_book){
+                $next_bank_book->blance -= $old_amount;
+                if($next_bank_book->bank_name == $bank_book->bank_name){
+                    $next_bank_book->bank_blance -= $old_amount;
+                }
+                $next_bank_book->update();
+            }
+            $bank_book->delete();
+        }
+        if($request->bank){
+            $this->savePLInstallmentBank($request, $pl_installment);
+        }
+    }
+    protected function updateChequeBook($request, $pl_installment){
+        $cheque_books = ChequeBook::where('pl_installment_id', $pl_installment->id)->get();
+        foreach ($cheque_books as $cheque_book){
+            $cheque_book->delete();
+        }
+        if($request->cheque){
+            $this->chequeBookFunction($request, $pl_installment);
+        }
+    }
+    public function updatePLTransaction($request, $pl_installment){
+        $transaction = PaymentLoanTransaction::where('pl_installment_id', $pl_installment->id)->first();
+        $old_amount = $transaction->credit_amount;
+        $next_same_date_transactions = PaymentLoanTransaction::where('transaction_date', $transaction->transaction_date)->where('id', '>', $transaction->id)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction){
+            $next_same_date_transaction->blance += $old_amount;
+            if($next_same_date_transaction->ins_payment_id == $transaction->ins_payment_id){
+                $next_same_date_transaction->loan_blance += $old_amount;
+            }
+            $next_same_date_transaction->update();
+        }
+        $next_date_transactions = PaymentLoanTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $transaction->transaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction){
+            $next_date_transaction->blance += $old_amount;
+            if($next_date_transaction->ins_payment_id == $transaction->ins_payment_id){
+                $next_date_transaction->loan_blance += $old_amount;
+            }
+            $next_date_transaction->update();
+        }
+        $transaction->delete();
+        $this->savePaymentLoanTransaction($request, $pl_installment);
+    }
+    public function udpatePaymentLoanInstallment(Request $request){
+        $this->plInstallmentValidation($request);
+        $this->allValidation($request);
+        $pl_installment = PLInstallment::with('cashs', 'banks', 'cheques')->where('id', $request->id)->first();
+        $this->plInstallmentBasic($request, $pl_installment);
+        $pl_installment->save();
+        $this->updatePLCashBook($request, $pl_installment);
+        $this->updatePLInstallmentBank($request, $pl_installment);
+        $this->updateChequeBook($request, $pl_installment);
+        $this->updatePLTransaction($request, $pl_installment);
+        return "update payment loan transaction";
     }
 }

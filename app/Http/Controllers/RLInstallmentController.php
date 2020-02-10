@@ -294,12 +294,9 @@ class RLInstallmentController extends Controller
         $rl_installment = RLInstallment::where('id', $request->id)->first();
         $this->rlInstallmentBasic($request, $rl_installment);
         $rl_installment->update();
-        if($rl_installment->cash == 1){
-            $this->updateRLCashBook($request, $rl_installment);
-        }
-        if($rl_installment->cheque == 1){
-            $this->updateRLInstallmentCheque($request, $rl_installment);
-        }
+        $this->updateRLCashBook($request, $rl_installment);
+        $this->updateRLInstallmentCheque($request, $rl_installment);
+
         $this->updateRLTransaction($request, $rl_installment);
 
         return 'Update RL Installment';

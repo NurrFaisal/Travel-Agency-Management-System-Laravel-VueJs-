@@ -485,37 +485,36 @@
                 this.isLoading = true
                 this.form.post('/api/add-payment-loan-installment')
                     .then((response) => {
-                        console.log(response.data)
-                        // this.form.pl_installment_date = ''
-                        // this.form.cash = ''
-                        // this.form.cheque = ''
-                        // this.form.total_payment_loan_installment_amount = ''
-                        // this.form.narration = ''
-                        // this.form.received_by = ''
-                        // this.form.paid_by = ''
-                        // this.form.approved_by = ''
-                        // this.form.cashs = [
-                        //     {
-                        //         debit_cash_amount:''
-                        //     }
-                        // ]
-                        // this.form.banks = [
-                        //     {
-                        //         bank_name:'',
-                        //         bank_date:'',
-                        //         debit_bank_amount:'',
-                        //     }
-                        // ],
-                        //     this.form.cheques = [
-                        //         {
-                        //             cheque_bank_name:'',
-                        //             cheque_date:'',
-                        //             cheque_type:'',
-                        //             cheque_number:'',
-                        //             cheque_amount:'',
-                        //         }
-                        //     ]
-                        // this.$router.push('/list-payment-loan-installment')
+                        this.form.pl_installment_date = ''
+                        this.form.cash = ''
+                        this.form.cheque = ''
+                        this.form.total_payment_loan_installment_amount = ''
+                        this.form.narration = ''
+                        this.form.received_by = ''
+                        this.form.paid_by = ''
+                        this.form.approved_by = ''
+                        this.form.cashs = [
+                            {
+                                debit_cash_amount:''
+                            }
+                        ]
+                        this.form.banks = [
+                            {
+                                bank_name:'',
+                                bank_date:'',
+                                debit_bank_amount:'',
+                            }
+                        ],
+                            this.form.cheques = [
+                                {
+                                    cheque_bank_name:'',
+                                    cheque_date:'',
+                                    cheque_type:'',
+                                    cheque_number:'',
+                                    cheque_amount:'',
+                                }
+                            ]
+                        this.$router.push('/list-payment-loan-installment')
                         this.isLoading = false
                         Toast.fire({
                             type: 'success',
