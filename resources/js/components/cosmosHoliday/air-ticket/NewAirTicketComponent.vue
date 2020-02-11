@@ -621,23 +621,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="form-group ">
-                                                    <div class="col-md-12">
-                                                        <div class="col-xs-12 col-sm-12">
-                                                            <label for="word">
-                                                                Word <span class="text-danger">*</span> :
-                                                            </label>
-                                                            <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.word" :class="{ 'is-invalid': form.errors.has('word') }"   class="col-xs-12 col-sm-12" id="word" name="word" placeholder="Enter amount in word" required="" type="text">
-                                                            </span>
-                                                        </div>
-                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
-                                                            <has-error style="color:red" :form="form" field="word"></has-error>
-                                                            <span style="color: red">{{ errors.first('word') }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="form-group ">
                                                     <div class="col-md-12">
                                                         <div class="col-xs-12 col-sm-12">
@@ -1005,7 +988,6 @@
                     total_price:0,
                     total_net_price:0,
                     selling_to:'',
-                    word:'',
                     note:'',
                     journey_date:'',
                     return_date:'',
@@ -1077,7 +1059,6 @@
                 this.$delete(this.form.paxs, index)
             },
             addAirTicket(){
-                // console.log(this.form)
                 this.isLoading = true
                 this.form.post('/api/add-air-ticket')
                     .then((response) => {
@@ -1105,7 +1086,6 @@
                         this.form.total_net_price = ''
                         this.form.total_price = ''
                         this.form.selling_to = ''
-                        this.form.word = ''
                         this.form.journey_date = ''
                         this.form.return_date = ''
                         this.form.ticket_class = ''
