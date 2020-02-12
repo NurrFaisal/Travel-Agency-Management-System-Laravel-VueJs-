@@ -86,61 +86,64 @@ class HotelBookingController extends Controller
 
 
     }
-    public function addHotelBooking(Request $request){
-        $this->hotelBookingValidation($request);
-        $hotel_booking = new HotelBooking();
-        $this->hotelBookingBasic($request, $hotel_booking);
-        $hotel_booking->sell_person = Session::get('staff_id');
-        $hotel_booking->save();
-        $hotel_arry = $request->hotels;
-        $hotel_arry_lenth = count($hotel_arry);
-        for ($i =0; $i < $hotel_arry_lenth; $i++){
-            $hotel = new Hotel();
-            $this->hotelBasic($hotel, $hotel_arry, $i);
-            $hotel->hotel_booking_id = $hotel_booking->id;
-            $hotel->save();
-            $index = $i;
-
-            //SuplierTransaction Start
-            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
-            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $hotel->suplier)->first();
-
-            $suplier_transaction = new SuplierTransaction();
-            $suplier_transaction->suplier_id =  $hotel->suplier;
-            $suplier_transaction->hotel_id = $hotel->id;
-            $suplier_transaction->transaction_date = $hotel->created_at->format('Y-m-d');
-            $suplier_transaction->narration = $hotel->hotel_name;
-            $suplier_transaction->credit_amount = $hotel->net_price;
-            if($pre_sup_transaction == null){
-                $suplier_transaction->balance = -$hotel->net_price;
-            }else{
-                $suplier_transaction->balance = $pre_sup_transaction->balance - $hotel->net_price;
-            }
-            if($pre_suplier_sup_transaction == null){
-                $suplier_transaction->suplier_balance = -$hotel->net_price;
-            }else{
-                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance - $hotel->net_price;
-            }
-            $suplier_transaction->save();
-            //SuplierTransaction End
-
-
+    protected function saveHotelSuplierTransaction($request, $hotel, $hotel_booking){
+        // SuplierTransaction Start
+        $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $hotel_booking->created_at->format('Y-m-d'))->where('suplier_id', $hotel->suplier)->first();
+        if($pre_suplier_sup_transaction == null){
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date','<', $hotel_booking->created_at->format('Y-m-d'))->where('suplier_id', $hotel->suplier)->first();
         }
+        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date',$hotel_booking->created_at->format('Y-m-d'))->where('suplier_id', $hotel->suplier)->first();
+        if($pre_sup_transaction == null){
+            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $hotel_booking->created_at->format('Y-m-d'))->where('suplier_id', $hotel->suplier)->first();
+        }
+        $suplier_transaction = new SuplierTransaction();
+        $suplier_transaction->suplier_id =  $hotel->suplier;
+        $suplier_transaction->hotel_id = $hotel->id;
+        $suplier_transaction->transaction_date = $hotel->check_in;
+        $suplier_transaction->narration = $hotel->note;
+        $suplier_transaction->credit_amount = $hotel->net_price;
+        if($pre_sup_transaction == null){
+            $suplier_transaction->balance = -$hotel->net_price;
+        }else{
+            $suplier_transaction->balance = $pre_sup_transaction->balance - $hotel->net_price;
+        }
+        if($pre_suplier_sup_transaction == null){
+            $suplier_transaction->suplier_balance = -$hotel->net_price;
+        }else{
+            $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance - $hotel->net_price;
+        }
+        $suplier_transaction->save();
+
+        $next_dates = SuplierTransaction::where('transaction_date', '>', $suplier_transaction->transaction_date)->get();
+        foreach ($next_dates as $next_date){
+            $next_date->balance -= $hotel->net_price;;
+            if($next_date->suplier_id == $suplier_transaction->suplier_id){
+                $next_date->suplier_balance -= $hotel->net_price;
+            }
+            $next_date->update();
+        }
+        // SuplierTransaction End
+    }
+    protected function saveHotelBookingProfit($hotel_booking, $check_out_date){
         $profit = new Profit();
         $profit->hotel_id = $hotel_booking->id;
         $profit->staff_id = $hotel_booking->sell_person;
         $profit->guest_id = $hotel_booking->client;
-        $profit->profit_date = $hotel_arry[$index]['check_out'];
+        $profit->profit_date = $check_out_date;
         $profit->amount = $hotel_booking->total_price - $hotel_booking->total_net_price;
         $profit->save();
+    }
+    protected function transjaction($request, $hotel_booking){
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('guest_id', $hotel_booking->client)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
 
-        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $hotel_booking->client)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        $pre_staff_transjaction_blance = Transjaction::where('staff_id', $hotel_booking->sell_person)->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
-
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date',$hotel_booking->created_at->format('Y-m-d'))->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        if($pre_transjaction_blance == null){
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<',$hotel_booking->created_at->format('Y-m-d'))->first();
+        }
         $transjaction = new Transjaction();
         $transjaction->guest_id = $hotel_booking->client;
-        $transjaction->staff_id = $hotel_booking->sell_person;
+        $transjaction->staff_id = Session::get('staff_id');
         $transjaction->hotel_id = $hotel_booking->id;
         $transjaction->narration = $hotel_booking->narration;
         $transjaction->transjaction_date = $hotel_booking->created_at->format('Y-m-d');
@@ -156,14 +159,43 @@ class HotelBookingController extends Controller
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $hotel_booking->total_price;
         }
         if($pre_transjaction_blance == null){
-            $transjaction->blance = $request->total_price;
+            $transjaction->blance = $hotel_booking->total_price;
         }else{
-            $transjaction->blance = $pre_transjaction_blance->blance + $request->total_price;
+            $transjaction->blance = $pre_transjaction_blance->blance + $hotel_booking->total_price;
         }
         $transjaction->save();
 
-
-
+        $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_dates as $next_date){
+            $next_date->blance += $hotel_booking->total_price;
+            if($next_date->guest_id == $request->selling_to){
+                $next_date->guest_blance += $hotel_booking->total_price;
+            }
+            if($next_date->staff_id == $hotel_booking->sell_person){
+                $next_date->staff_blance += $hotel_booking->total_price;
+            }
+            $next_date->update();
+        }
+    }
+    public function addHotelBooking(Request $request){
+        $this->hotelBookingValidation($request);
+        $hotel_booking = new HotelBooking();
+        $this->hotelBookingBasic($request, $hotel_booking);
+        $hotel_booking->sell_person = Session::get('staff_id');
+        $hotel_booking->save();
+        $hotel_arry = $request->hotels;
+        $hotel_arry_lenth = count($hotel_arry);
+        for ($i =0; $i < $hotel_arry_lenth; $i++){
+            $hotel = new Hotel();
+            $this->hotelBasic($hotel, $hotel_arry, $i);
+            $hotel->hotel_booking_id = $hotel_booking->id;
+            $hotel->save();
+            $index = $i;
+            $this->saveHotelSuplierTransaction($request, $hotel, $hotel_booking);
+        }
+        $check_out_date = $hotel_arry[$index]['check_out'];
+        $this->saveHotelBookingProfit($hotel_booking, $check_out_date);
+        $this->transjaction($request, $hotel_booking);
         return 'New Hotel Booking Added Successfully';
     }
 
@@ -190,13 +222,22 @@ class HotelBookingController extends Controller
         $hotels = Hotel::where('hotel_booking_id', $request->id)->get();
         foreach ($hotels as $hotel){
             $suplier_transaction = SuplierTransaction::where('hotel_id', $hotel->id)->first();
-            $next_transactions = SuplierTransaction::where('id', '>', $hotel->id)->get();
-            foreach ($next_transactions as $next_transaction){
-                $next_transactions->balance = $next_transaction->balance + $suplier_transaction->credit_amount;
-                if($suplier_transaction->suplier_id = $next_transaction->suplier_id){
-                    $next_transaction->suplier_balance = $next_transaction->suplier_balance + $suplier_transaction->credit_amount;
+            $old_debit_amount = $suplier_transaction->credit_amount;
+            $next_same_date_sup_transactions = SuplierTransaction::where('transaction_date', $suplier_transaction->transaction_date)->where('id', '>', $suplier_transaction->id)->get();
+            foreach ($next_same_date_sup_transactions as $next_same_date_sup_transaction){
+                $next_same_date_sup_transaction->balance += $old_debit_amount;
+                if($next_same_date_sup_transaction->suplier_id == $suplier_transaction->suplier_id){
+                    $next_same_date_sup_transaction->suplier_balance += $old_debit_amount;
                 }
-                $next_transaction->update();
+                $next_same_date_sup_transaction->update();
+            }
+            $next_date_sup_transactions = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $suplier_transaction->transaction_date)->get();
+            foreach ($next_date_sup_transactions as $next_date_sup_transaction){
+                $next_date_sup_transaction->balance += $old_debit_amount;
+                if($next_date_sup_transaction->suplier_id == $suplier_transaction->suplier_id){
+                    $next_date_sup_transaction->suplier_balance += $old_debit_amount;
+                }
+                $next_date_sup_transaction->update();
             }
             $suplier_transaction->delete();
             $hotel->delete();
@@ -208,148 +249,48 @@ class HotelBookingController extends Controller
             $this->hotelBasic($hotel, $hotel_arry, $i);
             $hotel->hotel_booking_id = $hotel_booking->id;
             $hotel->save();
+            $index = $i;
+            $this->saveHotelSuplierTransaction($request, $hotel, $hotel_booking);
 
-            //SuplierTransaction Start
-            $pre_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->first();
-            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('id', 'desc')->where('suplier_id', $hotel->suplier)->first();
-
-            $suplier_transaction = new SuplierTransaction();
-            $suplier_transaction->suplier_id =  $hotel->suplier;
-            $suplier_transaction->hotel_id = $hotel->id;
-            $suplier_transaction->transaction_date = $hotel->created_at->format('Y-m-d');
-            $suplier_transaction->narration = $hotel->hotel_name;
-            $suplier_transaction->credit_amount = $hotel->net_price;
-            if($pre_sup_transaction == null){
-                $suplier_transaction->balance = -$hotel->net_price;
-            }else{
-                $suplier_transaction->balance = $pre_sup_transaction->balance - $hotel->net_price;
-            }
-            if($pre_suplier_sup_transaction == null){
-                $suplier_transaction->suplier_balance = -$hotel->net_price;
-            }else{
-                $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance - $hotel->net_price;
-            }
-            $suplier_transaction->save();
-            //SuplierTransaction End
         }
         $old_profit = Profit::where('hotel_id', $hotel_booking->id)->first();
         if($old_profit){
             $old_profit->delete();
         }
-        $profit = new Profit();
-        $profit->hotel_id = $hotel_booking->id;
-        $profit->staff_id = $hotel_booking->sell_person;
-        $profit->guest_id = $hotel_booking->client;
-        $profit->profit_date = $hotel_booking->created_at->format('Y-m-d');
-        $profit->amount = $hotel_booking->total_price - $hotel_booking->total_net_price;
-        $profit->save();
-        $this->updateTransjactionBlance($request);
-
-//        $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('hotel_id', $request->id)->first();
-//        $update_first_transjaction->hotel_id = null;
-//        $update_first_transjaction->narration = 'Updated Hotel Transjaction 1st ( H-'.$update_first_transjaction->hotel_id.' )';
-//        $update_first_transjaction->update();
-//
-//
-//        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->client)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-//        $pre_staff_transjaction_blance = Transjaction::where('staff_id', $request->sell_person)->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-//        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
-//
-//        $update_scond_transjaction = new Transjaction();
-//        $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
-//        $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
-//        $update_scond_transjaction->narration = 'Updated Hotel Transjaction 2nd ( H-'.$update_first_transjaction->hotel_id.' )';
-//        $update_scond_transjaction->transjaction_date = $hotel_booking->updated_at->format('Y-m-d');
-//        $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->blance = $pre_transjaction_blance->blance + $update_first_transjaction->credit_amount;
-//        $update_scond_transjaction->save();
-//
-//        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->client)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-//        $pre_staff_transjaction_blance = Transjaction::where('staff_id', $request->sell_person)->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-//        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
-//
-//        $transjaction = new Transjaction();
-//        $transjaction->guest_id = $request->client;
-//        $transjaction->staff_id = $request->sell_person;
-//        $transjaction->hotel_id = $hotel_booking->id;
-//        $transjaction->narration = $request->narration;
-//        $transjaction->transjaction_date = $hotel_booking->created_at->format('Y-m-d');
-//        $transjaction->credit_amount = $request->total_price;
-//        if($pre_guest_transjaction_blance == null){
-//            $transjaction->guest_blance = -$request->total_price;
-//        }else{
-//            $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->total_price;
-//        }
-//        if($pre_staff_transjaction_blance == null){
-//            $transjaction->staff_blance = -$request->total_price;
-//        }else{
-//            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->total_price;
-//        }
-//        if($pre_transjaction_blance == null){
-//            $transjaction->blance = -$request->total_price;
-//        }else{
-//            $transjaction->blance = $pre_transjaction_blance->blance - $request->total_price;
-//        }
-//        $transjaction->save();
-
+        $check_out_date = $hotel_arry[$index]['check_out'];
+        $this->saveHotelBookingProfit($hotel_booking, $check_out_date);
+        $this->updateTransjactionBlance($request, $hotel_booking);
+        $this->transjaction($request, $hotel_booking);
         return 'Hotel Booking Updated Successfully';
     }
 
 
-    public function updateTransjactionBlance($request){
-        $transjaction = Transjaction::where('hotel_id', $request->id)->first();
-        $increment_blance = $request->total_price - $transjaction->debit_amount;
-        $old_transjaction_debit = $transjaction->debit_amount;
-        $old_staff_id = $transjaction->staff_id;
-        $old_guest_id = $transjaction->guest_id;
-        $transjaction->guest_id = $request->client;
-//        $transjaction->staff_id = $request->sell_person;
-        $transjaction->narration = $request->narration;
-        $transjaction->debit_amount = $request->total_price;
-        $transjaction->blance = $transjaction->blance + $increment_blance;
-        $blance_transjactions = Transjaction::where('id', '>', $transjaction->id)->get();
-        foreach ($blance_transjactions as $blance_transjaction){
-            $blance_transjaction->blance = $blance_transjaction->blance + $increment_blance;
-            $blance_transjaction->update();
+    protected function updateTransjactionBlance($request, $hotel_booking){
+        $transjaction = Transjaction::where('hotel_id', $hotel_booking->id)->first();
+        $old_amount = $transjaction->debit_amount;
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction){
+            $next_same_date_transaction->blance -= $old_amount;
+            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+                $next_same_date_transaction->guest_blance -= $old_amount;
+            }
+            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+                $next_same_date_transaction->staff_blance -= $old_amount;
+            }
+            $next_same_date_transaction->update();
         }
-        $transjaction->staff_blance = $transjaction->staff_blance + $increment_blance;
-        $staff_blance_tranjactions = Transjaction::where('id', '>', $transjaction->id)->where('staff_id', $transjaction->staff_id)->get();
-        foreach ($staff_blance_tranjactions as $staff_blance_tranjaction){
-            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance + $increment_blance;
-            $staff_blance_tranjaction->update();
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction){
+            $next_date_transaction->blance -= $old_amount;
+            if($next_date_transaction->guest_id == $transjaction->guest_id){
+                $next_date_transaction->guest_blance -= $old_amount;
+            }
+            if($next_date_transaction->staff_id == $transjaction->staff_id){
+                $next_date_transaction->staff_blance -= $old_amount;
+            }
+            $next_date_transaction->update();
         }
-
-        if($old_guest_id == $request->client){
-            $transjaction->guest_blance = $transjaction->guest_blance + $increment_blance;
-            $transjaction->update();
-            $guest_blances = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($guest_blances as $guest_blance){
-                $guest_blance->guest_blance = $guest_blance->guest_blance + $increment_blance;
-                $guest_blance->update();
-            }
-        }else{
-            $pre_guest_transjaction = Transjaction::where('id', '<', $transjaction->id)->where('guest_id', $request->client)->orderBy('id', 'desc')->first();
-            if($pre_guest_transjaction){
-                $transjaction->guest_blance = $pre_guest_transjaction->guest_blance + $request->total_price;
-            }else{
-                $transjaction->guest_blance = $request->total_price;
-            }
-
-
-            $transjaction->update();
-            $next_old_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($next_old_guest_transjactions as $next_old_guest_transjaction){
-                $next_old_guest_transjaction->guest_blance = $next_old_guest_transjaction->guest_blance - $old_transjaction_debit;
-                $next_old_guest_transjaction->update();
-            }
-            $next_new_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $request->client)->get();
-            foreach ($next_new_guest_transjactions as $next_new_guest_transjaction){
-                $next_new_guest_transjaction->guest_blance = $next_new_guest_transjaction->guest_blance + $request->total_price;
-                $next_new_guest_transjaction->update();
-            }
-        }
+        $transjaction->delete();
     }
 
 }
