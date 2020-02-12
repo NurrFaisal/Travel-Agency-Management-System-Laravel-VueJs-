@@ -201,9 +201,14 @@ class ReceivedController extends Controller
         }
     }
     protected function saveReceivedTransaction($request, $received){
-        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('guest_id', $request->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('staff_id', $request->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $received->created_at->format('Y-m-d'))->where('guest_id', $received->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        if($pre_guest_transjaction_blance == null){
+            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $received->created_at->format('Y-m-d'))->where('guest_id', $received->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        }
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $received->created_at->format('Y-m-d'))->where('staff_id', $request->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        if($pre_staff_transjaction_blance == null){
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $received->created_at->format('Y-m-d'))->where('staff_id', $request->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        }
         $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date',$received->created_at->format('Y-m-d'))->select('id', 'transjaction_date', 'narration', 'blance')->first();
         if($pre_transjaction_blance == null){
             $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<',$received->created_at->format('Y-m-d'))->first();

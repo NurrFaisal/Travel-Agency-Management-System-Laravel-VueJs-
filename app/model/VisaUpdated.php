@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VisaUpdated extends Model
 {
-    protected $fillable = [ 'total_net_price', 'total_price', 'total_others_price', 'grand_total_price', 'client', 'sell_person', 'received_date', 'invoice_narration', 'word'];
+    protected $fillable = [ 'total_net_price', 'total_price', 'total_others_price', 'grand_total_price', 'client', 'sell_person', 'received_date', 'invoice_narration'];
 
     public function passports(){
         return $this->hasMany(Passport::class, 'visa_updated_id', 'id');

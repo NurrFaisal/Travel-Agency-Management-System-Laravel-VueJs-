@@ -155,9 +155,9 @@ class PaymentController extends Controller
         if($pre_suplier_sup_transaction == null){
             $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date','<', $payment->debit_voucher_date)->where('suplier_id', $payment->suplier)->first();
         }
-        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date',$payment->debit_voucher_date)->where('suplier_id', $payment->suplier)->first();
+        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date',$payment->debit_voucher_date)->first();
         if($pre_sup_transaction == null){
-            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $payment->debit_voucher_date)->where('suplier_id', $payment->suplier)->first();
+            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $payment->debit_voucher_date)->first();
         }
         $suplier_transaction = new SuplierTransaction();
         $suplier_transaction->suplier_id =  $payment->suplier;

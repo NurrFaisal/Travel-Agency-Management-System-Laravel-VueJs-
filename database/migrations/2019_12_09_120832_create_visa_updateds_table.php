@@ -37,7 +37,6 @@ class CreateVisaUpdatedsTable extends Migration
             $table->unsignedInteger('client');
             $table->unsignedInteger('sell_person');
             $table->text('invoice_narration');
-            $table->text('word');
             $table->text('special_note');
             $table->bigInteger('state');
 

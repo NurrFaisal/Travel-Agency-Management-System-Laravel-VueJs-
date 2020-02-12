@@ -96,9 +96,9 @@ class AirTicketController extends Controller
         if($pre_suplier_sup_transaction == null){
             $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date','<', $sup_air_ticket->issue_date)->where('suplier_id', $sup_air_ticket->suplier)->first();
         }
-        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date',$sup_air_ticket->issue_date)->where('suplier_id', $sup_air_ticket->suplier)->first();
+        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date',$sup_air_ticket->issue_date)->first();
         if($pre_sup_transaction == null){
-            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $sup_air_ticket->issue_date)->where('suplier_id', $sup_air_ticket->suplier)->first();
+            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $sup_air_ticket->issue_date)->first();
         }
         $suplier_transaction = new SuplierTransaction();
         $suplier_transaction->suplier_id =  $sup_air_ticket->suplier;
@@ -117,7 +117,7 @@ class AirTicketController extends Controller
             $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance - $sup_air_ticket->net_price;
         }
         $suplier_transaction->save();
-        $next_same_dates = SuplierTransaction::where('id', '>', $suplier_transaction->id)->where('transaction_date', $sup_air_ticket->issue_date)->get();
+        $next_same_dates = SuplierTransaction::where('id', '>', $suplier_transaction->id)->where('transaction_date', $suplier_transaction->transaction_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->balance -= $sup_air_ticket->net_price;
             if($next_same_date->suplier_id == $suplier_transaction->suplier_id){
@@ -125,7 +125,7 @@ class AirTicketController extends Controller
             }
             $next_same_date->update();
         }
-        $next_dates = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $sup_air_ticket->issue_date)->get();
+        $next_dates = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $suplier_transaction->transaction_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->balance -= $sup_air_ticket->net_price;;
             if($next_date->suplier_id == $suplier_transaction->suplier_id){
@@ -185,9 +185,14 @@ class AirTicketController extends Controller
         $profit->save();
     }
     protected function transjaction($request, $airticket){
-        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $airticket->created_at->format('Y-m-d'))->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        if($pre_guest_transjaction_blance == null){
+            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $airticket->created_at->format('Y-m-d'))->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        }
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $airticket->created_at->format('Y-m-d'))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        if($pre_staff_transjaction_blance == null){
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $airticket->created_at->format('Y-m-d'))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        }
         $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date',$airticket->created_at->format('Y-m-d'))->select('id', 'transjaction_date', 'narration', 'blance')->first();
         if($pre_transjaction_blance == null){
             $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<',$airticket->created_at->format('Y-m-d'))->first();
