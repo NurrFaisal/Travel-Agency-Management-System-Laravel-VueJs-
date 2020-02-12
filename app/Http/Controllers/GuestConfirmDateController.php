@@ -158,6 +158,7 @@ class GuestConfirmDateController extends Controller
     public function updateGuestConfirmation(Request $request){
         $this->guestConfirmationValidation($request);
         $this->updateGuestConfirmationValidation($request);
+        return $request;
         $package = Package::where('id', $request->id)->first();
         $this->updateGuestConfirmationBasic($request, $package);
         $this->addGuestConfirmationBasic($request, $package);
@@ -172,15 +173,24 @@ class GuestConfirmDateController extends Controller
         return 'Guest Confirmation Updated Successfully';
     }
     protected function transjaction($request, $package){
-        $pre_guest_transjaction_blance = Transjaction::where('guest_id', $package->guest)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        $pre_staff_transjaction_blance = Transjaction::where('staff_id', Session::get('staff_id'))->orderBy('id', 'desc')->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-        $pre_transjaction_blance = Transjaction::orderBy('id', 'desc')->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->updated_at->format('Y-m-d'))->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        if($pre_guest_transjaction_blance == null){
+            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->updated_at->format('Y-m-d'))->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        }
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->updated_at->format('Y-m-d'))->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        if($pre_staff_transjaction_blance == null){
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->updated_at->format('Y-m-d'))->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        }
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->updated_at->format('Y-m-d'))->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        if($pre_transjaction_blance == null){
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->updated_at->format('Y-m-d'))->first();
+        }
         $transjaction = new Transjaction();
         $transjaction->guest_id = $package->guest;
-        $transjaction->staff_id = Session::get('staff_id');
+        $transjaction->staff_id = $package->staff;
         $transjaction->pack_id = $package->id;
         $transjaction->narration = $package->narration;
-        $transjaction->transjaction_date = $package->created_at->format('Y-m-d');
+        $transjaction->transjaction_date = $package->updated_at->format('Y-m-d');
         $transjaction->debit_amount = $package->grand_total_price;
         if($pre_guest_transjaction_blance == null){
             $transjaction->guest_blance = $package->grand_total_price;
@@ -198,9 +208,20 @@ class GuestConfirmDateController extends Controller
             $transjaction->blance = $pre_transjaction_blance->blance + $package->grand_total_price;
         }
         $transjaction->save();
+
+        $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_dates as $next_date){
+            $next_date->blance += $package->grand_total_price;
+            if($next_date->guest_id == $package->guest){
+                $next_date->guest_blance += $package->grand_total_price;
+            }
+            if($next_date->staff_id == $package->staff){
+                $next_date->staff_blance += $package->grand_total_price;
+            }
+            $next_date->update();
+        }
+
     }
-
-
     public function updateTransjactionBlance($request){
         $transjaction = Transjaction::where('pack_id', $request->id)->first();
         $increment_blance = $request->grand_total_price - $transjaction->debit_amount;

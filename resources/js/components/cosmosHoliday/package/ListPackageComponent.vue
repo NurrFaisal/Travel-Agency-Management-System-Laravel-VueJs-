@@ -300,7 +300,7 @@
                                                             <div class="row">
                                                                 <label for="flw_up_to_guest_date" class="col-sm-5">Guest Follow up Date:</label>
                                                                 <div class="col-sm-7">
-                                                                    <input type="date" v-model="form3.flw_up_to_guest_date" id="flw_up_to_guest_date" name="flw_up_to_guest_date" class="form-control"  style="max-width: 95%;" value="" required="">
+                                                                    <input type="date" v-model="form3.flw_up_to_guest_date" id="flw_up_to_guest_date" name="flw_up_to_guest_date" class="form-control"  style="max-width: 95%;" value="" required>
                                                                     <input type="hidden" v-model="form3.id" >
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -329,7 +329,7 @@
                                                             <div class="row">
                                                                 <label class="col-sm-5">Guest Follow up Note:</label>
                                                                 <div class="col-sm-7">
-                                                                    <input type="date" v-model="form3.note"  name="note" class="form-control"  style="max-width: 95%;" value="" required="">
+                                                                    <input type="date" v-model="form3.note"  name="note" class="form-control"  style="max-width: 95%;" value="" required>
                                                                     <input type="hidden" v-model="form3.id" >
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -1033,7 +1033,7 @@
 
                 form: new Form({
                     id:'',
-                    flw_up_to_suplier:'',
+                    flw_up_to_suplier:'0',
                     flw_up_to_suplier_date:'',
                     note:'',
                 }),
@@ -1046,7 +1046,7 @@
                     flw_up_to_guest_date:'',
                     guest_reaction:'',
                     note:'',
-                    ftg_confimation:'',
+                    ftg_confimation:'0',
                 }),
 
                 form6: new Form({
@@ -1170,17 +1170,7 @@
                         console.log(e)
                     })
             },
-            // getAllDocumentCollectionByGuest(){
-            //     axios.get('/api/get-all-document-collection-by-guest?page='+this.dcbg_pagination.current_page)
-            //         .then(response => {
-            //             this.document_collection_by_guest = response.data.document_collection_by_guest.data
-            //             this.dcbg_pagination = response.data.document_collection_by_guest
-            //
-            //         })
-            //         .catch(e => {
-            //             console.log(e)
-            //         })
-            // },
+
             getAllDateOfJourney(){
 
                 axios.get('/api/get-all-date-of-journey?page='+this.doj_pagination.current_page)

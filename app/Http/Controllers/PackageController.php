@@ -82,7 +82,6 @@ class PackageController extends Controller
        $this->addPackageQueryBasic($request, $package);
        $package->save();
        $this->packageDay($request, $package);
-
        return 'New Package Query Added Successfully';
     }
 
