@@ -1421,6 +1421,7 @@
         mounted(){
             this.isLoading = true
             this.$store.dispatch("allAirTicketStaff")
+            this.getAllSuplier()
             axios.get(`/api/edit-package-net-price/${this.$route.params.id}`)
                 .then((respose) => {
                     this.form.fill(respose.data.package_net)
@@ -1431,9 +1432,10 @@
                     if(this.user_type == 'admin' || this.user_type == 'super-admin'){
                         this.buttonContent = true
                     }
+                    this.isLoading = false
                 })
-            this.getAllSuplier()
-            this.isLoading = false
+
+
         },
         computed:{
             get_all_staffs(){
@@ -1611,6 +1613,7 @@
 
             },
             updatePackageNetPrice(){
+                this.isLoading = true
                 this.form.post('/api/update-package-net-price')
                     .then((response) => {
                         this.$session.start()
@@ -1707,7 +1710,6 @@
                         this.form.third_qty = ''
                         this.form.third_price = ''
                         this.form.third_total_price = ''
-
                         this.$router.push('/package-list')
                         this.isLoading = false
                         Toast.fire({

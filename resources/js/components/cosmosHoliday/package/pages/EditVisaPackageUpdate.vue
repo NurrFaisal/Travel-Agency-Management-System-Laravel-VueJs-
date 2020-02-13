@@ -1333,8 +1333,9 @@
                     if(this.user_type == 'admin' || this.user_type == 'super-admin'){
                         this.buttonContent = true
                     }
+                    this.isLoading = false
                 })
-            this.isLoading = false
+
         },
         computed:{
             get_all_staffs(){

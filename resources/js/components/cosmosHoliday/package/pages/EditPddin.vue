@@ -1430,6 +1430,8 @@
         name: "EditPddin",
         components: {GuestAutoComplate, Loading},
         mounted(){
+            this.isLoading =true
+            this.getAllSuplier()
             axios.get(`/api/edit-drfdp/${this.$route.params.id}`)
                 .then((respose) => {
                     this.form.fill(respose.data.drfdp)
@@ -1440,10 +1442,10 @@
                     if(this.user_type == 'admin' || this.user_type == 'super-admin'){
                         this.buttonContent = true
                     }
-
+                    this.isLoading = false
                 })
-            this.getAllSuplier()
-            this.isLoading = false
+
+
         },
         computed:{
             get_all_staffs(){
@@ -1624,6 +1626,7 @@
 
             },
             updateDocumentReady(){
+                this.isLoading = true
                 this.form.post('/api/update-drfdp')
                     .then((response) => {
                         this.$session.start()

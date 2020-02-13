@@ -57,7 +57,7 @@
                                                                 Guest Name <span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                 <GuestAutoComplate :shouldReset="true" @change="onchange"  :items="guests" filterby="phone_number" @Selected="customerSelected"/>
+                                                                <GuestAutoComplate :shouldReset="true" @change="onchange" :title="this.name+' '+this.phone_number"  :items="guests" filterby="phone_number" @Selected="customerSelected"/>
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -1411,8 +1411,9 @@
                     if(this.user_type == 'admin' || this.user_type == 'super-admin'){
                         this.buttonContent = true
                     }
+                    this.isLoading = false
                 })
-            this.isLoading = false
+
         },
         computed:{
             get_all_staffs(){

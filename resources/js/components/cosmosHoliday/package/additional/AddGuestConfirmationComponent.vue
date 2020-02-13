@@ -774,9 +774,9 @@
         name: "AddGuestConfirmationComponent",
         components: {Loading},
         mounted(){
-            // this.isLoading = true
-            this.editAirTicet()
-            // this.getAllSuplier()
+            this.isLoading = true
+            this.editGuestConfirmation()
+
 
 
         },
@@ -927,7 +927,7 @@
                     })
             },
 
-            editAirTicet(){
+            editGuestConfirmation(){
                 axios.get(`/api/edit-guest-confirmation/${this.$route.params.id}`)
                     .then((respose) => {
                         this.form.fill(respose.data.guest_confirmation)
@@ -1090,16 +1090,6 @@
 
 
             },
-
-
-            getAllSuplier(){
-                axios.get('/api/get-all-active-suplier')
-                    .then(response => {
-                        this.supliers = response.data.supliers
-                    })
-            },
-
-
             customerSelected(customer){
                 this.form.selling_to = customer.id;
 

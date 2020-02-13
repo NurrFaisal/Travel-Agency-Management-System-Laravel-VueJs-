@@ -1444,6 +1444,8 @@
         name: "EditDateOfJourney",
         components: {GuestAutoComplate, Loading},
         mounted(){
+            this.isLoading = true
+            this.getAllSuplier()
             axios.get(`/api/edit-date-of-journey/${this.$route.params.id}`)
                 .then((respose) => {
                     this.form.fill(respose.data.doj)
@@ -1454,9 +1456,10 @@
                     if(this.user_type == 'admin' || this.user_type == 'super-admin'){
                         this.buttonContent = true
                     }
+                    this.isLoading = false
                 })
-            this.getAllSuplier()
-            this.isLoading = false
+
+
         },
         computed:{
             get_all_staffs(){
@@ -1638,6 +1641,7 @@
 
             },
             updateDocumentDelivered(){
+                this.isLoading = true
                 this.form.post('/api/update-date-of-journey')
                     .then((response) => {
                         this.$session.start()

@@ -72,6 +72,7 @@ class PackageNetPriceController extends Controller
         for ($i = 0; $i < $net_price_arry_count; $i++){
            $net_price = new PackageNetPrice();
            $net_price->suplier = $net_price_arry[$i]['suplier'];
+           $net_price->net_price_date = $net_price_arry[$i]['net_price_date'];
            $net_price->amount = $net_price_arry[$i]['net_price'];
            $net_price->pack_id = $package->id;
            $net_price->save();

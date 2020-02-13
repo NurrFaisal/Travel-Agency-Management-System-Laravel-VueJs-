@@ -835,9 +835,9 @@
         name: "AddPackageVisaUpdateNew",
         components: {Loading},
         mounted(){
-            // this.isLoading = true
-            this.editAirTicet()
-            // this.getAllSuplier()
+            this.isLoading = true
+            this.editPackageVisaUpdate()
+
 
 
         },
@@ -997,7 +997,7 @@
                     })
             },
 
-            editAirTicet(){
+            editPackageVisaUpdate(){
                 axios.get(`/api/edit-guest-confirmation/${this.$route.params.id}`)
                     .then((respose) => {
                         this.form.fill(respose.data.guest_confirmation)
@@ -1159,15 +1159,6 @@
                     this.form.grand_total_price += parseInt(this.form.third_total_price);
                 }
             },
-
-
-            getAllSuplier(){
-                axios.get('/api/get-all-active-suplier')
-                    .then(response => {
-                        this.supliers = response.data.supliers
-                    })
-            },
-
 
             customerSelected(customer){
                 this.form.selling_to = customer.id;
