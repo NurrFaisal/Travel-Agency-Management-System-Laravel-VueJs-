@@ -1055,7 +1055,7 @@
 
 
                                                 <div class="form-group ">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="grand_total_price">
                                                                 Total Price<span class="text-danger">*</span> :
@@ -1069,7 +1069,21 @@
                                                             <span style="color: red">{{ errors.first('grand_total_price') }}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="confirm_date">
+                                                                Confirm Date <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input  v-model="form.confirm_date" :class="{ 'is-invalid': form.errors.has('confirm_date') }"   class="col-xs-12 col-sm-12" id="confirm_date" name="confirm_date"  required="" type="date">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="confirm_date"></has-error>
+                                                            <span style="color: red">{{ errors.first('confirm_date') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="journey_date">
                                                                 Journey Date <span class="text-danger">*</span> :
@@ -1083,7 +1097,7 @@
                                                             <span style="color: red">{{ errors.first('journey_date') }}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="return_date1">
                                                                 Return Date <span class="text-danger">*</span> :
@@ -1401,6 +1415,7 @@
 
                     grand_total_price:0,
 
+                    confirm_date:'',
                     journey_date:'',
                     return_date:'',
 
@@ -1489,6 +1504,7 @@
                         this.form.others_price = ''
                         this.form.others_total_price = ''
                         this.form.grand_total_price = ''
+                        this.form.confirm_date = ''
                         this.form.journey_date = ''
                         this.form.return_date = ''
 

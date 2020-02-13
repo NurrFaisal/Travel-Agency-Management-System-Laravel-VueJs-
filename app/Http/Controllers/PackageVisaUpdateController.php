@@ -24,6 +24,8 @@ class PackageVisaUpdateController extends Controller
             'total_qty' => 'required',
             'total_total_price' => 'required',
             'grand_total_price' => 'required',
+            'confirm_date' => 'required|date',
+            'confirm_date' => 'required|date',
             'journey_date' => 'required|date',
             'return_date' => 'required|date',
             'visa_submit_to_us' => 'required|date',
@@ -64,6 +66,8 @@ class PackageVisaUpdateController extends Controller
         $package->others_price = $request->others_price;
         $package->others_total_price = $request->others_total_price;
         $package->grand_total_price = $request->grand_total_price;
+        $package->confirm_date = $request->confirm_date;
+        $package->confirm_date = $request->confirm_date;
         $package->journey_date = $request->journey_date;
         $package->return_date = $request->return_date;
 
@@ -93,39 +97,90 @@ class PackageVisaUpdateController extends Controller
         $this->addVisaUpdateDateBasic($request, $package);
         $package->state = 6;
         $package->update();
-        $this->tranjactionUpdateWithOutGuest($request,$package);
+        $this->updateTransjactionBlance($request, $package);
+        $this->transjaction($request, $package);
         return 'Visa update Successfully';
     }
+    protected function updateTransjactionBlance($request, $package){
+        $transjaction = Transjaction::where('pack_id', $package->id)->first();
+        $old_amount = $transjaction->debit_amount;
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction){
+            $next_same_date_transaction->blance -= $old_amount;
+            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+                $next_same_date_transaction->guest_blance -= $old_amount;
+            }
+            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+                $next_same_date_transaction->staff_blance -= $old_amount;
+            }
+            $next_same_date_transaction->update();
+        }
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction){
+            $next_date_transaction->blance -= $old_amount;
+            if($next_date_transaction->guest_id == $transjaction->guest_id){
+                $next_date_transaction->guest_blance -= $old_amount;
+            }
+            if($next_date_transaction->staff_id == $transjaction->staff_id){
+                $next_date_transaction->staff_blance -= $old_amount;
+            }
+            $next_date_transaction->update();
+        }
+        $transjaction->delete();
+    }
 
-    protected  function tranjactionUpdateWithOutGuest($request,$package){
-        $transjaction = Transjaction::where('pack_id', $request->id)->first();
-        $increment_blance = $request->grand_total_price - $transjaction->debit_amount;
-        $old_transjaction_debit = $transjaction->debit_amount;
-        $old_guest_id = $transjaction->guest_id;
+
+    protected function transjaction($request, $package){
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        if($pre_guest_transjaction_blance == null){
+            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        }
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        if($pre_staff_transjaction_blance == null){
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        }
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        if($pre_transjaction_blance == null){
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->first();
+        }
+        $transjaction = new Transjaction();
+        $transjaction->guest_id = $package->guest;
+        $transjaction->staff_id = $package->staff;
+        $transjaction->pack_id = $package->id;
         $transjaction->narration = $package->narration;
-        $transjaction->debit_amount = $request->grand_total_price;
-        $transjaction->blance = $transjaction->blance + $increment_blance;
-        $blance_transjactions = Transjaction::where('id', '>', $transjaction->id)->get();
-        foreach ($blance_transjactions as $blance_transjaction){
-            $blance_transjaction->blance = $blance_transjaction->blance + $increment_blance;
-            $blance_transjaction->update();
+        $transjaction->transjaction_date = $package->confirm_date;
+        $transjaction->debit_amount = $package->grand_total_price;
+        if($pre_guest_transjaction_blance == null){
+            $transjaction->guest_blance = $package->grand_total_price;
+        }else{
+            $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $package->grand_total_price;
         }
-        $transjaction->staff_blance = $transjaction->staff_blance - $increment_blance;
-        $staff_blance_tranjactions = Transjaction::where('id', '>', $transjaction->id)->where('staff_id', $transjaction->staff_id)->get();
-        foreach ($staff_blance_tranjactions as $staff_blance_tranjaction){
-            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance + $increment_blance;
-            $staff_blance_tranjaction->update();
+        if($pre_staff_transjaction_blance == null){
+            $transjaction->staff_blance = $package->grand_total_price;
+        }else{
+            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $package->grand_total_price;
         }
-        $transjaction->guest_blance = $transjaction->guest_blance + $increment_blance;
-        $transjaction->update();
-        $guest_blances = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-        foreach ($guest_blances as $guest_blance){
-            $guest_blance->guest_blance = $guest_blance->guest_blance + $increment_blance;
-            $guest_blance->update();
+        if($pre_transjaction_blance == null){
+            $transjaction->blance = $package->grand_total_price;
+        }else{
+            $transjaction->blance = $pre_transjaction_blance->blance + $package->grand_total_price;
         }
+        $transjaction->save();
 
+        $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_dates as $next_date){
+            $next_date->blance += $package->grand_total_price;
+            if($next_date->guest_id == $package->guest){
+                $next_date->guest_blance += $package->grand_total_price;
+            }
+            if($next_date->staff_id == $package->staff){
+                $next_date->staff_blance += $package->grand_total_price;
+            }
+            $next_date->update();
+        }
 
     }
+
 
 
     public function editPackageUpdateVisa($id){
@@ -217,6 +272,7 @@ class PackageVisaUpdateController extends Controller
         $package->others_price = $request->others_price;
         $package->others_total_price = $request->others_total_price;
         $package->grand_total_price = $request->grand_total_price;
+        $package->confirm_date = $request->confirm_date;
         $package->journey_date = $request->journey_date;
         $package->return_date = $request->return_date;
 
@@ -267,60 +323,11 @@ class PackageVisaUpdateController extends Controller
             $package_day->delete();
         }
         $this->packageDay($request, $package);
-        $this->updateTransjactionBlance($request);
+        $this->updateTransjactionBlance($request, $package);
+        $this->transjaction($request, $package);
         return 'Package Update Visa Added Successfully';
     }
-    public function updateTransjactionBlance($request){
-        $transjaction = Transjaction::where('pack_id', $request->id)->first();
-        $increment_blance = $request->grand_total_price - $transjaction->debit_amount;
-        $old_transjaction_debit = $transjaction->debit_amount;
-        $old_staff_id = $transjaction->staff_id;
-        $old_guest_id = $transjaction->guest_id;
-        $transjaction->guest_id = $request->guest;
-//        $transjaction->staff_id = $request->sell_person;
-        $transjaction->narration = $request->narration;
-        $transjaction->debit_amount = $request->grand_total_price;
-        $transjaction->blance = $transjaction->blance + $increment_blance;
-        $blance_transjactions = Transjaction::where('id', '>', $transjaction->id)->get();
-        foreach ($blance_transjactions as $blance_transjaction){
-            $blance_transjaction->blance = $blance_transjaction->blance + $increment_blance;
-            $blance_transjaction->update();
-        }
-        $transjaction->staff_blance = $transjaction->staff_blance + $increment_blance;
-        $staff_blance_tranjactions = Transjaction::where('id', '>', $transjaction->id)->where('staff_id', $transjaction->staff_id)->get();
-        foreach ($staff_blance_tranjactions as $staff_blance_tranjaction){
-            $staff_blance_tranjaction->staff_blance = $staff_blance_tranjaction->staff_blance + $increment_blance;
-            $staff_blance_tranjaction->update();
-        }
 
-        if($old_guest_id == $request->guest){
-            $transjaction->guest_blance = $transjaction->guest_blance + $increment_blance;
-            $transjaction->update();
-            $guest_blances = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($guest_blances as $guest_blance){
-                $guest_blance->guest_blance = $guest_blance->guest_blance + $increment_blance;
-                $guest_blance->update();
-            }
-        }else{
-            $pre_guest_transjaction = Transjaction::where('id', '<', $transjaction->id)->where('guest_id', $request->guest)->orderBy('id', 'desc')->first();
-            if($pre_guest_transjaction){
-                $transjaction->guest_blance = $pre_guest_transjaction->guest_blance + $request->grand_total_price;
-            }else{
-                $transjaction->guest_blance = $request->grand_total_price;
-            }
-            $transjaction->update();
-            $next_old_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $old_guest_id)->get();
-            foreach ($next_old_guest_transjactions as $next_old_guest_transjaction){
-                $next_old_guest_transjaction->guest_blance = $next_old_guest_transjaction->guest_blance - $old_transjaction_debit;
-                $next_old_guest_transjaction->update();
-            }
-            $next_new_guest_transjactions = Transjaction::where('id', '>', $transjaction->id)->where('guest_id', $request->guest)->get();
-            foreach ($next_new_guest_transjactions as $next_new_guest_transjaction){
-                $next_new_guest_transjaction->guest_blance = $next_new_guest_transjaction->guest_blance + $request->grand_total_price;
-                $next_new_guest_transjaction->update();
-            }
-        }
-    }
 }
 
 

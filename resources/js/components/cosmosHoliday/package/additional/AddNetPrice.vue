@@ -49,7 +49,7 @@
                                                         <h4 style="margin-left: 20px;"> Suplier Net Price Information</h4>
                                                     </div>
                                                     <div class="form-group ">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-4">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label for="suplier">
                                                                     Suplier<span class="text-danger">*</span> :
@@ -64,8 +64,22 @@
                                                                 <span style="color: red">{{ errors.first('suplier') }}</span>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-4">
+                                                            <div class="col-xs-12 col-sm-12">
+                                                                <label for="net_price_date">
+                                                                    Date<span class="text-danger">*</span> :
+                                                                </label>
+                                                                <span class="block input-icon input-icon-right">
+                                                                <input   v-validate="'required'" v-model="employee.net_price_date" :class="{ 'is-invalid': form.errors.has('net_price_date') }"   class="col-xs-12 col-sm-12" id="net_price_date" name="net_price_date"   required type="date">
+                                                            </span>
+                                                            </div>
+                                                            <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                                <has-error style="color:red" :form="form" field="net_price_date"></has-error>
+                                                                <span style="color: red">{{ errors.first('net_price_date') }}</span>
+                                                            </div>
+                                                        </div>
 
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-4">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label for="net_price">
                                                                     Net Price<span class="text-danger">*</span> :
@@ -165,6 +179,7 @@
                     netPrices: [
                         {
                             suplier:'',
+                            net_price_date:'',
                             net_price:'',
 
                         }
@@ -179,6 +194,7 @@
                 if(this.form.netPrices.length <= 4){
                     this.form.netPrices.push({
                         suplier:'',
+                        net_price_date:'',
                         net_price:'',
                     })
                 }else{
@@ -206,6 +222,7 @@
                         this.form.netPrices = [
                             {
                                 net_price:'',
+                                net_price_date:'',
                                 suplier:'',
                             }
                         ],
