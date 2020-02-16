@@ -170,9 +170,11 @@
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.air_tickets = response.data.air_tickets.data
+                        console.log(response.data.air_tickets.data)
                         this.pagination = response.data.air_tickets
                         this.isLoading = false
                     })
+
             },
             downLoadInvoice(id){
                 this.isLoading = true

@@ -5,6 +5,7 @@ namespace App;
 use App\model\Guest;
 use App\model\Pax;
 use App\model\Staff;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Airticket extends Model
@@ -24,6 +25,11 @@ class Airticket extends Model
     }
     public function paxs(){
         return $this->hasMany(Pax::class, 'airticket_id', 'id');
+    }
+
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
     }
 
 }

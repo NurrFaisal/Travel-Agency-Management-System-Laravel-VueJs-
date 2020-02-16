@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Airticket;
+use App\model\Guest;
 use App\model\Pax;
 use App\model\SuplierTransaction;
 use App\model\Transjaction;
@@ -256,8 +257,13 @@ class AirTicketController extends Controller
         ]);
     }
     public function getAllAirTicketSearch($search){
+        $guest_id = [];
         $user_type = Session::get('user_type');
-        $air_tickets = Airticket::where('id', $search)->orWhere('total_price', 'LIKE', $search.'%')->orWhere('note', 'Like', $search.'%')->orWhere('narration', 'Like', $search.'%')->with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->select('id', 'name','phone_number');}])->orderBy('id', 'desc')->paginate(10);
+        $guests = Guest::where('phone_number', 'LIKE', $search.'%')->select('id', 'phone_number')->get();
+        foreach ($guests as $key => $guest){
+            $guest_id[$key] = $guest->id;
+        }
+        $air_tickets = Airticket::where('id', $search)->orWhereIn('selling_to', $guest_id)->orWhere('created_at', 'like', $search.'%')->with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->select('id', 'name','phone_number');}])->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'air_tickets' => $air_tickets,
              'user_type' => $user_type
