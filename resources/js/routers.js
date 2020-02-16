@@ -147,6 +147,8 @@ import NewPaymentInstallment
     from "./components/cosmosHoliday/accounts/paymentLoan/paymentLoanInstallment/NewPaymentInstallment";
 import EditPaymentInstallment
     from "./components/cosmosHoliday/accounts/paymentLoan/paymentLoanInstallment/EditPaymentInstallment";
+import ListTicket from "./components/cosmosHoliday/air-ticket/Ticket/ListTicket";
+import EditTicket from "./components/cosmosHoliday/air-ticket/Ticket/EditTicket";
 
 
 
@@ -282,6 +284,17 @@ export const routes = [
 
 
     //Air Ticket Start
+
+    //Air Ticker Start
+    {
+        path:'/ticket-list',
+        component: ListTicket
+    },
+    {
+      path:'/edit-ticket/:id',
+      component: EditTicket
+    },
+    // Air Ticket End
 
     // Air Lines Start
     {

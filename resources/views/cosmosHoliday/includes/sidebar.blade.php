@@ -66,6 +66,14 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
+                    <router-link to="/ticket-list">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Ticket List
+                    </router-link>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
                     <router-link to="/air-line-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Air Lines List

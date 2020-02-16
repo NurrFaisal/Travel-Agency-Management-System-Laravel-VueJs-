@@ -439,6 +439,10 @@ Route::get('/api/get-all-air-ticket-search/{search}', 'AirTicketController@getAl
 
 // AirTicketController End
 
+// TicketController Start
+Route::get('/api/get-all-ticket', 'TicketController@getAllAirTicket');
+Route::get('/api/get-all-ticket-search/{search}', 'TicketController@getAllTicketSearch');
+// TicketController End
 
 // HotelBookingController Start
 
