@@ -24,7 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="search()" id="nav-search-input" v-model="searchText" autocomplete="off" />
 									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
@@ -56,6 +56,7 @@
                                         <th  class="center" >Staff Name</th>
                                         <th  class="center" >Phone Number</th>
                                         <th  class="center" >Email</th>
+                                        <th  class="center" >Salary</th>
                                         <th  class="center" >Balance</th>
 
                                         <th  class="center" >Status</th>
@@ -69,8 +70,9 @@
                                         <td class="center">{{staff.first_name+' '+staff.last_name}}</td>
                                         <td class="center">{{staff.phone_number}}</td>
                                         <td class="center">{{staff.email_address}}</td>
-                                        <td class="center">00</td>
-                                        <td class="center">{{staff.status == 0 ? 'Active' : 'Inactive'}}</td>
+                                        <td class="center">{{staff.salary}}.00</td>
+                                        <td class="center">{{staff.transaction[0] == null ? '0.00' : staff.transaction[0].staff_blance}}</td>
+                                        <td class="center">{{staff.status == 1 ? 'Active' : 'Inactive'}}</td>
                                         <td class="center">
                                             <div class="btn-group center">
                                                 <!--                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
@@ -78,6 +80,9 @@
                                                 <!--                                                </a>-->
                                                 <router-link  :to="`/edit-staff/${staff.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </router-link>
+                                                <router-link  :to="`/view-staff/${staff.id}`" class="btn btn-xs btn-success">
+                                                    View
                                                 </router-link>
                                                 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
                                                 <!--                                                                    Follow Up-->
@@ -161,6 +166,23 @@
             },
             onCancel() {
                 console.log('User cancelled the loader.')
+            },
+            search:_.debounce(function () {
+                this.isLoading = true
+                if(this.searchText != ''){
+                    this.getAllSearchStaff(this.searchText)
+                }else{
+                    this.getAllStaff();
+                }
+            },1000),
+            getAllSearchStaff(searchText){
+                axios.get('/api/get-all-staff-search/'+searchText+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.staffs = response.data.staffs.data
+                        this.pagination = response.data.staffs
+                        this.isLoading = false
+                    })
+
             },
         }
     }

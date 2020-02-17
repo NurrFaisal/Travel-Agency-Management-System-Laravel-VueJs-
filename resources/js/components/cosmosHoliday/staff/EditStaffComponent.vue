@@ -416,7 +416,7 @@
                                                     </div>
                                                 </div>
                                                 <h3>Login Information</h3>
-                                                <div class="form-group ">
+                                                <div class="form-group " v-if="this.user_type == 'super-admin'">
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="email_address">
@@ -439,7 +439,7 @@
                                                                         v-validate="'required'">
                                                                     <option value="">--Select User Type--</option>
                                                                     <option value="user">User</option>-->
-                                                                    <option value="co-admin">Co-Admin</option>
+                                                                    <option value="operation">Operation</option>
                                                                     <option value="admin">Admin</option>
                                                                     <option value="super-admin">Super Admin</option>
                                                             </select>
@@ -451,7 +451,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group ">
+                                                <div class="form-group " v-if="this.user_type == 'super-admin'">
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="password">
@@ -562,6 +562,7 @@
         name: "EditStaffComponent",
         data(){
             return {
+                user_type: '',
                 form: new Form({
                     //Personal Information
                     id:'',
@@ -616,7 +617,9 @@
             axios.get(`/api/edit-staff/${this.$route.params.id}`)
                 .then((response) => {
                     $('#image').show()
+                    this.user_type = response.data.user_type
                     this.form.fill(response.data.staff)
+
                 })
         },
         methods:{

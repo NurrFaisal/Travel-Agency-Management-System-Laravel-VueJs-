@@ -18,7 +18,7 @@ class StaffDesignationController extends Controller
         return 'save';
     }
     public function allStaffDesignation(){
-        $staff_designations = StaffDesignation::orderBy('updated_at', 'desc')->get();
+        $staff_designations = StaffDesignation::orderBy('staff_designation', 'desc')->get();
         return response()->json([
             'staff_designations' => $staff_designations
         ]);

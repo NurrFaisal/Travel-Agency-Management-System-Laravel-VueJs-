@@ -170,6 +170,7 @@ Route::get('/api/view-staff/{id}', 'StaffController@viewStaff');
 Route::post('/api/update-staff', 'StaffController@updateStaff');
 Route::get('/api/get-all-staff-profit', 'StaffController@getAllStaffProfit');
 Route::get('/api/get-all-staff-guest', 'StaffController@getAllStaffGuest');
+Route::get('/api/get-all-staff-search/{search}', 'StaffController@getAllStaffSearch');
 // Staff-information End
 
 // new Start

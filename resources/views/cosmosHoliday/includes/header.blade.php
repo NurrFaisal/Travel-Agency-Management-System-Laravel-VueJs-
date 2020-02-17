@@ -24,7 +24,7 @@
                 <li class="grey dropdown-modal">
                     @if(Session::get('user_type') == 'super-admin' ) <h4 style="color: white;margin-right: 10px;">( Super Admin )</h4> @endif
                     @if(Session::get('user_type') == 'admin' ) <h4 style="color: white;margin-right: 10px;">( Admin )</h4> @endif
-                    @if(Session::get('user_type') == 'co-admin' ) <h4 style="color: white;margin-right: 10px;">( Co-Admin )</h4> @endif
+                    @if(Session::get('user_type') == 'operation' ) <h4 style="color: white;margin-right: 10px;">( Operation )</h4> @endif
                     @if(Session::get('user_type') == 'user' ) <h4 style="color: white;margin-right: 10px;">( user )</h4> @endif
                 </li>
 
@@ -49,10 +49,10 @@
                         </li>
 
                         <li>
-                            <a href="profile.html">
+                            <router-link  to="/view-staff/{{Session::get('staff_id')}}">
                                 <i class="ace-icon fa fa-user"></i>
                                 Profile
-                            </a>
+                            </router-link>
                         </li>
 
                         <li class="divider"></li>

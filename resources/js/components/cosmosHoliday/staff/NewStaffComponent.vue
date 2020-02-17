@@ -140,7 +140,7 @@
                                                                 Passport No.<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.passport" :class="{ 'is-invalid': form.errors.has('passport') }"   class="col-xs-12 col-sm-12" id="passport" name="passport" placeholder="Enter Staff Passport Number" required="" type="number">
+                                                                <input v-validate="'required'" v-model="form.passport" :class="{ 'is-invalid': form.errors.has('passport') }"   class="col-xs-12 col-sm-12" id="passport" name="passport" placeholder="Enter Staff Passport Number" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -288,7 +288,7 @@
                                                             </select>
                                                             </span>
                                                         </div>
-                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                        <div class="col-xs-offst-2 col-xs-9 text-danger">
                                                             <has-error style="color:red" :form="form" field="location"></has-error>
                                                             <span style="color: red">{{ errors.first('location') }}</span>
                                                         </div>
@@ -439,9 +439,9 @@
                                                                         v-validate="'required'">
                                                                     <option value="">--Select User Type--</option>
                                                                     <option value="user">User</option>-->
-                                                                    <option value="co-admin">Co-Admin</option>
+                                                                    <option value="operation">Operation</option>
                                                                     <option value="admin">Admin</option>
-                                                                    <option value="super-admin">Super Admin</option>
+<!--                                                                    <option value="super-admin">Super Admin</option>-->
                                                             </select>
                                                             </span>
                                                         </div>

@@ -111,7 +111,7 @@ class StaffController extends Controller
         return 'save';
     }
     public function getAllStaff(){
-        $staffs = Staff::orderBy('first_name', 'asc')->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address')->paginate(10);
+        $staffs = Staff::with(['transaction'=> function($q){$q->select('id', 'staff_id', 'staff_blance')->orderBy('id', 'desc')->first();}])->orderBy('first_name', 'asc')->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address', 'salary', 'status')->paginate(10);
         return response()->json([
             'staffs' => $staffs
         ], 200);
@@ -133,9 +133,11 @@ class StaffController extends Controller
         return 'delete Staff';
     }
     public function editeStaff($id){
+        $user_type = Session::get('user_type');
         $staff = Staff::find($id);
         return response()->json([
-            'staff' => $staff
+            'staff' => $staff,
+            'user_type' => $user_type
         ], 200);
     }
     public function updateStaff(Request $request){
@@ -197,5 +199,8 @@ class StaffController extends Controller
         return response()->json([
             'guests' => $guests
         ]);
+    }
+    public function getAllStaffSearch($search){
+       return 'ok';
     }
 }

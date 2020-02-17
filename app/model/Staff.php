@@ -14,4 +14,7 @@ class Staff extends Model
     public function departmentt(){
         return $this->belongsTo(Department::class, 'department');
     }
+    public function transaction(){
+        return $this->hasMany(Transjaction::class);
+    }
 }

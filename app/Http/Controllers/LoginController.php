@@ -27,6 +27,7 @@ class LoginController extends Controller
             if (password_verify($request->password, $staff->password)){
                 Session::put('staff_id', $staff->id);
                 Session::put('staff_name', $staff->first_name.' '.$staff->last_name);
+                Session::put('department', $staff->department);
                 Session::put('user_type', $staff->user_type);
                 Session::put('image', $staff->image);
                 return redirect('/dashboard');
