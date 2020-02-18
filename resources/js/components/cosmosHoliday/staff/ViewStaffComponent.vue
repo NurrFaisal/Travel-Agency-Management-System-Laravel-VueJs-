@@ -274,6 +274,7 @@
                                                                    <th>Email Address</th>
                                                                    <th>Phone Number</th>
                                                                    <th>Alt Phone Number</th>
+                                                                   <th>Balance</th>
                                                                    <th>Action</th>
                                                                </tr>
                                                                </thead>
@@ -285,13 +286,14 @@
                                                                    <td>{{guest.email_address}}</td>
                                                                    <td>{{guest.phone_number}}</td>
                                                                    <td>{{guest.alt_phone_number}}</td>
+                                                                   <td>{{guest.transjactions == null ? '-' : guest.transjactions.guest_blance}}</td>
 
                                                                    <td class="center">
                                                                        <div class="hidden-sm hidden-xs btn-group">
 
-                                                                           <button class="btn btn-xs btn-success">
+                                                                           <router-link :to="`/view-guest/${guest.id}`" class="btn btn-xs btn-success">
                                                                                <i class="ace-icon fa fa-eye bigger-120"></i>
-                                                                           </button>
+                                                                           </router-link>
 <!--                                                                           <router-link :to="`/edit-received/${received.id}`" class="btn btn-xs btn-info">-->
 <!--                                                                               <i class="ace-icon fa fa-pencil bigger-120"></i>-->
 <!--                                                                           </router-link>-->

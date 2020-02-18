@@ -71,7 +71,7 @@
                                         <td class="center">{{staff.phone_number}}</td>
                                         <td class="center">{{staff.email_address}}</td>
                                         <td class="center">{{staff.salary}}.00</td>
-                                        <td class="center">{{staff.transaction[0] == null ? '0.00' : staff.transaction[0].staff_blance}}</td>
+                                        <td class="center">{{staff.transaction == null ? '0.00' : staff.transaction.staff_blance}}</td>
                                         <td class="center">{{staff.status == 1 ? 'Active' : 'Inactive'}}</td>
                                         <td class="center">
                                             <div class="btn-group center">

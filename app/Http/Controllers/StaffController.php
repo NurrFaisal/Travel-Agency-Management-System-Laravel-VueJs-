@@ -206,7 +206,7 @@ class StaffController extends Controller
     }
 
     public function getAllStaffGuest($id){
-        $guests = Guest::where('rf_staff', $id)->select('id', 'name', 'email_address', 'phone_number', 'alt_phone_number', 'rf_staff')->orderBy('id', 'desc')->paginate(10);
+        $guests = Guest::with(['transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])->where('rf_staff', $id)->select('id', 'name', 'email_address', 'phone_number', 'alt_phone_number', 'rf_staff')->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'guests' => $guests
         ]);

@@ -71,9 +71,9 @@
                                         <td>{{guest.phone_number}}</td>
                                         <td>{{guest.staff.first_name+' '+ guest.staff.last_name}}</td>
                                         <td class="hidden-480">{{guest.email_address}}</td>
-                                        <td v-if="guest.transjactions[0] == null" style="text-align: right" >-</td>
-                                        <td v-if="guest.transjactions[0] != null && guest.transjactions[0].guest_blance > 0" style="text-align: right; background-color:red; color:white" ><strong>{{guest.transjactions[0] != null ? guest.transjactions[0].guest_blance: '-'}}</strong></td>
-                                        <td v-if="guest.transjactions[0] != null && guest.transjactions[0].guest_blance < 0" style="text-align: right; background-color:green; color:white" ><strong>{{guest.transjactions[0] != null ? guest.transjactions[0].guest_blance: '-'}}</strong></td>
+                                        <td v-if="guest.transjactions == null" style="text-align: right" >-</td>
+                                        <td v-if="guest.transjactions != null && guest.transjactions.guest_blance > 0" style="text-align: right; background-color:red; color:white" ><strong>{{guest.transjactions != null ? guest.transjactions.guest_blance: '-'}}</strong></td>
+                                        <td v-if="guest.transjactions != null && guest.transjactions.guest_blance < 0" style="text-align: right; background-color:green; color:white" ><strong>{{guest.transjactions != null ? guest.transjactions.guest_blance: '-'}}</strong></td>
 
                                         <td class="hidden-480">
 
