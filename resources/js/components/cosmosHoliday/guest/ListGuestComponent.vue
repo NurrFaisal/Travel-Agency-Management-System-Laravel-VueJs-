@@ -24,7 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
 									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
@@ -54,6 +54,7 @@
                                         <th class="center">Sl.</th>
                                         <th>Guest Name</th>
                                         <th>Phone Number</th>
+                                        <th>Staff Name</th>
                                         <th class="hidden-480">Email</th>
 
                                         <th>Balance</th>
@@ -66,11 +67,9 @@
                                     <tbody>
                                     <tr v-for="(guest, index) in  guests">
                                         <td class="center">{{index+1}}</td>
-
-
-
                                         <td>{{guest.name}}</td>
                                         <td>{{guest.phone_number}}</td>
+                                        <td>{{guest.staff.first_name+' '+ guest.staff.last_name}}</td>
                                         <td class="hidden-480">{{guest.email_address}}</td>
                                         <td v-if="guest.transjactions[0] == null" style="text-align: right" >-</td>
                                         <td v-if="guest.transjactions[0] != null && guest.transjactions[0].guest_blance > 0" style="text-align: right; background-color:red; color:white" ><strong>{{guest.transjactions[0] != null ? guest.transjactions[0].guest_blance: '-'}}</strong></td>
@@ -92,44 +91,10 @@
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <button @click.prevent="deleteGuest(guest.id)" class="btn btn-xs btn-danger">
+                                                <button v-if="user_type == 'super-admin'" @click.prevent="deleteGuest(guest.id)" class="btn btn-xs btn-danger">
                                                     <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                                 </button>
 
-                                            </div>
-
-                                            <div class="hidden-md hidden-lg">
-                                                <div class="inline pos-rel">
-                                                    <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-                                                        <i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-                                                    </button>
-
-                                                    <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-                                                        <li>
-                                                            <a href="#" class="tooltip-info" data-rel="tooltip" title="View">
-																			<span class="blue">
-																				<i class="ace-icon fa fa-search-plus bigger-120"></i>
-																			</span>
-                                                            </a>
-                                                        </li>
-
-                                                        <li>
-                                                            <a href="#" class="tooltip-success" data-rel="tooltip" title="Edit">
-																			<span class="green">
-																				<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
-																			</span>
-                                                            </a>
-                                                        </li>
-
-                                                        <li>
-                                                            <a href="#" @click.prevent="deleteGuest(guest.id)" class="tooltip-error" data-rel="tooltip" title="Delete">
-																			<span class="red">
-																				<i class="ace-icon fa fa-trash-o bigger-120"></i>
-																			</span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -176,7 +141,7 @@
         },
         data(){
             return {
-                searchText:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -195,10 +160,26 @@
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.guests = response.data.guests.data
-                        console.log(this.guests)
                         this.pagination = response.data.guests
                         this.doAjax();
 
+                    })
+            },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllGuestSearch(this.search_text)
+                }else{
+                    this.getAllGuest();
+                }
+            },1000),
+            getAllGuestSearch(search_text){
+                axios.get(`/api/get-all-guest-search/`+search_text+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.user_type = response.data.user_type
+                        this.guests = response.data.guests.data
+                        this.pagination = response.data.guests
+                        this.isLoading = false
                     })
             },
             doAjax() {
@@ -221,11 +202,13 @@
                         axios.get('/api/delete-guest/'+id)
                             .then((response) =>{
                                 if(response.data == "Deleted"){
+                                    this.getAllGuest()
                                     Toast.fire({
                                         type: 'success',
                                         title: 'Guest Deleted successfully'
                                     })
                                 }else {
+                                    this.getAllGuest()
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Oops...',

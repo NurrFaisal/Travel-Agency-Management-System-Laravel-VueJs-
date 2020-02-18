@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\model\Guest;
 use App\model\Staff;
+use App\model\Transjaction;
 use App\Profit;
 use Illuminate\Http\Request;
 use Image;
@@ -111,9 +112,11 @@ class StaffController extends Controller
         return 'save';
     }
     public function getAllStaff(){
-        $staffs = Staff::with(['transaction'=> function($q){$q->select('id', 'staff_id', 'staff_blance')->orderBy('id', 'desc')->first();}])->orderBy('first_name', 'asc')->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address', 'salary', 'status')->paginate(10);
+        $staffs = Staff::with(['transaction'=> function($q){$q->select('id', 'staff_id', 'staff_blance')->orderBy('id', 'desc');}])->orderBy('first_name', 'asc')->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address', 'salary', 'status')->paginate(10);
+        $staff_count = Staff::count();
         return response()->json([
-            'staffs' => $staffs
+            'staffs' => $staffs,
+            'staff_count' => $staff_count
         ], 200);
     }
     public function getAllStaffForSelect(){
@@ -185,8 +188,16 @@ class StaffController extends Controller
             'staff' => $staff
         ]);
     }
-    public function getAllStaffProfit(){
-        $profits = Profit::with(['guest' => function($q){$q->select('id', 'name');}])->where('staff_id', Session::get('staff_id'))->orderBy('profit_date', 'desc')->paginate(10);
+    public function getAllStaffProfit($id){
+        $profits = Profit::with(['guest' => function($q){$q->select('id', 'name', 'phone_number');}])->where('staff_id', $id)->orderBy('profit_date', 'desc')->paginate(10);
+        $sum_profits = Profit::where('staff_id', Session::get('staff_id'))->sum('amount');
+        return response()->json([
+            'profits' => $profits,
+            'sum_profits' => $sum_profits,
+        ]);
+    }
+    public function getAllStaffProfitSearch($id,$search){
+        $profits = Profit::with(['guest' => function($q){$q->select('id', 'name', 'phone_number');}])->where('staff_id', $id)->orderBy('profit_date', 'desc')->where('profit_date', 'like', $search.'%')->paginate(10);
         $sum_profits = Profit::where('staff_id', Session::get('staff_id'))->sum('amount');
         return response()->json([
             'profits' => $profits,
@@ -194,13 +205,32 @@ class StaffController extends Controller
         ]);
     }
 
-    public function getAllStaffGuest(){
-        $guests = Guest::where('rf_staff', Session::get('staff_id'))->select('id', 'name', 'email_address', 'phone_number', 'alt_phone_number', 'rf_staff')->orderBy('id', 'desc')->paginate(10);
+    public function getAllStaffGuest($id){
+        $guests = Guest::where('rf_staff', $id)->select('id', 'name', 'email_address', 'phone_number', 'alt_phone_number', 'rf_staff')->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'guests' => $guests
         ]);
     }
+    public function getAllStaffTransaction($id){
+        $transjactions = Transjaction::with(['guest'=>function($q){$q->select('id', 'name', 'phone_number');}])->orderBy('transjaction_date', 'asc')->where('staff_id', $id)->paginate(10);
+        return response()->json([
+            'transjactions' => $transjactions
+        ]);
+    }
     public function getAllStaffSearch($search){
-       return 'ok';
+        $staffs = Staff::with(['transaction'=> function($q){$q->select('id', 'staff_id', 'staff_blance')->orderBy('id', 'desc');}])
+            ->orderBy('first_name', 'asc')
+            ->select('id', 'first_name', 'last_name', 'phone_number','image', 'email_address', 'salary', 'status')
+            ->where('first_name', 'like', $search.'%')
+            ->orwhere('last_name', 'like', $search.'%')
+            ->orwhere('phone_number', 'like', $search.'%')
+            ->orwhere('alt_phone_number', 'like', $search.'%')
+            ->orwhere('email_address', 'like', $search.'%')
+            ->paginate(10);
+        $staff_count = Staff::count();
+        return response()->json([
+            'staffs' => $staffs,
+            'staff_count' => $staff_count
+        ], 200);
     }
 }

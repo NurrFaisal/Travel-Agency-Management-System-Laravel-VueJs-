@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\model\Guest;
 use App\model\Transjaction;
 use Illuminate\Http\Request;
+use Session;
 
 class GuestController extends Controller
 {
@@ -24,6 +25,12 @@ class GuestController extends Controller
             'status' => 'required|numeric',
         ]);
     }
+    protected function uniqueEmailandPhoneValidation($request){
+        $request->validate([
+            'email_address' => 'required|email|unique:guests',
+            'phone_number' => 'required|unique:guests',
+        ]);
+    }
     protected function guestBasic($request, $guest){
         $guest->branch = $request->branch;
         $guest->name = $request->name;
@@ -41,6 +48,7 @@ class GuestController extends Controller
     }
     public function addGuest(Request $request){
         $this->guestValidation($request);
+        $this->uniqueEmailandPhoneValidation($request);
         $guest = new Guest();
         $this->guestBasic($request, $guest);
         $guest->save();
@@ -48,11 +56,51 @@ class GuestController extends Controller
     }
 
     public function getAllGuest(){
-        $guests = Guest::with(['transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'status')->paginate(10);
+        $user_type = Session::get('user_type');
+        if($user_type == 'super-admin' || $user_type == 'admin' || $user_type == 'operation'){
+            $guests = Guest::with(['Staff' =>function($q){$q->select('id', 'first_name', 'last_name');}, 'transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])
+                ->orderBy('updated_at', 'desc')
+                ->select('id', 'name', 'phone_number', 'email_address', 'rf_staff', 'status')
+                ->paginate(10);
+        }else{
+            $guests = Guest::with(['Staff' =>function($q){$q->select('id', 'first_name', 'last_name');},'transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->where('rf_staff', Session::get('staff_id'))->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'rf_staff', 'status')->paginate(10);
+        }
         return response()->json([
-            'guests' => $guests
+            'guests' => $guests,
+            'user_type' => $user_type
         ]);
     }
+    public function getAllGuestSearch($search){
+        $user_type = Session::get('user_type');
+        if($user_type == 'super-admin' || $user_type == 'admin' || $user_type == 'operation'){
+            $guests = Guest::with(['Staff' =>function($q){$q->select('id', 'first_name', 'last_name');}, 'transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->first();}])
+                ->where('name', 'like', $search.'%')
+                ->orWhere('phone_number', 'like', $search.'%')
+                ->orWhere('alt_phone_number', 'like', $search.'%')
+                ->orWhere('email_address', 'like', $search.'%')
+                ->orWhere('alt_email_address', 'like', $search.'%')
+                ->orWhere('id', 'like', $search)
+                ->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'rf_staff', 'status')
+                ->paginate(10);
+        }else{
+            $guests = Guest::where('name', 'like', $search.'%')
+                ->where('rf_staff',Session::get('staff_id'))
+                ->orWhere('phone_number', 'like', $search.'%')
+                ->orWhere('alt_phone_number', 'like', $search.'%')
+                ->orWhere('email_address', 'like', $search.'%')
+                ->orWhere('alt_email_address', 'like', $search.'%')
+                ->orWhere('id', 'like', $search)
+                ->with(['Staff' =>function($q){$q->select('id', 'first_name', 'last_name');}, 'transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->first();}])
+                ->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'rf_staff', 'status')
+                ->paginate(10);
+        }
+        return response()->json([
+            'guests' => $guests,
+            'user_type' => $user_type
+        ]);
+
+    }
+
     public function deleteGuest($id){
         $guest = Guest::where('id', $id)->first();
         $transjaction = Transjaction::where('guest_id', $id)->get();
@@ -61,18 +109,24 @@ class GuestController extends Controller
             return 'Deleted';
         }
         return 'NotDeleted';
-
-
     }
     public function editGuest($id){
+        $user_type = Session::get('user_type');
         $guest = Guest::with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->where('id', $id)->first();
         return response()->json([
-            'guest' => $guest
+            'guest' => $guest,
+            'user_type' => $user_type
         ]);
     }
     public function updateGuest(Request $request){
         $this->guestValidation($request);
         $guest = Guest::where('id', $request->id)->first();
+        if($request->email_address != $guest->email_address){
+            $request->validate([
+                'email_address' => 'required|email|unique:staff',
+            ]);
+            $guest->email_address = $request->email_address;
+        }
         $this->guestBasic($request, $guest);
         $guest->update();
         return 'update';
@@ -81,6 +135,18 @@ class GuestController extends Controller
         $guests = Guest::where('name', 'like', $query.'%')->orWhere('phone_number', 'like', $query.'%')->select('id', 'name', 'phone_number')->orderBy('name', 'asc')->get();
         return response()->json([
             'guests' => $guests
+        ]);
+    }
+    public function getAllGuestTransaction($id){
+        $transjactions = Transjaction::with(['staff'=>function($q){$q->select('id', 'first_name', 'last_name', 'phone_number');}])->orderBy('transjaction_date', 'asc')->where('guest_id', $id)->paginate(10);
+        return response()->json([
+            'transjactions' => $transjactions
+        ]);
+    }
+    public function getAllGuestTransactionSearch($id, $search){
+        $transjactions = Transjaction::with(['staff'=>function($q){$q->select('id', 'first_name', 'last_name', 'phone_number');}])->where('transjaction_date', 'like', $search.'%')->orderBy('transjaction_date', 'asc')->where('guest_id', $id)->paginate(10);
+        return response()->json([
+            'transjactions' => $transjactions
         ]);
     }
 

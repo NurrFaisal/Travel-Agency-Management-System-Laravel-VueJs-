@@ -407,6 +407,9 @@
                             title: ' New Guest Added successfully'
                         })
                     })
+                    .catch((response) => {
+                        this.doAjax()
+                    })
             }
         }
 

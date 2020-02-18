@@ -1,7 +1,7 @@
 <template>
    <div>
        <div class="main-content-inner">
-           <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+           <div class="breadcrumbs ace-save-state">
                <ul class="breadcrumb">
                    <li>
                        <i class="ace-icon fa fa-home home-icon"></i>
@@ -12,14 +12,6 @@
                    <li class="active">User Profile</li>
                </ul><!-- /.breadcrumb -->
 
-               <div class="nav-search" id="nav-search">
-                   <form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off">
-									<i class="ace-icon fa fa-search nav-search-icon"></i>
-								</span>
-                   </form>
-               </div><!-- /.nav-search -->
            </div>
 
            <div class="page-content">
@@ -59,19 +51,19 @@
 
                                        <li class="">
                                            <a data-toggle="tab" href="#guest" aria-expanded="false">
-                                               <i class="pink ace-icon fa fa-picture-o bigger-120"></i>
+                                               <i class="blue ace-icon fa fa-users bigger-120"></i>
                                                Guest
                                            </a>
                                        </li>
                                        <li class="">
                                            <a data-toggle="tab" href="#transjaction" aria-expanded="false">
-                                               <i class="pink ace-icon fa fa-picture-o bigger-120"></i>
+                                               <i class="blue ace-icon fa fa-users bigger-120"></i>
                                                Transjaction
                                            </a>
                                        </li>
                                        <li class="">
                                            <a data-toggle="tab" href="#profit" aria-expanded="false">
-                                               <i class="pink ace-icon fa fa-picture-o bigger-120"></i>
+                                               <i class="blue ace-icon fa fa-users bigger-120"></i>
                                                Profit
                                            </a>
                                        </li>
@@ -79,6 +71,14 @@
 
                                    <div class="tab-content no-border padding-24">
                                        <div id="basic" class="tab-pane active">
+                                           <loading :active.sync="isLoading"
+                                                    :can-cancel="false"
+                                                    color="#438EB9"
+                                                    :width=this.width
+                                                    :height=this.height
+                                                    loader="bars"
+                                                    :is-full-page="fullPage">
+                                           </loading>
                                            <div class="row">
                                                <div class="col-xs-12 col-sm-3 center">
 															<span class="profile-picture">
@@ -188,7 +188,7 @@
                                                        </tr>
                                                        <tr>
                                                            <th class="center">Staff ID</th>
-                                                           <th class="center">{{staff.staff_id}}</th>
+                                                           <th class="center">COS-{{staff.staff_id}}</th>
                                                        </tr>
                                                        <tr>
                                                            <th class="center">Department</th>
@@ -260,7 +260,6 @@
                                                </div><!-- /.span -->
                                            </div>
                                        </div><!-- /#friends -->
-
                                        <div id="guest" class="tab-pane">
                                            <div class="row">
                                                <div class="col-xs-12">
@@ -322,19 +321,95 @@
                                            </div><!-- /.row -->
                                        </div><!-- /#pictures -->
                                        <div id="transjaction" class="tab-pane">
-                                           <h1>this is Transjaction</h1>
-                                       </div><!-- /#pictures -->
-                                       <div id="profit" class="tab-pane">
                                            <div class="row">
                                                <div class="col-xs-12">
                                                    <!-- PAGE CONTENT BEGINS -->
                                                    <div class="row">
+                                                       <div class="col-xs-12">
+                                                           <table id="simple-table_transaction" class="table  table-bordered table-hover">
+                                                               <thead>
+                                                               <tr>
+                                                                   <th class="center">Date</th>
+                                                                   <th class="center">Invoice No</th>
+                                                                   <th class="center">Guest Name</th>
+                                                                   <th class="center">Phone Number</th>
+                                                                   <th class="center">Narration</th>
+                                                                   <th class="center">Debit</th>
+                                                                   <th class="center">Credit</th>
+                                                                   <th class="center">Blance</th>
+                                                               </tr>
+                                                               </thead>
+
+                                                               <tbody>
+                                                               <tr v-for="(transjaction, index) in  transjactions">
+                                                                   <td>{{transjaction.transjaction_date | timeformate}}</td>
+                                                                   <td v-if="transjaction.air_id != null">A-{{transjaction.air_id}}</td>
+                                                                   <td v-if="transjaction.pack_id != null">P-{{transjaction.pack_id}}</td>
+                                                                   <td v-if="transjaction.hotel_id != null">H-{{transjaction.hotel_id}}</td>
+                                                                   <td v-if="transjaction.visa_id != null">V-{{transjaction.visa_id}}</td>
+                                                                   <td v-if="transjaction.received_id != null">M-{{transjaction.received_id}}</td>
+                                                                   <td v-if="transjaction.discount_id != null">D-{{transjaction.discount_id}}</td>
+                                                                   <td>{{transjaction.guest.name}}</td>
+                                                                   <td>{{transjaction.guest.phone_number}}</td>
+                                                                   <td>{{transjaction.narration}}</td>
+                                                                   <td>{{transjaction.debit_amount}}</td>
+                                                                   <td>{{transjaction.credit_amount}}</td>
+                                                                   <td>{{transjaction.staff_blance}}</td>
+
+
+                                                               </tr>
+                                                               </tbody>
+                                                           </table>
+                                                       </div><!-- /.span -->
+                                                       <div class="justify-content-center">
+                                                           <pagination v-if="pagination3.last_page > 1"
+                                                                       :pagination="pagination3"
+                                                                       :offset="5"
+                                                                       @paginate="getAllStaffTransaction()"
+                                                           ></pagination>
+                                                       </div>
+
+                                                   </div><!-- /.row -->
+                                                   <div class="hr hr-18 dotted hr-double"></div>
+                                                   <!-- PAGE CONTENT ENDS -->
+                                               </div><!-- /.col -->
+                                           </div><!-- /.row -->
+                                       </div><!-- /#pictures -->
+                                       <div id="profit" class="tab-pane">
+
+                                           <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                                               <ul class="breadcrumb">
+
+                                               </ul><!-- /.breadcrumb -->
+
+                                               <div class="nav-search" id="nav-search">
+                                                   <form class="form-search">
+                                                       <span class="input-icon">
+                                                           <input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchProfit()" id="nav-search-input" v-model="search_profit" autocomplete="off" />
+                                                           <i class="ace-icon fa fa-search nav-search-icon"></i></span>
+                                                   </form>
+                                               </div><!-- /.nav-search -->
+                                           </div>
+                                           <div class="row">
+                                               <loading :active.sync="isLoading"
+                                                        :can-cancel="false"
+                                                        color="#438EB9"
+                                                        :width=this.width
+                                                        :height=this.height
+                                                        loader="bars"
+                                                        :is-full-page="fullPage">
+                                               </loading>
+                                               <div class="col-xs-12">
+                                                   <!-- PAGE CONTENT BEGINS -->
+                                                   <div class="row">
+
                                                        <div class="col-xs-12">
                                                            <table id="simple-table_profit" class="table  table-bordered table-hover">
                                                                <thead>
                                                                <tr>
                                                                    <th class="center">Sl.</th>
                                                                    <th class="center">Guest</th>
+                                                                   <th class="center">Phone Number</th>
                                                                    <th>Invoice</th>
                                                                    <th>Date</th>
                                                                    <th>Amount</th>
@@ -345,6 +420,7 @@
                                                                <tr v-for="(profit, index) in  profits">
                                                                    <td class="center">{{index+1}}</td>
                                                                    <td>{{profit.guest.name}}</td>
+                                                                   <td>{{profit.guest.phone_number}}</td>
                                                                    <td v-if="profit.air_id != null">A-{{profit.air_id}}</td>
                                                                    <td v-if="profit.visa_id != null">V-{{profit.visa_id}}</td>
                                                                    <td v-if="profit.hotel_id != null">H-{{profit.hotel_id}}</td>
@@ -355,7 +431,7 @@
                                                                </tbody>
                                                                <tfoot>
                                                                <tr>
-                                                                   <th colspan="4" style="text-align: right">Total :</th>
+                                                                   <th colspan="5" style="text-align: right">Total :</th>
                                                                    <th>{{sum_profits}}</th>
                                                                </tr>
                                                                </tfoot>
@@ -391,36 +467,50 @@
 </template>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "ViewStaffComponent",
         mounted() {
+            this.isLoading = true
             this.getStaffProfit()
             this.getAllStaffGuest()
+            this.getAllStaffTransaction()
+        },
+        components: {
+            Loading
         },
         data(){
             return {
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
+                search_profit:'',
+
+
                 staff:'',
                 profits:'',
                 sum_profits:'',
                 guests:'',
+                transjactions:'',
                 pagination:{
                     current_page: 1,
                 },
                 pagination2:{
                     current_page: 1,
                 },
+                pagination3:{
+                    current_page: 1,
+                },
 
             }
         },
 
-        computed:{
-            StaffDesignation(){
-                return this.$store.getters.get_staff_designation_name;
-            },
-            allDepartment(){
-                return this.$store.getters.get_department
-            }
-        },
         created() {
             axios.get(`/api/view-staff/${this.$route.params.id}`)
                 .then((response) => {
@@ -429,19 +519,47 @@
         },
         methods:{
             getStaffProfit(){
-                axios.get('/api/get-all-staff-profit?page='+this.pagination.current_page)
+                axios.get(`/api/get-all-staff-profit/${this.$route.params.id}?page=`+this.pagination.current_page)
                     .then(response => {
                         this.sum_profits = response.data.sum_profits
                         this.profits = response.data.profits.data
                         this.pagination = response.data.profits
+                        this.isLoading = false
                     })
             },
             getAllStaffGuest(){
-                axios.get('/api/get-all-staff-guest?page='+this.pagination2.current_page)
+                axios.get(`/api/get-all-staff-guest/${this.$route.params.id}?page=`+this.pagination2.current_page)
                     .then(response => {
                         this.guests = response.data.guests.data
                         this.pagination2 = response.data.guests
+                        this.isLoading = false
                     })
+            },
+            getAllStaffTransaction(){
+                axios.get(`/api/get-all-staff-transaction/${this.$route.params.id}?page=`+this.pagination3.current_page)
+                    .then(response => {
+                        this.transjactions = response.data.transjactions.data
+                        this.pagination3 = response.data.transjactions
+                        this.isLoading = false
+                    })
+            },
+            searchProfit:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_profit != ''){
+                    this.getAllSearchProfit(this.search_profit)
+                }else{
+                    this.getStaffProfit();
+                }
+            },1000),
+            getAllSearchProfit(searchText){
+                axios.get(`/api/get-all-staff-profit-search/${this.$route.params.id}/`+searchText+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.sum_profits = response.data.sum_profits
+                        this.profits = response.data.profits.data
+                        this.pagination = response.data.profits
+                        this.isLoading = false
+                    })
+
             },
         }
     }

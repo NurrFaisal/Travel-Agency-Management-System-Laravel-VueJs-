@@ -292,7 +292,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="clearfix form-actions">
+                                                <div v-if="this.user_type == 'super-admin'" class="clearfix form-actions">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>
@@ -361,6 +361,8 @@
                 isLoading: false,
                 fullPage: false,
 
+                user_type:'',
+
                 form: new Form({
                     id: '',
                     branch: '1',
@@ -384,6 +386,7 @@
                 axios.get(`/api/edit-guest/${this.$route.params.id}`)
                     .then((respose) => {
                         this.form.fill(respose.data.guest)
+                        this.user_type = respose.data.user_type
                         this.doAjax()
                     })
             },
@@ -396,7 +399,7 @@
                 this.isLoading = true
                 this.form.post('/api/update-guest')
                     .then((response) => {
-                        this.doAjax()
+                        this.isLoading = false
                         this.form.branch = ''
                         this.form.id = ''
                         this.form.name = ''
@@ -418,6 +421,9 @@
                             type: 'success',
                             title: ' Guest Updated successfully'
                         })
+                    })
+                    .catch((response) => {
+                        this.isLoading = false
                     })
             }
         }

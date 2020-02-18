@@ -17,7 +17,7 @@
                     </li>
 
                     <li>
-                        <router-link to="/staff-list">Staff List</router-link>
+                        <router-link to="/staff-list">Staff List </router-link>
                     </li>
                 </ul><!-- /.breadcrumb -->
 
@@ -35,7 +35,7 @@
 
                 <div class="page-header">
                     <h1>
-                        Staff List
+                        Staff List - {{this.staff_count}}
                         <div class="card-tools" style="float:right">
                             <router-link to="/new-staff" class="btn btn-success">Add Staff</router-link>
                         </div>
@@ -65,7 +65,7 @@
                                     </thead>
                                     <tbody>
                                     <tr v-for="(staff, index) in staffs">
-                                        <td class="center">{{index+1}}</td>
+                                        <td class="center">{{(pagination.current_page*10)+(index+1)-10}}</td>
                                         <td class="center"><img width="40" :src="staff.image"/></td>
                                         <td class="center">{{staff.first_name+' '+staff.last_name}}</td>
                                         <td class="center">{{staff.phone_number}}</td>
@@ -128,7 +128,6 @@
         name: "ListStaffComponent",
 
         mounted() {
-            this.isLoading = true
             this.getAllStaff()
         },
         components: {
@@ -143,6 +142,7 @@
                 isLoading: false,
                 fullPage: false,
                 user_type:'',
+                staff_count:'',
 
                 pagination:{
                     current_page: 1,
@@ -152,10 +152,13 @@
         },
         methods:{
             getAllStaff(){
+                this.isLoading = true
                 axios.get('/api/get-all-staffs?page='+this.pagination.current_page)
                     .then(response => {
                         this.staffs = response.data.staffs.data
                         this.pagination = response.data.staffs
+                        this.staff_count = response.data.staff_count
+                        this.user_type = response.data.user_type
                         this.doAjax();
                     })
             },
@@ -180,6 +183,8 @@
                     .then(response => {
                         this.staffs = response.data.staffs.data
                         this.pagination = response.data.staffs
+                        this.staff_count = response.data.staff_count
+                        this.user_type = response.data.user_type
                         this.isLoading = false
                     })
 

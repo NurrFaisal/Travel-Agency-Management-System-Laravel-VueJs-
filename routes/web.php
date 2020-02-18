@@ -106,6 +106,7 @@ Route::get('/new-received-loan-installment/{anypath}', 'DashboardController@inde
 Route::get('/edit-received-loan-installment/{anypath}', 'DashboardController@index');
 Route::get('/edit-payment-loan/{anypath}', 'DashboardController@index');
 Route::get('/edit-payment-loan-installment/{anypath}', 'DashboardController@index');
+Route::get('/view-guest/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -168,8 +169,10 @@ Route::get('/api/delete-staff/{id}', 'StaffController@deleteStaff');
 Route::get('/api/edit-staff/{id}', 'StaffController@editeStaff');
 Route::get('/api/view-staff/{id}', 'StaffController@viewStaff');
 Route::post('/api/update-staff', 'StaffController@updateStaff');
-Route::get('/api/get-all-staff-profit', 'StaffController@getAllStaffProfit');
-Route::get('/api/get-all-staff-guest', 'StaffController@getAllStaffGuest');
+Route::get('/api/get-all-staff-profit/{id}', 'StaffController@getAllStaffProfit');
+Route::get('/api/get-all-staff-profit-search/{id}/{search}', 'StaffController@getAllStaffProfitSearch');
+Route::get('/api/get-all-staff-guest/{id}', 'StaffController@getAllStaffGuest');
+Route::get('/api/get-all-staff-transaction/{id}', 'StaffController@getAllStaffTransaction');
 Route::get('/api/get-all-staff-search/{search}', 'StaffController@getAllStaffSearch');
 // Staff-information End
 
@@ -185,8 +188,10 @@ Route::get('/api/get-all-guest', 'GuestController@getAllGuest');
 Route::get('/api/delete-guest/{id}', 'GuestController@deleteGuest');
 Route::get('/api/edit-guest/{id}', 'GuestController@editGuest');
 Route::post('/api/update-guest', 'GuestController@updateGuest');
-
 Route::get('/api/get-all-guests/{query}', 'GuestController@getAllGuestRefernce');
+Route::get('/api/get-all-guest-transaction/{id}', 'GuestController@getAllGuestTransaction');
+Route::get('/api/get-all-staff-transaction-search/{id}/{search}', 'GuestController@getAllGuestTransactionSearch');
+Route::get('/api/get-all-guest-search/{search}', 'GuestController@getAllGuestSearch');
 //GuestControler End
 
 //Guest Query Controller Start
