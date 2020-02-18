@@ -107,6 +107,7 @@ Route::get('/edit-received-loan-installment/{anypath}', 'DashboardController@ind
 Route::get('/edit-payment-loan/{anypath}', 'DashboardController@index');
 Route::get('/edit-payment-loan-installment/{anypath}', 'DashboardController@index');
 Route::get('/view-guest/{anypath}', 'DashboardController@index');
+Route::get('/view-suplier/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -261,9 +262,12 @@ Route::post('/api/update-visa-country', 'VisaCountryController@updateVisaCountry
 // Suplier Controller Start
 Route::post('/api/add-suplier', 'SuplierController@addSuplier');
 Route::get('/api/get-all-supliers', 'SuplierController@getAllSuplier');
+Route::get('/api/get-all-suplier-search/{search}', 'SuplierController@getAllSuplierSearch');
 Route::get('/api/edit-suplier/{id}', 'SuplierController@editSuplier');
 Route::post('/api/update-suplier', 'SuplierController@updateSuplier');
 Route::get('/api/get-all-active-suplier', 'SuplierController@getAllActiveSuplier');
+Route::get('/api/get-all-suplier-transaction/{id}', 'SuplierController@getAllSuplierTransaction');
+Route::get('/api/get-all-suplier-transaction-search/{id}/{search}', 'SuplierController@getAllSuplierTransactionSearch');
 
 
 // Suplier controller End

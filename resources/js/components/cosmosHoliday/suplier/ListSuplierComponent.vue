@@ -24,7 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchAirTicket()" id="nav-search-input" v-model="searchText" autocomplete="off" />
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
 									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
@@ -54,8 +54,10 @@
                                         <th class="center">Sl.</th>
                                         <th  class="center" >Company Name</th>
                                         <th  class="center" >Contact Person</th>
+                                        <th  class="center" >Phone Number</th>
                                         <th  class="center" >Email</th>
                                         <th  class="center" >Country</th>
+                                        <th  class="center" >Balance</th>
                                         <th  class="center" >Action</th>
                                     </tr>
                                     </thead>
@@ -64,22 +66,28 @@
                                         <td class="center">{{index+1}}</td>
                                         <td class="center">{{suplier.name}}</td>
                                         <td class="center">{{suplier.contact_person}}</td>
+                                        <td class="center">{{suplier.phone_number}}</td>
                                         <td class="center">{{suplier.email_address}}</td>
                                         <td class="center">{{suplier.countryt.name}}</td>
+                                        <td class="center">{{suplier.transactions == null ? '-' : suplier.transactions.suplier_balance}}</td>
                                         <td class="center">
                                             <div class="btn-group center">
                                                 <!--                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
                                                 <!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
-                                                <!--                                                </a>-->
+                                                <!--
+                                                                                         </a>-->
                                                 <router-link  :to="`/edit-suplier/${suplier.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                </router-link>
+                                                <router-link :to="`/view-suplier/${suplier.id}`" class="btn btn-xs btn-success">
+                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
                                                 </router-link>
                                                 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
                                                 <!--                                                                    Follow Up-->
                                                 <!--                                                                </a>-->
-                                                <a href="#" @click.prevent="deleteSuplier(suplier.id)"  class="btn btn-xs btn-danger"  title="Delete">
-                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                </a>
+<!--                                                <a href="#" @click.prevent="deleteSuplier(suplier.id)"  class="btn btn-xs btn-danger"  title="Delete">-->
+<!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
+<!--                                                </a>-->
                                             </div>
                                         </td>
                                     </tr>
@@ -128,7 +136,7 @@
         },
         data(){
             return {
-                searchText:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -148,6 +156,22 @@
                         this.supliers = response.data.supliers.data
                         this.pagination = response.data.supliers
                         this.doAjax();
+                    })
+            },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSuplierSearch(this.search_text)
+                }else{
+                    this.getAllSuplier();
+                }
+            },1000),
+            getAllSuplierSearch(search_text){
+                axios.get(`/api/get-all-suplier-search/`+search_text+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.supliers = response.data.supliers.data
+                        this.pagination = response.data.supliers
+                        this.isLoading = false
                     })
             },
             doAjax() {

@@ -138,7 +138,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="clearfix form-actions">
+                                                <div v-if="this.user_type == 'super-admin'" class="clearfix form-actions">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>
@@ -182,6 +182,7 @@
             axios.get(`/api/edit-suplier/${this.$route.params.id}`)
                 .then((respose) => {
                     this.form.fill(respose.data.suplier)
+                    this.user_type = respose.data.user_type
                 })
             this.doAjax()
         },
@@ -196,6 +197,8 @@
                 height:128,
                 isLoading: false,
                 fullPage: false,
+
+                user_type:'',
 
                 form: new Form({
                     id: '',

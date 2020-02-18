@@ -10,5 +10,8 @@ class Agency extends Model
     public function countryt(){
         return $this->belongsTo(VisaCountry::class, 'country');
     }
+    public function transactions(){
+        return $this->hasOne(SuplierTransaction::class, 'suplier_id');
+    }
 }
 
