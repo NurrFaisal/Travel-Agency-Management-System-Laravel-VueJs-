@@ -70,7 +70,7 @@
 
             <div class="row">
                 <div class="col-xs-7 col-md-7">Name <span style="margin-left: 63px;">: {{$air_ticket->guest->name}}</span></div>
-                <div class="col-xs-5 col-md-5">Date: {{$air_ticket->created_at->format('d-m-Y')}}</div>
+                <div class="col-xs-5 col-md-5">Date: {{ date("d-m-Y", strtotime($air_ticket->created_at))}}</div>
             </div>
 
         <div class="row">
@@ -83,7 +83,11 @@
         </div>
         <div class="row">
             <div class="col-xs-7 col-md-7">Address <span style="margin-left: 40px;">: {{$air_ticket->guest->address}}</span></div>
-            <div class="col-xs-5 col-md-5"></div>
+            @if($air_ticket->print > 1)
+            <div class="col-xs-5 col-md-5">Duplicate Print <span style="margin-left: 40px;">: {{$air_ticket->print}}</span></div>
+            @else
+                <div class="col-xs-5 col-md-5"></div>
+            @endif
         </div>
     </font>
 
@@ -171,7 +175,7 @@
                             </tr>
 
                             <tr >
-                                <td height="5" colspan="2" style=" padding: 2px"><strong>In Word : </strong>{{$air_ticket->word}} </td>
+                                <td height="5" colspan="2" style=" padding: 2px"><strong>In Word : </strong>{{$clear_total_price}} </td>
                                 <td height="5" style="text-align:right; padding: 2px"><strong>Total Amount :</strong></td>
                                 <td height="5" style="text-align:right; padding: 2px"><strong>{{$air_ticket->total_amount}}</strong></td>
                             </tr>

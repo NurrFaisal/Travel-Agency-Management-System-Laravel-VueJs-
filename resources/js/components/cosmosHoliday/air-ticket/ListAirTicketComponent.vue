@@ -84,10 +84,6 @@
                                     </tbody>
                                 </table>
                             </div><!-- /.span -->
-
-
-
-
                             <div class="justify-content-center">
                                 <pagination v-if="pagination.last_page > 1"
                                             :pagination="pagination"
@@ -176,6 +172,13 @@
 
             },
             downLoadInvoice(id){
+                this.isLoading = true
+                axios.get('/invoice-print-air-ticket-count/'+id)
+                    .then(responese => {
+                        this.downLoadInvoiceCount(id)
+                    })
+            },
+            downLoadInvoiceCount(id){
                 this.isLoading = true
                 axios.get('/invoice-print-air-ticket/'+id)
                     .then(responese => {

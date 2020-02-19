@@ -250,7 +250,19 @@ class AirTicketController extends Controller
 
     public function getAllAirTicket(){
         $user_type = Session::get('user_type');
-        $air_tickets = Airticket::with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->select('id', 'name','phone_number');}])->select('id', 'destination', 'sell_person', 'total_price', 'selling_to')->orderBy('id', 'desc')->paginate(10);
+        if($user_type == 'super-admin' || $user_type == 'admin' || $user_type == 'operation') {
+            $air_tickets = Airticket::with(['staff' => function ($q) {
+                $q->select('id', 'first_name', 'last_name');
+            }, 'guest' => function ($q) {
+                $q->select('id', 'name', 'phone_number');
+            }])->select('id', 'destination', 'sell_person', 'total_price', 'selling_to')->orderBy('id', 'desc')->paginate(10);
+        }else{
+            $air_tickets = Airticket::with(['staff' => function ($q) {
+                $q->select('id', 'first_name', 'last_name');
+            }, 'guest' => function ($q) {
+                $q->select('id', 'name', 'phone_number');
+            }])->where('sell_person', Session::get('staff_id'))->select('id', 'destination', 'sell_person', 'total_price', 'selling_to')->orderBy('id', 'desc')->paginate(10);
+        }
         return response()->json([
             'air_tickets' => $air_tickets,
             'user_type' => $user_type
@@ -259,11 +271,27 @@ class AirTicketController extends Controller
     public function getAllAirTicketSearch($search){
         $guest_id = [];
         $user_type = Session::get('user_type');
-        $guests = Guest::where('phone_number', 'LIKE', $search.'%')->select('id', 'phone_number')->get();
-        foreach ($guests as $key => $guest){
-            $guest_id[$key] = $guest->id;
+        if($user_type == 'super-admin' || $user_type == 'admin' || $user_type == 'operation') {
+            $guests = Guest::where('phone_number', 'LIKE', $search . '%')->select('id', 'phone_number')->get();
+            foreach ($guests as $key => $guest) {
+                $guest_id[$key] = $guest->id;
+            }
+            $air_tickets = Airticket::where('id', $search)->orWhereIn('selling_to', $guest_id)->orWhere('created_at', 'like', $search . '%')->with(['staff' => function ($q) {
+                $q->select('id', 'first_name', 'last_name');
+            }, 'guest' => function ($q) {
+                $q->select('id', 'name', 'phone_number');
+            }])->orderBy('id', 'desc')->paginate(10);
+        }else{
+            $guests = Guest::where('phone_number', 'LIKE', $search . '%')->select('id', 'phone_number')->get();
+            foreach ($guests as $key => $guest) {
+                $guest_id[$key] = $guest->id;
+            }
+            $air_tickets = Airticket::where('sell_person', Session::get('staff_id'))->where('id', $search)->orWhereIn('selling_to', $guest_id)->orWhere('created_at', 'like', $search . '%')->with(['staff' => function ($q) {
+                $q->select('id', 'first_name', 'last_name');
+            }, 'guest' => function ($q) {
+                $q->select('id', 'name', 'phone_number');
+            }])->orderBy('id', 'desc')->paginate(10);
         }
-        $air_tickets = Airticket::where('id', $search)->orWhereIn('selling_to', $guest_id)->orWhere('created_at', 'like', $search.'%')->with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->select('id', 'name','phone_number');}])->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'air_tickets' => $air_tickets,
              'user_type' => $user_type

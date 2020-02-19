@@ -31,15 +31,23 @@ class PrintController extends Controller
         ])->setPaper('a4');;
         return $pdf->stream('invoice.pdf');
     }
-
+    public function invoicePrintAirTicketCount($id){
+        $print_air_ticket = Airticket::where('id', $id)->first();
+        $print_air_ticket->print =$print_air_ticket->print + 1;
+        $print_air_ticket->update();
+    }
     public function invoicePrintAirTicket($id){
         $air_ticket = Airticket::with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->select('id', 'name','phone_number', 'email_address', 'rf_staff', 'address');}, 'empolyees' => function($q){$q->with('airlines')->select('airticket_id', 'issue_date', 'departure_date', 'return_date', 'air_lines', 'pnr', 'sector', 'net_price', 'price', 'suplier');}, 'paxs' => function($q){$q->select('id', 'pax_title', 'name', 'gender', 'airticket_id');}])->where('id', $id)->first();
         $paxs_arry =  $air_ticket->paxs->toArray();
         $paxs_arry_len = count($paxs_arry);
+        $total_price = $this->convert_number_to_words($air_ticket->total_price);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
 //        return view('cosmosHoliday.page.invoiceAir', [
 //            'air_ticket' => $air_ticket,
 //            'paxs_arry' => $paxs_arry,
 //            'paxs_arry_len' => $paxs_arry_len,
+//            'clear_total_price' => $clear_total_price
 //
 //        ]);
 
@@ -47,6 +55,7 @@ class PrintController extends Controller
             'air_ticket' => $air_ticket,
             'paxs_arry' => $paxs_arry,
             'paxs_arry_len' => $paxs_arry_len,
+            'clear_total_price' => $clear_total_price
         ])->setPaper('a4');
         return $pdf->stream('invoice.pdf');
     }
