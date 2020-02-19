@@ -149,6 +149,7 @@ import EditPaymentInstallment
     from "./components/cosmosHoliday/accounts/paymentLoan/paymentLoanInstallment/EditPaymentInstallment";
 import ListTicket from "./components/cosmosHoliday/air-ticket/Ticket/ListTicket";
 import EditTicket from "./components/cosmosHoliday/air-ticket/Ticket/EditTicket";
+import ListHotel from "./components/cosmosHoliday/hotel-booking/hotel/ListHotel";
 
 
 
@@ -631,7 +632,12 @@ export const routes = [
         path:'/edit-hotel-booking/:id',
         component: EditHotelBookingComponent
     },
-
+    //Hotel List Start
+    {
+        path:'/hotel-list',
+        component: ListHotel
+    },
+    // Hotel List End
     // Hotel Booking End
 
 

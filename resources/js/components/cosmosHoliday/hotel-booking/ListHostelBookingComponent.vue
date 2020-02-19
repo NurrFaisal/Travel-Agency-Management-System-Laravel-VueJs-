@@ -24,7 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
 									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
@@ -52,8 +52,11 @@
                                     <thead>
                                     <tr>
                                         <th class="center">Sl.</th>
+                                        <th class="center">Date</th>
                                         <th class="center">Invoice ID</th>
                                         <th  class="center" >Guest Name</th>
+                                        <th  class="center" >Phone Number</th>
+                                        <th  class="center" >Customer Name</th>
                                         <th  class="center" >Sell Person</th>
 
                                         <th  class="center" >Total Price</th>
@@ -63,8 +66,11 @@
                                     <tbody>
                                     <tr v-for="(hotel_booking, index) in hotel_bookings">
                                         <td class="center">{{index+1}}</td>
+                                        <td class="center">{{hotel_booking.created_at | timeformate}}</td>
                                         <td class="center">H-{{hotel_booking.id}}</td>
                                         <td class="center">{{hotel_booking.guest.name}}</td>
+                                        <td class="center">{{hotel_booking.guest.phone_number}}</td>
+                                        <td class="center">{{hotel_booking.customer_name}}</td>
                                         <td class="center">{{hotel_booking.staff.first_name+' '+hotel_booking.staff.last_name}}</td>
                                         <td class="center">{{hotel_booking.total_price}}</td>
                                         <td class="center">
@@ -129,7 +135,7 @@
         data(){
 
             return {
-                searchText:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -151,7 +157,31 @@
                         this.doAjax();
                     })
             },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSearchHotelBooking(this.search_text)
+                }else{
+                    this.getHotelBooking();
+                }
+            },1000),
+            getAllSearchHotelBooking(search_text){
+                axios.get('/api/get-all-hotel-booking-search/'+search_text+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.hotel_bookings = response.data.hotel_bookings.data
+                        this.pagination = response.data.hotel_bookings
+                        this.isLoading = false
+                    })
+
+            },
             downLoadInvoice(id){
+                this.isLoading = true
+                axios.get('/invoice-print-hotel-count/'+id)
+                    .then(responese => {
+                        this.downLoadInvoiceCount(id)
+                    })
+            },
+            downLoadInvoiceCount(id){
                 this.isLoading = true
                 axios.get('/invoice-print-hotel/'+id)
                     .then(responese => {

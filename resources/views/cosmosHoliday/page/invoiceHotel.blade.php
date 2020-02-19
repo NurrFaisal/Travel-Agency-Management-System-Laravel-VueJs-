@@ -83,7 +83,11 @@
         </div>
         <div class="row">
             <div class="col-xs-7 col-md-7">Address <span style="margin-left: 40px;">: {{$hotel_booking->guest->address}}</span></div>
-            <div class="col-xs-5 col-md-5"></div>
+            @if($hotel_booking->print > 1)
+                <div class="col-xs-5 col-md-5">Duplicate Print <span style="margin-left: 40px;">: {{$hotel_booking->print}}</span></div>
+            @else
+                <div class="col-xs-5 col-md-5"></div>
+            @endif
         </div>
     </font>
 

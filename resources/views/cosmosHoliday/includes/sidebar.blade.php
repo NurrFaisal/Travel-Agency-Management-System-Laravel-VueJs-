@@ -179,6 +179,10 @@
                         <i class="menu-icon fa fa-caret-right"></i>
                         Hotel Booking List
                     </router-link>
+                    <router-link to="/hotel-list">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Hotel List
+                    </router-link>
 
                     <b class="arrow"></b>
                 </li>

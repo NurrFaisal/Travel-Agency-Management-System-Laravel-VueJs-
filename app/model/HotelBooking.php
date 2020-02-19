@@ -2,6 +2,7 @@
 
 namespace App\model;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class HotelBooking extends Model
@@ -16,5 +17,9 @@ class HotelBooking extends Model
     }
     public function hotels(){
         return $this->hasMany(Hotel::class,  'hotel_booking_id', 'id' );
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
     }
 }

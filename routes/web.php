@@ -25,6 +25,7 @@ Route::get('/invoice-print-air-ticket/{id}', 'PrintController@invoicePrintAirTic
 Route::get('/invoice-print-air-ticket-count/{id}', 'PrintController@invoicePrintAirTicketCount');
 Route::get('/invoice-print-visa/{id}', 'PrintController@invoicePrintVisa');
 Route::get('/invoice-print-hotel/{id}', 'PrintController@invoicePrintHotel');
+Route::get('/invoice-print-hotel-count/{id}', 'PrintController@invoicePrintHotelCount');
 Route::get('/invoice-print-package/{id}', 'PrintController@invoicePrintPackage');
 Route::get('/invoice-print-money-receipt/{id}', 'PrintController@invoicePrintMoneyReceipt');
 Route::get('/invoice-print-debit-voucher/{id}', 'PrintController@invoicePrintDebitVoucher');
@@ -459,10 +460,16 @@ Route::get('/api/get-all-ticket-search/{search}', 'TicketController@getAllTicket
 
 Route::post('/api/add-hotel-booking', 'HotelBookingController@addHotelBooking');
 Route::get('/api/get-all-hotel-booking', 'HotelBookingController@getAllHotelBooking');
+Route::get('/api/get-all-hotel-booking-search/{search}', 'HotelBookingController@getAllHotelBookingSearch');
 Route::get('/api/edit-hotel-booking/{id}', 'HotelBookingController@editHotelBooking');
 Route::post('/api/updated-hotel-booking', 'HotelBookingController@updateHotelBooking');
 
 // HotelBookingController End
+
+// HotelController Start
+Route::get('/api/get-all-hotel', 'HotelController@getAllHotel');
+Route::get('/api/get-all-hotel-search/{search}', 'HotelController@getAllHotelSearch');
+// HotelController End
 
 
 
@@ -546,26 +553,21 @@ Route::post('/api/update-loan', 'LoanController@updateLoan');
 
 
 // InstallmentController Start
-
 Route::post('/api/add-installment', 'InstallmentController@addInstallment');
 Route::get('/api/get-all-installment/{id}', 'InstallmentController@getAllInstallment');
 Route::get('/api/edit-installment/{id}', 'InstallmentController@editInstallment');
 Route::post('/api/update-installment', 'InstallmentController@updateInstallment');
-
 // InstallmentController End
 
 
 
 // BankController Start
-
 Route::post('/api/add-bank', 'BankController@addBank');
 Route::get('/api/get-all-bank', 'BankController@getAllBank');
 Route::get('/api/edit-bank/{id}', 'BankController@editBank');
 Route::post('/api/update-bank', 'BankController@updateBank');
 Route::get('/api/delete-bank/{id}', 'BankController@deleteBank');
-
 Route::get('/api/get-all-module-banks', 'BankController@getAllModuleBank');
-
 // BankController End
 
 

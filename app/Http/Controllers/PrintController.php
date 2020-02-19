@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Airticket;
 use App\model\Contra;
 use App\model\Expence;
+use App\model\Hotel;
 use App\model\HotelBooking;
 use App\model\Incentive;
 use App\model\MoneyReceived;
@@ -72,6 +73,11 @@ class PrintController extends Controller
             'passports' => $passports
         ])->setPaper('a4');
         return $pdf->stream('invoiceVisa.pdf');
+    }
+    public function invoicePrintHotelCount($id){
+        $hotel_booking = HotelBooking::where('id', $id)->first();
+        $hotel_booking->print += 1;
+        $hotel_booking->update();
     }
 
     public function invoicePrintHotel($id){
