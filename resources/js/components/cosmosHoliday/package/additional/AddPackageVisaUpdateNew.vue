@@ -927,7 +927,7 @@
                 this.form.post('/api/add-package-visa-new')
                     .then((response) => {
                         this.$session.start()
-                        this.$session.set('p_state',6)
+                        this.$session.set('p_state',5)
                         this.form.adult_qty = ''
                         this.form.adult_service = ''
                         this.form.adult_price = ''

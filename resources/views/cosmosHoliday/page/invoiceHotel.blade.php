@@ -70,7 +70,7 @@
 
             <div class="row">
                 <div class="col-xs-7 col-md-7">Name <span style="margin-left: 63px;">: {{$hotel_booking->guest->name}}</span></div>
-                <div class="col-xs-5 col-md-5">Date: {{$hotel_booking->created_at->format('d-m-Y')}}</div>
+                <div class="col-xs-5 col-md-5">Date: {{$hotel_booking->created_at}}</div>
             </div>
 
         <div class="row">

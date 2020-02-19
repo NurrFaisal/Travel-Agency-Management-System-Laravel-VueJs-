@@ -51,22 +51,22 @@
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <ul class="nav nav-tabs">
-                                    <li :class="p_state == 1 ? 'active' : ''"><a data-toggle="tab" href="#guest_query">Guest Query</a></li>
-                                    <li :class="p_state == 2 ? 'active' : ''"><a data-toggle="tab" href="#follow_up">Follow Up To Suplier</a></li>
-                                    <li :class="p_state == 3 ? 'active' : ''"><a data-toggle="tab" href="#icsd">Tour Plan Submit To Guest</a></li>
-                                    <li :class="p_state == 4 ? 'active' : ''"><a data-toggle="tab" href="#guest_reaction_tab">Follow Up To Guest</a></li>
-                                    <li :class="p_state == 5 ? 'active' : ''"><a data-toggle="tab" href="#guest_confirm_date_tab">Guest Confirmation</a></li>
+                                    <li @click="packageSession(1)" :class="p_state == 1 ? 'active' : ''"><a data-toggle="tab" href="#guest_query">Guest Query</a></li>
+                                    <li @click="packageSession(2)" :class="p_state == 2 ? 'active' : ''"><a data-toggle="tab" href="#follow_up">Follow Up To Suplier</a></li>
+                                    <li @click="packageSession(3)" :class="p_state == 3 ? 'active' : ''"><a data-toggle="tab" href="#icsd">Tour Plan Submit To Guest</a></li>
+                                    <li @click="packageSession(4)" :class="p_state == 4 ? 'active' : ''"><a data-toggle="tab" href="#guest_reaction_tab">Follow Up To Guest</a></li>
+                                    <li @click="packageSession(5)" :class="p_state == 5 ? 'active' : ''"><a data-toggle="tab" href="#guest_confirm_date_tab">Guest Confirmation</a></li>
 <!--                                    <li :class="p_state == 6 ? 'active' : ''"><a data-toggle="tab" href="#cmts">VISA Update</a></li>-->
-                                    <li :class="p_state == 6 ? 'active' : ''"><a data-toggle="tab" href="#visa_update">Visa Update</a></li>
-                                    <li :class="p_state == 7 ? 'active' : ''"><a data-toggle="tab" href="#drfdp">Ticket</a></li>
+                                    <li @click="packageSession(6)" :class="p_state == 6 ? 'active' : ''"><a data-toggle="tab" href="#visa_update">Visa Update</a></li>
+                                    <li @click="packageSession(7)" :class="p_state == 7 ? 'active' : ''"><a data-toggle="tab" href="#drfdp">Ticket</a></li>
 
 
-                                    <li :class="p_state == 8 ? 'active' : ''"><a data-toggle="tab" href="#package_net_price">Net Price</a></li>
+                                    <li @click="packageSession(8)" :class="p_state == 8 ? 'active' : ''"><a data-toggle="tab" href="#package_net_price">Net Price</a></li>
 
 
-                                    <li :class="p_state == 9 ? 'active' : ''"><a data-toggle="tab" href="#pddin">Document Ready</a></li>
+                                    <li @click="packageSession(9)" :class="p_state == 9 ? 'active' : ''"><a data-toggle="tab" href="#pddin">Document Ready</a></li>
 <!--                                    <li :class="p_state == 9 ? 'active' : ''"><a data-toggle="tab" href="#dcbg">Document </a></li>-->
-                                    <li :class="p_state == 10 ? 'active' : ''"><a data-toggle="tab" href="#date_of_journey">Delivered</a></li>
+                                    <li @click="packageSession(10)" :class="p_state == 10 ? 'active' : ''"><a data-toggle="tab" href="#date_of_journey">Delivered</a></li>
                                 </ul>
                                 <div class="tab-content">
 <!--                                    package Query Start-->
@@ -684,9 +684,6 @@
                                         </div>
                                     </div>
 <!--                                    Package Ticket End-->
-
-
-
 <!--                                    package Net Price Start-->
                                     <div id="package_net_price" class="tab-pane fade in" :class="p_state == 8 ? 'active' : ''">
                                         <div class="modal fade" id="document_ready_modal" aria-hidden="true" role="dialog"  tabindex="-1">
@@ -777,16 +774,6 @@
                                         </div>
                                     </div>
 <!--                                    package End Price End-->
-
-
-
-
-
-
-
-
-
-
                                     <div id="pddin" class="tab-pane fade in" :class="p_state == 9 ? 'active' : ''">
                                         <div class="modal fade" id="document_collection_modal" aria-hidden="true" role="dialog"  tabindex="-1">
                                             <div class="modal-dialog" role="document">
@@ -953,19 +940,9 @@
         mounted() {
             this.$store.dispatch("allVisaStaff")
             this.getPackageQuery();
-            this.getAllPackageFollowUp();
-            this.itineraryCostSubmitDate();
-            this.getAllGuestReactionPackage();
-            this.getAllGuestConfirmDate();
-            this.getAllPackageVisaUpdate();
-            this.getAllTicket();
-            this.getAllPackageNetPrice();
-
-            this.getAllDocumentReady();
             // this.getAllDocumentCollectionByGuest();
-            this.getAllDateOfJourney();
-
             this.packageSessionStart();
+            this.packageSession(this.p_state);
 
         },
         computed: {
@@ -1048,7 +1025,6 @@
                     note:'',
                     ftg_confimation:'0',
                 }),
-
                 form6: new Form({
                     id:'',
                     openDRFDPModal:'',
@@ -1072,12 +1048,43 @@
             }
         },
         methods: {
+            packageSession(state){
+                this.p_state = state
+                if(state == 1){
+                    this.getPackageQuery();
+                }
+                if(state == 2){
+                    this.getAllPackageFollowUp();
+                }
+                if(state == 3){
+                    this.itineraryCostSubmitDate();
+                }
+                if(state == 4){
+                    this.getAllGuestReactionPackage();
+                }
+                if(state == 5){
+                    this.getAllGuestConfirmDate();
+                }
+                if(state == 6){
+                    this.getAllPackageVisaUpdate();
+                }
+                if(state == 7){
+                    this.getAllTicket();
+                }
+                if(state == 8){
+                    this.getAllPackageNetPrice();
+                }if(state == 9){
+                    this.getAllDocumentReady();
+                }if(state == 10){
+                    this.getAllDateOfJourney();
+                }
 
 
+            },
             packageSessionStart(){
                 if(this.$session.exists()){
                     this.p_state = this.$session.get('p_state')
-                    // this.$session.destroy()
+                    this.$session.destroy()
                 }
             },
 
@@ -1170,20 +1177,15 @@
                         console.log(e)
                     })
             },
-
             getAllDateOfJourney(){
-
                 axios.get('/api/get-all-date-of-journey?page='+this.doj_pagination.current_page)
                     .then(response => {
                         this.date_of_journey = response.data.date_of_journey.data
                         this.doj_pagination = response.data.date_of_journey
+
                     })
 
             },
-
-
-
-
             // All Get Data End
 
             // All Modal Start
@@ -1225,8 +1227,9 @@
                         this.$session.start()
                         this.$session.set('p_state',1)
                         this.form.reset()
-                        this.getPackageQuery()
-                        this.getAllPackageFollowUp();
+                        this.packageSession(1)
+                        // this.getPackageQuery()
+                        // this.getAllPackageFollowUp();
                         $('#package_query_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1241,8 +1244,9 @@
                         this.$session.start()
                         this.$session.set('p_state',2)
                         this.form2.reset()
-                        this.getAllPackageFollowUp();
-                        this.itineraryCostSubmitDate();
+                        this.packageSession(2)
+                        // this.getAllPackageFollowUp();
+                        // this.itineraryCostSubmitDate();
                         $('#package_follow_up_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1257,8 +1261,9 @@
                         this.$session.start()
                         this.$session.set('p_state',3)
                         this.form3.reset()
-                        this.itineraryCostSubmitDate();
-                        this.getAllGuestReactionPackage();
+                        this.packageSession(3)
+                        // this.itineraryCostSubmitDate();
+                        // this.getAllGuestReactionPackage();
                         $('#package_icsd_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1273,8 +1278,9 @@
                         this.$session.start()
                         this.$session.set('p_state',4)
                         this.form4.reset()
-                        this.getAllGuestReactionPackage();
-                        this.getAllGuestConfirmDate()
+                        this.packageSession(4)
+                        // this.getAllGuestReactionPackage();
+                        // this.getAllGuestConfirmDate()
                         $('#guest_reaction_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1289,8 +1295,9 @@
                         this.$session.start()
                         this.$session.set('p_state',5)
                         this.form5.reset()
-                        this.getAllConfirmMailToSuplier()
-                        this.getAllGuestConfirmDate()
+                        this.packageSession(5)
+                        // this.getAllConfirmMailToSuplier()
+                        // this.getAllGuestConfirmDate()
                         $('#cmts_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1302,9 +1309,12 @@
             addVisaUpdate(){
                 this.form6.post('/api/add-visa-update-date')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('p_state',6)
                         this.form6.reset()
-                        this.getAllConfirmMailToSuplier()
-                        this.getAllPackageVisaUpdate()
+                        this.packageSession(6)
+                        // this.getAllConfirmMailToSuplier()
+                        // this.getAllPackageVisaUpdate()
                         $('#visa_update_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1317,10 +1327,11 @@
                 this.form7.post('/api/add-package-ticket-date')
                     .then((response) => {
                         this.$session.start()
-                        this.$session.set('p_state',7)
-                        this.form7.reset()
-                        this.getAllTicket();
-                        this.getAllPackageVisaUpdate()
+                        this.$session.set('p_state',6)
+                        this.form6.reset()
+                        this.packageSession(6)
+                        // this.getAllTicket();
+                        // this.getAllPackageVisaUpdate()
                         $('#DRFDP_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1333,10 +1344,11 @@
                 this.form8.post('/api/add-document-ready')
                     .then((response) => {
                         this.$session.start()
-                        this.$session.set('p_state',9)
+                        this.$session.set('p_state',8)
                         this.form8.reset()
-                        this.getAllDocumentReady()
-                        this.getAllPackageNetPrice();
+                        this.packageSession(8)
+                        // this.getAllDocumentReady()
+                        // this.getAllPackageNetPrice();
                         $('#document_ready_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1349,10 +1361,11 @@
                 this.form9.post('/api/add-document-delivery')
                     .then((response) => {
                         this.$session.start()
-                        this.$session.set('p_state',10)
+                        this.$session.set('p_state',9)
                         this.form9.reset()
-                        this.getAllDateOfJourney()
-                        this.getAllDocumentReady()
+                        this.packageSession(9)
+                        // this.getAllDateOfJourney()
+                        // this.getAllDocumentReady()
                         $('#document_collection_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
