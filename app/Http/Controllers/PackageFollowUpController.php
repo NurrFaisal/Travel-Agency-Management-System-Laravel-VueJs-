@@ -7,6 +7,7 @@ use App\model\FollowUPToSuplier;
 use App\model\Package;
 use App\PackageDay;
 use Illuminate\Http\Request;
+use Session;
 
 class PackageFollowUpController extends Controller
 {
@@ -33,9 +34,11 @@ class PackageFollowUpController extends Controller
     }
 
     public function getAllPackageFollowUp(){
+        $user_type = Session::get('user_type');
         $package_follow_up =Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->select('id','guest', 'country', 'destination', 'duration')->where('state', 2)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'package_follow_up' => $package_follow_up
+            'package_follow_up' => $package_follow_up,
+            'user_type' => $user_type
         ]);
     }
 

@@ -9,13 +9,16 @@ use App\model\Transjaction;
 use App\PackageDay;
 use App\Profit;
 use Illuminate\Http\Request;
+use Session;
 
 class DRFDPController extends Controller
 {
     public function getAllDRFDP(){
+        $user_type = Session::get('user_type');
         $drfdp = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 9)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'drfdp' => $drfdp
+            'drfdp' => $drfdp,
+            'user_type' => $user_type
         ]);
     }
     protected function addDocumentReadyValidation($request){

@@ -11,9 +11,11 @@ use Session;
 class GuestConfirmDateController extends Controller
 {
     public function getAllPackageConfirmDate(){
+        $user_type = Session::get('user_type');
         $guest_confirm_date = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 5)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'guest_confirm_date' => $guest_confirm_date
+            'guest_confirm_date' => $guest_confirm_date,
+            'user_type' => $user_type
         ]);
     }
     protected function guestConfirmationValidation($request){

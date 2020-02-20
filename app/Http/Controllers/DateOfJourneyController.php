@@ -9,13 +9,16 @@ use App\model\Transjaction;
 use App\PackageDay;
 use App\Profit;
 use Illuminate\Http\Request;
+use Session;
 
 class DateOfJourneyController extends Controller
 {
     public function getAllDateOfJourney(){
+        $user_type = Session::get('user_type');
         $date_of_journey = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 10)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'date_of_journey' => $date_of_journey
+            'date_of_journey' => $date_of_journey,
+            'user_type' => $user_type
         ]);
     }
     protected function addDateOfJourneyValidation($request){

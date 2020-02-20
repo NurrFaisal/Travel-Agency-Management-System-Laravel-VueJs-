@@ -6,13 +6,16 @@ use App\model\FollowUPtoGuest;
 use App\model\Package;
 use App\PackageDay;
 use Illuminate\Http\Request;
+use Session;
 
 class GuestReactionController extends Controller
 {
     public function getAllPackageGuestReaction(){
+        $user_type = Session::get('user_type');
         $guest_reaction = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 4)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'guest_reaction' => $guest_reaction
+            'guest_reaction' => $guest_reaction,
+            'user_type' => $user_type
         ]);
     }
     protected function guestReactionValidation($request){

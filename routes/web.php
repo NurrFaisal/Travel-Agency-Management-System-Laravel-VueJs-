@@ -330,6 +330,7 @@ Route::post('/api/add-package-query', 'PackageController@addPackageQuery');
 Route::get('/api/get-all-package-query', 'PackageController@getAllPackageQuery');
 Route::get('/api/edit-package-query/{id}', 'PackageController@editPackageQuery');
 Route::post('/api/update-package-query', 'PackageController@updatePackageQuery');
+Route::get('/api/get-all-package-search/{search}', 'PackageController@getAllPackageSearch');
 
 
 // package query follow up start

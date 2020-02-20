@@ -24,9 +24,8 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
                         <span class="input-icon">
-                            <input autocomplete="off" class="nav-search-input" id="nav-search-input" placeholder="Search ..."
-                                   type="text"/>
-                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
                         </span>
                     </form>
                 </div><!-- /.nav-search -->
@@ -61,7 +60,7 @@
                                     <li @click="packageSession(7)" :class="p_state == 7 ? 'active' : ''"><a data-toggle="tab" href="#drfdp">Ticket</a></li>
 
 
-                                    <li @click="packageSession(8)" :class="p_state == 8 ? 'active' : ''"><a data-toggle="tab" href="#package_net_price">Net Price</a></li>
+                                    <li  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" @click="packageSession(8)" :class="p_state == 8 ? 'active' : ''"><a data-toggle="tab" href="#package_net_price">Net Price</a></li>
 
 
                                     <li @click="packageSession(9)" :class="p_state == 9 ? 'active' : ''"><a data-toggle="tab" href="#pddin">Document Ready</a></li>
@@ -173,7 +172,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-package-query/${pq.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-package-query/${pq.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openPackageQueryModal(pq.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">
@@ -263,7 +262,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-package-follow-up/${pfu.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-package-follow-up/${pfu.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openPackageFollowUpModal(pfu.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_follow_up_modal">
@@ -396,7 +395,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-itinerary-cost-submit-date/${icsd.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-itinerary-cost-submit-date/${icsd.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="icsd_modal(icsd.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_icsd_modal">
@@ -448,7 +447,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-guest-reaction/${gr.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-guest-reaction/${gr.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  :to="`/add-guest-confirmation/${gr.id}`" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#guest_reaction_modal">
@@ -501,7 +500,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-guest-confirmation-date/${gcd.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-guest-confirmation-date/${gcd.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link :to="`/add-package-visa-update-new/${gcd.id}`" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#cmts_modal">
@@ -604,7 +603,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-package-visa-update/${vu.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-package-visa-update/${vu.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openDRFDPModal(vu.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#DRFDP_modal">
@@ -659,7 +658,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-drfdp/${dp.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-drfdp/${dp.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link :to="`/package-net-price/${dp.id}`" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#payment_modal">
@@ -749,7 +748,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-package-net-price/${net_price.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-package-net-price/${net_price.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openDocumentReadyModal(net_price.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#document_ready_modal">
@@ -838,7 +837,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-pddin/${pddin.id}`" class="btn btn-xs btn-info">
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-pddin/${pddin.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openDocumentCollectionModal(pddin.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#document_collection_modal">
@@ -891,7 +890,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link  :to="`/edit-date-of-journey/${doj.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-date-of-journey/${doj.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
@@ -952,6 +951,8 @@
         },
         data(){
             return {
+                user_type:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -1004,7 +1005,6 @@
                 pacakge_ticket: '',
                 net_prices: '',
                 payment_done_due_invoice_no: '',
-                document_collection_by_guest: '',
                 date_of_journey: '',
                 invoice: '',
 
@@ -1049,38 +1049,127 @@
         },
         methods: {
             packageSession(state){
+               this.isLoading = true
                 this.p_state = state
-                if(state == 1){
-                    this.getPackageQuery();
+                if(this.search_text == ''){
+                    if(state == 1){
+                        this.getPackageQuery();
+                    }
+                    if(state == 2){
+                        this.getAllPackageFollowUp();
+                    }
+                    if(state == 3){
+                        this.itineraryCostSubmitDate();
+                    }
+                    if(state == 4){
+                        this.getAllGuestReactionPackage();
+                    }
+                    if(state == 5){
+                        this.getAllGuestConfirmDate();
+                    }
+                    if(state == 6){
+                        this.getAllPackageVisaUpdate();
+                    }
+                    if(state == 7){
+                        this.getAllTicket();
+                    }
+                    if(state == 8){
+                        this.getAllPackageNetPrice();
+                    }if(state == 9){
+                        this.getAllDocumentReady();
+                    }if(state == 10){
+                        this.getAllDateOfJourney();
+                    }
                 }
-                if(state == 2){
-                    this.getAllPackageFollowUp();
-                }
-                if(state == 3){
-                    this.itineraryCostSubmitDate();
-                }
-                if(state == 4){
-                    this.getAllGuestReactionPackage();
-                }
-                if(state == 5){
-                    this.getAllGuestConfirmDate();
-                }
-                if(state == 6){
-                    this.getAllPackageVisaUpdate();
-                }
-                if(state == 7){
-                    this.getAllTicket();
-                }
-                if(state == 8){
-                    this.getAllPackageNetPrice();
-                }if(state == 9){
-                    this.getAllDocumentReady();
-                }if(state == 10){
-                    this.getAllDateOfJourney();
-                }
+                this.doAjax()
+            },
 
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSearchPackage(this.search_text)
+                }else{
+                    this.packageSession(this.p_state);
+                }
+            },1000),
+            getAllSearchPackage(search_text){
+                axios.get('/api/get-all-package-search/'+search_text)
+                    .then(response => {
+                        console.log(response.data.package_count)
+                        if(response.data.package_count == 0){
+                            if(response.data.package != null){
+                                this.p_state = response.data.package[0].state
+                                if(this.p_state == 1){
+                                    this.package_query = response.data.package
+                                }
+                                if(this.p_state == 2){
+                                    this.package_follow_up = response.data.package
+                                }
+                                if(this.p_state == 3){
+                                    this.itinerary_cost_submit_date = response.data.package
+                                }
+                                if(this.p_state == 4){
+                                    this.guest_reaction = response.data.package
+                                }
+                                if(this.p_state == 5){
+                                    this.guest_confirm_date = response.data.package
+                                }
+                                if(this.p_state == 6){
+                                    this.package_visa_update = response.data.package
+                                }
+                                if(this.p_state == 7){
+                                    this.pacakge_ticket = response.data.package
+                                }
+                                if(this.p_state == 8){
+                                    this.net_prices = response.data.package
+                                }
+                                if(this.p_state == 9){
+                                    this.payment_done_due_invoice_no = response.data.package
+                                }
+                                if(this.p_state == 10){
+                                    this.date_of_journey = response.data.package
+                                }
+                            }
+                        }else{
+                            console.log('else')
+                            this.package_query = response.data.package_query.data
+                            this.pq_pagination = response.data.package_query
+
+                            this.package_follow_up = response.data.package_follow_up.data
+                            this.pf_pagination = response.data.package_follow_up
+
+                            this.itinerary_cost_submit_date = response.data.itinerary_cost_submit_date.data
+                            this.icsd_pagination = response.data.itinerary_cost_submit_date
+
+                            this.guest_reaction = response.data.guest_reaction.data
+                            this.gr_pagination = response.data.guest_reaction
+
+                            this.guest_confirm_date = response.data.guest_confirm_date.data
+                            this.gcd_pagination = response.data.guest_confirm_date
+
+                            this.package_visa_update = response.data.package_visa_update.data
+                            this.vu_pagination = response.data.package_visa_update
+
+                            this.pacakge_ticket = response.data.pacakge_ticket.data
+                            this.dp_pagination = response.data.pacakge_ticket
+
+                            this.net_prices = response.data.net_prices.data
+                            this.net_pagination = response.data.net_prices
+
+                            this.payment_done_due_invoice_no = response.data.drfdp.data
+                            this.pddin_pagination = response.data.drfdp
+
+                            this.date_of_journey = response.data.date_of_journey.data
+                            this.doj_pagination = response.data.date_of_journey
+
+
+                        }
+
+                        this.isLoading = false
+                    })
 
             },
+
             packageSessionStart(){
                 if(this.$session.exists()){
                     this.p_state = this.$session.get('p_state')
@@ -1092,6 +1181,7 @@
             getPackageQuery(){
                 axios.get('/api/get-all-package-query?page='+this.pq_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.package_query = response.data.package_query.data
                         this.pq_pagination = response.data.package_query
                     })
@@ -1099,6 +1189,7 @@
             getAllPackageFollowUp(){
                 axios.get('/api/get-all-package-follow-up?page='+this.pf_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.package_follow_up = response.data.package_follow_up.data
                         this.pf_pagination = response.data.package_follow_up
                     })
@@ -1109,6 +1200,7 @@
             itineraryCostSubmitDate(){
                 axios.get('/api/get-all-itinerary-cost-submit-date?page='+this.icsd_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.itinerary_cost_submit_date = response.data.itinerary_cost_submit_date.data
                         this.icsd_pagination = response.data.itinerary_cost_submit_date
                     })
@@ -1117,6 +1209,7 @@
             getAllGuestReactionPackage(){
                 axios.get('/api/get-all-package-guest-reaction?page='+this.gr_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.guest_reaction = response.data.guest_reaction.data
                         this.gr_pagination = response.data.guest_reaction
 
@@ -1128,6 +1221,7 @@
             getAllGuestConfirmDate(){
                 axios.get('/api/get-all-package-confirm-date?page='+this.gcd_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.guest_confirm_date = response.data.guest_confirm_date.data
                         this.gcd_pagination = response.data.guest_confirm_date
 
@@ -1136,6 +1230,7 @@
             getAllPackageVisaUpdate(){
                 axios.get('/api/get-all-package-visa-update?page='+this.vu_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.package_visa_update = response.data.package_visa_update.data
                         this.vu_pagination = response.data.package_visa_update
 
@@ -1147,8 +1242,10 @@
             getAllTicket(){
                 axios.get('/api/get-all-package-ticket?page='+this.dp_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.pacakge_ticket = response.data.pacakge_ticket.data
                         this.dp_pagination = response.data.pacakge_ticket
+
 
                     })
                     .catch(e => {
@@ -1158,6 +1255,7 @@
             getAllPackageNetPrice(){
                 axios.get('/api/get-all-package-net-price?page='+this.pddin_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.net_prices = response.data.net_prices.data
                         this.net_pagination = response.data.net_prices
 
@@ -1169,6 +1267,7 @@
             getAllDocumentReady(){
                 axios.get('/api/get-all-document-ready?page='+this.pddin_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.payment_done_due_invoice_no = response.data.drfdp.data
                         this.pddin_pagination = response.data.drfdp
 
@@ -1180,6 +1279,7 @@
             getAllDateOfJourney(){
                 axios.get('/api/get-all-date-of-journey?page='+this.doj_pagination.current_page)
                     .then(response => {
+                        this.user_type = response.data.user_type
                         this.date_of_journey = response.data.date_of_journey.data
                         this.doj_pagination = response.data.date_of_journey
 

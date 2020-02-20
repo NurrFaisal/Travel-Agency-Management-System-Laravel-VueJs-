@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\model\Guest;
 use App\model\Package;
 use App\PackageDay;
 use Illuminate\Http\Request;
@@ -86,10 +87,87 @@ class PackageController extends Controller
     }
 
     public function getAllPackageQuery(){
+        $user_type = Session::get('user_type');
         $package_query = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->select('id','guest', 'country', 'destination', 'duration')->where('state', 1)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'package_query' => $package_query
+            'package_query' => $package_query,
+            'user_type' => $user_type
         ]);
+    }
+    public function getAllPackageSearch($search){
+        $guest_id = [];
+        $package_count = 0;
+        $package = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $search)->get();
+        $package_c = count($package);
+        if($package_c == 0){
+            $guests = Guest::where('name', 'like', $search.'%')->orWhere('phone_number', 'like', $search.'%')->select('id', 'name', 'phone_number')->get();
+            foreach ($guests as $key => $guest) {
+                $guest_id[$key] = $guest->id;
+            }
+            $packages = Package::whereIn('guest', $guest_id)->get();
+            $package_count = count($packages);
+            $package_query = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 1)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $package_follow_up = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 2)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $package_tour_plan = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 3)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $package_guest_reaction = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 4)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $package_guest_confirm_date = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 5)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $package_visa_update = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 6)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $pacakge_ticket = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 7)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $pacakge_net_prices = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 8)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $pacakge_payment_done_due_invoice_no = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 9)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+            $pacakge_date_of_journey = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])
+                ->where('state', 10)
+                ->whereIn('guest', $guest_id)
+                ->paginate(10);
+
+            return response()->json([
+                'package_count' => $package_count,
+                'package_query' => $package_query,
+                'package_follow_up' => $package_follow_up,
+                'itinerary_cost_submit_date' => $package_tour_plan,
+                'guest_reaction' => $package_guest_reaction,
+                'guest_confirm_date' => $package_guest_confirm_date,
+                'package_visa_update' => $package_visa_update,
+                'pacakge_ticket' => $pacakge_ticket,
+                'net_prices' => $pacakge_net_prices,
+                'drfdp' => $pacakge_payment_done_due_invoice_no,
+                'date_of_journey' => $pacakge_date_of_journey,
+            ]);
+
+        }
+        return response()->json([
+            'package_count' => $package_count,
+            'package' => $package
+
+        ]);
+
     }
     public function editPackageQuery($id){
         $package_query = Package::with(['package_days', 'guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();

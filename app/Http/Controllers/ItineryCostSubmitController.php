@@ -6,6 +6,7 @@ use App\model\ItineryCostSubmit;
 use App\model\Package;
 use App\PackageDay;
 use Illuminate\Http\Request;
+use Session;
 
 class ItineryCostSubmitController extends Controller
 {
@@ -26,9 +27,11 @@ class ItineryCostSubmitController extends Controller
     }
 
     public function getAllItineraryCostSubmitDate(){
+        $user_type = Session::get('user_type');
         $itinerary_cost_submit_date = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->select('id','guest', 'country', 'destination', 'duration')->where('state', 3)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'itinerary_cost_submit_date' => $itinerary_cost_submit_date
+            'itinerary_cost_submit_date' => $itinerary_cost_submit_date,
+            'user_type' => $user_type
         ]);
     }
     public function editItineraryCostSubmitDate($id){

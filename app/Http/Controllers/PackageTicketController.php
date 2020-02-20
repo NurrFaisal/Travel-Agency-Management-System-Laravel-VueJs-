@@ -6,6 +6,7 @@ use App\model\Package;
 use App\model\Transjaction;
 use App\PackageDay;
 use Illuminate\Http\Request;
+use Session;
 
 class PackageTicketController extends Controller
 {
@@ -26,9 +27,11 @@ class PackageTicketController extends Controller
         return 'Package Ticket Date Added Successfully';
     }
     public function getAllPackageTicket(){
+        $user_type = Session::get('user_type');
         $package = Package::with(['guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('state', 7)->paginate(10);
         return response()->json([
-            'pacakge_ticket' => $package
+            'pacakge_ticket' => $package,
+            'user_type' => $user_type
         ]);
     }
     public function EditPackageTicket($id){

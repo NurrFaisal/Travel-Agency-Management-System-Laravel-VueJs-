@@ -9,6 +9,7 @@ use App\model\Transjaction;
 use App\PackageDay;
 use App\Profit;
 use Illuminate\Http\Request;
+use Session;
 
 class PackageNetPriceController extends Controller
 {
@@ -112,9 +113,11 @@ class PackageNetPriceController extends Controller
     }
 
     public function getAllPackageNetPrice(){
+        $user_type = Session::get('user_type');
         $net_prices = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 8)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'net_prices' => $net_prices
+            'net_prices' => $net_prices,
+            'user_type' => $user_type
         ]);
     }
     public function editPackageNetPrice($id){

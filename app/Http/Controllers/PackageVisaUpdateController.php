@@ -12,9 +12,11 @@ use Session;
 class PackageVisaUpdateController extends Controller
 {
     public function getAllPackageVisaUpdate(){
+        $user_type = Session::get('user_type');
         $package_visa_update = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 6)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
-            'package_visa_update' => $package_visa_update
+            'package_visa_update' => $package_visa_update,
+            'user_type' => $user_type
         ]);
     }
 
