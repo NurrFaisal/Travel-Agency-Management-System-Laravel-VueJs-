@@ -111,6 +111,7 @@ Route::get('/edit-payment-loan/{anypath}', 'DashboardController@index');
 Route::get('/edit-payment-loan-installment/{anypath}', 'DashboardController@index');
 Route::get('/view-guest/{anypath}', 'DashboardController@index');
 Route::get('/view-suplier/{anypath}', 'DashboardController@index');
+Route::get('/view-package/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -332,6 +333,7 @@ Route::get('/api/get-all-package-query', 'PackageController@getAllPackageQuery')
 Route::get('/api/edit-package-query/{id}', 'PackageController@editPackageQuery');
 Route::post('/api/update-package-query', 'PackageController@updatePackageQuery');
 Route::get('/api/get-all-package-search/{search}', 'PackageController@getAllPackageSearch');
+Route::get('/api/view-package/{id}', 'PackageController@ViewPackageById');
 
 
 // package query follow up start

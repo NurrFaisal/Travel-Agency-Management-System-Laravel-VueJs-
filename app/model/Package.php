@@ -22,6 +22,16 @@ class Package extends Model
     public function net_prices(){
         return $this->hasMany(PackageNetPrice::class, 'pack_id');
     }
+    public function follow_up_to_suplier(){
+        return $this->hasMany(FollowUPToSuplier::class, 'package_id');
+    }
+    public function follow_up_to_guest(){
+        return $this->hasMany(FollowUPtoGuest::class, 'package_id');
+    }
+    public function package_net_price(){
+        return $this->hasMany(PackageNetPrice::class, 'pack_id');
+    }
+
 
 //    public function getPackageTypeAttribute($value){
 //        if($value == 1){

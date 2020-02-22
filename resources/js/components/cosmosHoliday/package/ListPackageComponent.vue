@@ -328,7 +328,7 @@
                                                             <div class="row">
                                                                 <label class="col-sm-5">Guest Follow up Note:</label>
                                                                 <div class="col-sm-7">
-                                                                    <input type="date" v-model="form3.note"  name="note" class="form-control"  style="max-width: 95%;" value="" required>
+                                                                    <input type="text" v-model="form3.note"  name="note" class="form-control"  style="max-width: 95%;" value="" required>
                                                                     <input type="hidden" v-model="form3.id" >
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -890,6 +890,9 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
+                                                                </router-link>
                                                                 <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-date-of-journey/${doj.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>

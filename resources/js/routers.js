@@ -150,6 +150,7 @@ import EditPaymentInstallment
 import ListTicket from "./components/cosmosHoliday/air-ticket/Ticket/ListTicket";
 import EditTicket from "./components/cosmosHoliday/air-ticket/Ticket/EditTicket";
 import ListHotel from "./components/cosmosHoliday/hotel-booking/hotel/ListHotel";
+import ViewPackageComponent from "./components/cosmosHoliday/package/ViewPackageComponent";
 
 
 
@@ -552,6 +553,10 @@ export const routes = [
     {
         path:'/edit-package-query/:id',
         component: EditPackageQuery
+    },
+    {
+        path:'/view-package/:id',
+        component: ViewPackageComponent
     },
     {
         path:'/edit-package-follow-up/:id',
