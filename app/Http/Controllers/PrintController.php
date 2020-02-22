@@ -99,15 +99,16 @@ class PrintController extends Controller
         ])->setPaper('a4');
         return $pdf->stream('invoiceHotel.pdf');
     }
-
+    public function invoicePrintPackageCount($id){
+        $package = Package::where('id', $id)->first();
+        $package->print += 1;
+        $package->update();
+    }
     public function invoicePrintPackage($id){
         $package = Package::where('id', $id)->with(['stafft' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guestt' => function($q){$q->with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->select('id', 'name','phone_number', 'email_address', 'rf_staff', 'address');} ])->first();
         $total_price = $this->convert_number_to_words($package->grand_total_price);
         $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
         $clear_total_price   = str_ireplace($banned, ' ', $total_price);
-//        return $clear_total_price;
-//        return $package;
-
 //        return view('cosmosHoliday.page.invoice', [
 //            'package' => $package,
 //            'clear_total_price' => $clear_total_price

@@ -1490,6 +1490,12 @@
             },
             downLoadInvoice(id){
                 this.isLoading = true
+                axios.get('/invoice-print-package-count/'+id)
+                    .then(responese => {
+                       this.downLoadInvoiceCount(id)
+                    })
+            },
+            downLoadInvoiceCount(id){
                 axios.get('/invoice-print-package/'+id)
                     .then(responese => {
                         this.doAjax()

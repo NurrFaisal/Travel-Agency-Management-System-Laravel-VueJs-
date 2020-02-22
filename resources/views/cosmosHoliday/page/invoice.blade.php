@@ -24,7 +24,7 @@
 
         }
         .table-bordered>tbody>tr>td{
-            padding: 10px;
+            padding: 8px;
         }
     </style>
 </head>
@@ -78,9 +78,41 @@
             <div class="col-xs-5 col-md-5">Date Of Journey: {{date("d-m-Y", strtotime($package->journey_date))}}</div>
         </div>
         <div class="row">
-            <div class="col-xs-4 col-md-4">Package <span style="margin-left: 2px;">: {{$package->package_type}}</span></div>
-            <div class="col-xs-3 col-md-3">Phackage ID <span >:  P-{{$package->id}}</span></div>
-            <div class="col-xs-5 col-md-5" style="float: left; margin-left: -30px" >Ref. Name <span>: {{$package->guestt->Staff->first_name.' '.$package->guestt->Staff->last_name}}</span></div>
+            <div class="col-xs-7 col-md-7">Package
+                <span style="margin-left: 2px;">:
+                    @if($package->package_type == 1)
+                        FIT
+                    @elseif($package->package_type == 2)
+                        Customise
+                    @elseif($package->package_type == 3)
+                        Regular
+                    @elseif($package->package_type == 4)
+                        Cosmos Group Tour
+                    @elseif($package->package_type == 5)
+                        Eid Group
+                    @elseif($package->package_type == 6)
+                        Eid FIT
+                    @elseif($package->package_type == 7)
+                        Student Group
+                    @elseif($package->package_type == 8)
+                        Corporate Group
+                    @elseif($package->package_type == 9)
+                        VIP Group
+                    @elseif($package->package_type == 10)
+                        Others
+                    @endif
+
+                </span>
+            </div>
+            <div class="col-xs-5 col-md-5">Ref. Name <span>: {{$package->guestt->Staff->first_name.' '.$package->guestt->Staff->last_name}}</span></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-7 col-md-7">Phackage ID <span >:  P-{{$package->id}}</span></div>
+            @if($package->print > 1)
+                <div class="col-xs-5 col-md-5"  >Douplicate Print <span>:{{$package->print}}</span></div>
+            @else
+                <div class="col-xs-5 col-md-5"  ><span></span></div>
+            @endif
         </div>
     </font>
 
