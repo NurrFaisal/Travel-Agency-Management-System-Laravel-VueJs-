@@ -188,9 +188,11 @@ class PackageController extends Controller
         return 'Package Query Updated Successfully';
     }
     public function ViewPackageById($id){
+        $user_type = Session::get('user_type');
         $package = Package::with(['guestt' => function($q){$q->select('id', 'name');}, 'stafft' => function($q){$q->select('id', 'first_name', 'last_name');},'package_days', 'follow_up_to_suplier', 'follow_up_to_guest', 'package_net_price' => function($q){$q->with(['suplier' =>function($q){$q->select('id', 'name');}]);}])->where('id',$id)->first();
         return response()->json([
-            'package' => $package
+            'package' => $package,
+            'user_type' => $user_type
         ]);
     }
 }
