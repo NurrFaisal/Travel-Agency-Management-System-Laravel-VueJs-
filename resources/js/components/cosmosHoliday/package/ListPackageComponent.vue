@@ -968,7 +968,7 @@
         },
         mounted() {
             this.$store.dispatch("allVisaStaff")
-            this.getPackageQuery();
+            // this.getPackageQuery();
             // this.getAllDocumentCollectionByGuest();
             this.packageSessionStart();
             this.packageSession(this.p_state);
@@ -1113,7 +1113,6 @@
                 }
                 this.doAjax()
             },
-
             searchText:_.debounce(function () {
                 this.isLoading = true
                 if(this.search_text != ''){
@@ -1125,7 +1124,6 @@
             getAllSearchPackage(search_text){
                 axios.get('/api/get-all-package-search/'+search_text)
                     .then(response => {
-                        console.log(response.data.package_count)
                         if(response.data.package_count == 0){
                             if(response.data.package != null){
                                 this.p_state = response.data.package[0].state

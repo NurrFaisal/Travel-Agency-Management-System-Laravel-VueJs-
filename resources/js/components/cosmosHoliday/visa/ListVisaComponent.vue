@@ -43,8 +43,8 @@
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <ul class="nav nav-tabs">
-                                    <li :class="state == 1 ? 'active' : ''"><a data-toggle="tab" href="#received_passport">Received</a></li>
-                                    <li :class="state == 2 ? 'active' : ''"><a data-toggle="tab" href="#work_passport">Work and Notary By</a></li>
+                                    <li @click="visaSession(1)" :class="state == 1 ? 'active' : ''"><a data-toggle="tab" href="#received_passport">Received</a></li>
+                                    <li @click="visaSession(2)" :class="state == 2 ? 'active' : ''"><a data-toggle="tab" href="#work_passport">Work and Notary By</a></li>
                                     <!--                                    <li><a data-toggle="tab" href="#notary_passport">Notary By</a></li>-->
                                     <li :class="state == 3 ? 'active' : ''"><a data-toggle="tab" href="#checked_by_asst_passport">Checked By Asst.</a></li>
                                     <li :class="state == 4 ? 'active' : ''"><a data-toggle="tab" href="#checked_by_officer_passport">Checked By Officer</a>

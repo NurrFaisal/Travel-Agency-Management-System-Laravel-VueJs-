@@ -24,8 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
                         <span class="input-icon">
-                            <input autocomplete="off" class="nav-search-input" id="nav-search-input" placeholder="Search ..."
-                                   type="text"/>
+                            <input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
                             <i class="ace-icon fa fa-search nav-search-icon"></i>
                         </span>
                     </form>
@@ -51,16 +50,15 @@
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <ul class="nav nav-tabs">
-                                    <li :class="state == 1 ? 'active' : ''"><a data-toggle="tab" href="#received_passport">Received</a></li>
-                                    <li :class="state == 2 ? 'active' : ''"><a data-toggle="tab" href="#work_passport">Work and Notary By</a></li>
+                                    <li @click="visaSession(1)" :class="state == 1 ? 'active' : ''"><a data-toggle="tab" href="#received_passport">Received</a></li>
+                                    <li @click="visaSession(2)" :class="state == 2 ? 'active' : ''"><a data-toggle="tab" href="#work_passport">Work and Notary By</a></li>
                                     <!--                                    <li><a data-toggle="tab" href="#notary_passport">Notary By</a></li>-->
-                                    <li :class="state == 3 ? 'active' : ''"><a data-toggle="tab" href="#checked_by_asst_passport">Checked By Asst.</a></li>
-                                    <li :class="state == 4 ? 'active' : ''"><a data-toggle="tab" href="#checked_by_officer_passport">Checked By Officer</a>
-                                    </li>
-                                    <li :class="state == 5 ? 'active' : ''"><a data-toggle="tab" href="#submitted_passport">Submitted To Embassy</a></li>
-                                    <li :class="state == 6 ? 'active' : ''"><a data-toggle="tab" href="#collected_passport">Collected Form Embassy</a></li>
-                                    <li :class="state == 7 ? 'active' : ''"><a data-toggle="tab" href="#guest_call_sms_passport">Guest Call & SMS</a></li>
-                                    <li :class="state == 8 ? 'active' : ''"><a data-toggle="tab" href="#delivered_passport">Delivered To Guest</a></li>
+                                    <li @click="visaSession(3)" :class="state == 3 ? 'active' : ''"><a data-toggle="tab" href="#checked_by_asst_passport">Checked By Asst.</a></li>
+                                    <li @click="visaSession(4)" :class="state == 4 ? 'active' : ''"><a data-toggle="tab" href="#checked_by_officer_passport">Checked By Officer</a></li>
+                                    <li @click="visaSession(5)" :class="state == 5 ? 'active' : ''"><a data-toggle="tab" href="#submitted_passport">Submitted To Embassy</a></li>
+                                    <li @click="visaSession(6)" :class="state == 6 ? 'active' : ''"><a data-toggle="tab" href="#collected_passport">Collected Form Embassy</a></li>
+                                    <li @click="visaSession(7)" :class="state == 7 ? 'active' : ''"><a data-toggle="tab" href="#guest_call_sms_passport">Guest Call & SMS</a></li>
+                                    <li @click="visaSession(8)" :class="state == 8 ? 'active' : ''"><a data-toggle="tab" href="#delivered_passport">Delivered To Guest</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <!--                                    this is receive component area-->
@@ -955,17 +953,9 @@
         mounted() {
             this.isLoading = true
             this.$store.dispatch("allVisaStaff")
-            this.getAllReceivedWithPagination();
-            this.getAllWorkWithPagination();
-            this.getAllCheckedByAsstWithPagination();
-            this.getAllCheckedByOfficerWithPagination();
-            this.getAllSubmitedWithPagination();
-            this.getAllCollectedWithPagination();
-            this.getAllGCSWithPagination();
-            this.getAllDelevetedWithPagination();
-
             this.sessionSet()
-
+            this.visaSession(this.state)
+            this.sessionSet()
         },
         components: {
             Loading
@@ -977,12 +967,13 @@
         },
         data(){
             return {
-                searchText:'',
+                user_type:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
                 fullPage: false,
-                user_type:'',
+
                 state: 1,
 
                 r_pagination:{
@@ -1059,7 +1050,108 @@
             }
         },
         methods: {
+            visaSession(state){
+                this.isLoading = true
+                this.state = state
+                if(this.search_text == ''){
+                    if(state == 1){
+                        this.getAllReceivedWithPagination();
+                    }
+                    if(state == 2){
+                        this.getAllWorkWithPagination();
+                    }
+                    if(state == 3){
+                        this.getAllCheckedByAsstWithPagination();
+                    }
+                    if(state == 4){
+                        this.getAllCheckedByOfficerWithPagination();
+                    }
+                    if(state == 5){
+                        this.getAllSubmitedWithPagination();
+                    }
+                    if(state == 6){
+                        this.getAllCollectedWithPagination();
+                    }
+                    if(state == 7){
+                        this.getAllGCSWithPagination();
+                    }
+                    if(state == 8){
+                        this.getAllDelevetedWithPagination();
+                    }
+                }
+                this.doAjax()
+            },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSearchVisa(this.search_text)
+                }else{
+                    this.visaSession(this.state);
+                }
+            },1000),
+            getAllSearchVisa(search_text){
+                axios.get('/api/get-all-visa-search/'+search_text)
+                    .then(response => {
+                        if(response.data.visa_count == 0){
+                            if(response.data.visa != null){
+                                this.state = response.data.visa[0].state
+                                if(this.state == 1){
+                                    this.recieved_visas = response.data.visa
+                                }
+                                if(this.state == 2){
+                                    this.work_visas = response.data.visa
+                                }
+                                if(this.state == 3){
+                                    this.checked_by_asst_visas = response.data.visa
+                                }
+                                if(this.state == 4){
+                                    this.checked_by_officer_visas = response.data.visa
+                                }
+                                if(this.state == 5){
+                                    this.submit_visas = response.data.visa
+                                }
+                                if(this.state == 6){
+                                    this.collected_visas = response.data.visa
+                                }
+                                if(this.state == 7){
+                                    this.gcs_visas = response.data.visa
+                                }
+                                if(this.state == 8){
+                                    this.delelvered_visas = response.data.visa
+                                }
+                            }
+                        }else{
+                            this.recieved_visas = response.data.recieved_visas.data
+                            this.r_pagination = response.data.recieved_visas
 
+                            this.work_visas = response.data.work_visas.data
+                            this.w_pagination = response.data.work_visas
+
+                            this.checked_by_asst_visas = response.data.checked_by_asst_visas.data
+                            this.cba_pagination = response.data.checked_by_asst_visas
+
+                            this.checked_by_officer_visas = response.data.checked_by_officer_visas.data
+                            this.cbo_pagination = response.data.checked_by_officer_visas
+
+                            this.submit_visas = response.data.submit_visas.data
+                            this.s_pagination = response.data.submit_visas
+
+                            this.collected_visas = response.data.collected_visas.data
+                            this.c_pagination = response.data.collected_visas
+
+                            this.gcs_visas = response.data.gcs_visas.data
+                            this.g_pagination = response.data.gcs_visas
+
+                            this.delelvered_visas = response.data.delelvered_visas.data
+                            this.d_pagination = response.data.delelvered_visas
+
+
+                        }
+
+                        this.isLoading = false
+                    })
+
+            },
             sessionSet(){
                 if(this.$session.exists()){
                     this.state = this.$session.get('state')
@@ -1070,6 +1162,7 @@
 
             //All Get Data Start
             getAllReceivedWithPagination(){
+                console.log('ok')
                 axios.get('/api/get-all-recieved-visa-updated?page='+this.r_pagination.current_page)
                     .then(response => {
                         this.recieved_visas = response.data.recieved_visa.data
@@ -1158,7 +1251,9 @@
                     })
             },
             doAjax() {
-                this.isLoading = false
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
             },
             // All Get Data End
 
@@ -1190,9 +1285,10 @@
             addVisaWorkAndNotary(){
                 this.form.post('/api/add-visa-updated-work-and-notary')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',1)
                         this.form.reset()
-                        this.getAllReceivedWithPagination()
-                        this.getAllWorkWithPagination();
+                        this.visaSession(1)
                         $('#submit_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1204,9 +1300,10 @@
             addVisaCheckedByAsst(){
                 this.form2.post('/api/add-checked-asst-by-visa-updated')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',2)
                         this.form2.reset()
-                        this.getAllWorkWithPagination();
-                        this.getAllCheckedByAsstWithPagination();
+                        this.visaSession(2)
                         $('#work_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1218,9 +1315,10 @@
             addVisaCheckedByOfficer(){
                 this.form3.post('/api/add-checked-by-officer-updated')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',3)
                         this.form3.reset()
-                        this.getAllCheckedByAsstWithPagination();
-                        this.getAllCheckedByOfficerWithPagination();
+                        this.visaSession(3)
                         $('#checked_asst_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1232,9 +1330,10 @@
             addVisaSubmit(){
                 this.form4.post('/api/add-visa-submit-updated')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',4)
                         this.form4.reset()
-                        this.getAllCheckedByOfficerWithPagination();
-                        this.getAllSubmitedWithPagination();
+                        this.visaSession(4)
                         $('#checked_officer_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1246,9 +1345,10 @@
             addVisaCollected(){
                 this.form5.post('/api/add-visa-collected-updated')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',5)
                         this.form5.reset()
-                        this.getAllSubmitedWithPagination();
-                        this.getAllCollectedWithPagination();
+                        this.visaSession(5)
                         $('#submit_embassy_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1260,9 +1360,10 @@
             addVisaCallAndSms(){
                 this.form6.post('/api/add-visa-guest-call-and-sms-updated')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',6)
                         this.form6.reset()
-                        this.getAllCollectedWithPagination();
-                        this.getAllGCSWithPagination();
+                        this.visaSession(6)
                         $('#guest_call_and_sms_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
@@ -1274,9 +1375,10 @@
             addVisaDelevered(){
                 this.form7.post('/api/add-visa-delevered-updated')
                     .then((response) => {
+                        this.$session.start()
+                        this.$session.set('state',7)
                         this.form7.reset()
-                        this.getAllGCSWithPagination();
-                        this.getAllDelevetedWithPagination();
+                        this.visaSession(7)
                         $('#deliver_visa_modal').modal("hide");
                         $('.modal-backdrop').remove();
                         Toast.fire({
