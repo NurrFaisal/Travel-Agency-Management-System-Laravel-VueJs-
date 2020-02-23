@@ -24,6 +24,7 @@ Route::get('/download-invoice', 'PrintController@downloadInvoice');
 Route::get('/invoice-print-air-ticket/{id}', 'PrintController@invoicePrintAirTicket');
 Route::get('/invoice-print-air-ticket-count/{id}', 'PrintController@invoicePrintAirTicketCount');
 Route::get('/invoice-print-visa/{id}', 'PrintController@invoicePrintVisa');
+Route::get('/invoice-print-visa-count/{id}', 'PrintController@invoicePrintVisaCount');
 Route::get('/invoice-print-hotel/{id}', 'PrintController@invoicePrintHotel');
 Route::get('/invoice-print-hotel-count/{id}', 'PrintController@invoicePrintHotelCount');
 Route::get('/invoice-print-package/{id}', 'PrintController@invoicePrintPackage');
@@ -501,6 +502,8 @@ Route::get('/api/edit-received/{id}', 'ReceivedController@editReceived');
 Route::post('/api/update-received', 'ReceivedController@updateReceived');
 
 Route::get('/api/get-guest-last-balance/{id}', 'ReceivedController@getGuestLastBalance');
+
+Route::get('/api/get-all-received-search/{search}', 'ReceivedController@getAllReceivedSearch');
 
 // ReceivedController End
 

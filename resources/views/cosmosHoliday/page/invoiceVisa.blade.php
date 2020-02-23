@@ -83,7 +83,11 @@
         </div>
         <div class="row">
             <div class="col-xs-7 col-md-7">Address <span style="margin-left: 40px;">: {{$visa->guest->address}}</span></div>
+            @if($visa->print > 1)
+            <div class="col-xs-5 col-md-5">Douplicate Print : {{$visa->print}}</div>
+            @else
             <div class="col-xs-5 col-md-5"></div>
+            @endif
         </div>
     </font>
 

@@ -54,6 +54,7 @@
                                         <th class="center">Sl.</th>
                                         <th class="center">Contra Type</th>
                                         <th>Contra Date</th>
+                                        <th>Contra No.</th>
                                         <th>Bank Name</th>
                                         <th>Narration</th>
                                         <th>Contra Amount</th>
@@ -67,7 +68,8 @@
                                         <td v-if="contra.contra_type == 1">Cash To Bank</td>
                                         <td v-if="contra.contra_type == 2">Bank To Cash</td>
                                         <td v-if="contra.contra_type == 3">Bank To Bank</td>
-                                        <td>{{contra.contra_date}}</td>
+                                        <td>{{contra.contra_date | timeformate}}</td>
+                                        <td>C-{{contra.id}}</td>
                                         <td v-if="contra.bank_name != null">{{contra.bank.bank_name}}</td>
                                         <td v-if="contra.from_bank_name != null">{{contra.from_bank.bank_name}} To {{contra.to_bank.bank_name}}</td>
                                         <td>{{contra.narration}}</td>

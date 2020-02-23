@@ -210,7 +210,7 @@ class PaymentController extends Controller
     }
 
     public function getAllPayment(){
-        $payments = Payment::with(['supliert' => function($q){$q->select('id', 'name');}])->orderBy('id', 'desc')->paginate(10);
+        $payments = Payment::with(['supliert' => function($q){$q->select('id', 'name', 'phone_number');}])->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'payments' => $payments
         ]);

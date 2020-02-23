@@ -6,6 +6,7 @@ use App\model\BankBook;
 use App\model\CashBook;
 use App\model\ChequeBook;
 use App\model\Discount;
+use App\model\Guest;
 use App\model\MoneyReceived;
 use App\model\Other;
 use App\model\SuplierTransaction;
@@ -328,7 +329,7 @@ class ReceivedController extends Controller
 
 
     public function getAllReceived(){
-        $receiveds = MoneyReceived::with(['guestt' => function($q){$q->select('id', 'name');}, 'stafft' => function($q){$q->select('id', 'first_name', 'last_name');}])->orderBy('id', 'desc')->paginate(10);
+        $receiveds = MoneyReceived::with(['guestt' => function($q){$q->select('id', 'name', 'phone_number');}, 'stafft' => function($q){$q->select('id', 'first_name', 'last_name');}])->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'receiveds' => $receiveds
         ]);
@@ -486,6 +487,27 @@ class ReceivedController extends Controller
         $transaction = Transjaction::orderBy('id', 'desc')->where('guest_id', $id)->select('id', 'guest_id', 'guest_blance')->first();
         return response()->json([
             'transaction' => $transaction
+        ]);
+    }
+    public function getAllReceivedSearch($search){
+        $receiveds = MoneyReceived::with(['guestt' => function($q){$q->select('id', 'name', 'phone_number');}, 'stafft' => function($q){$q->select('id', 'first_name', 'last_name');}])
+            ->where('id', $search)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        $receiveds_count = count($receiveds);
+        if($receiveds_count == 0){
+            $guest_id = [];
+            $guests = Guest::where('name', 'like', $search.'%')->orWhere('phone_number', 'like', $search.'%')->select('id', 'name', 'phone_number')->get();
+            foreach ($guests as $key => $guest){
+                $guest_id[$key] = $guest->id;
+            }
+            $receiveds = MoneyReceived::with(['guestt' => function($q){$q->select('id', 'name', 'phone_number');}, 'stafft' => function($q){$q->select('id', 'first_name', 'last_name');}])
+                ->whereIn('guest', $guest_id)
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        }
+        return response()->json([
+            'receiveds' => $receiveds
         ]);
     }
 

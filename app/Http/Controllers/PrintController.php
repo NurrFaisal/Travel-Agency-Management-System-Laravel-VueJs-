@@ -61,6 +61,12 @@ class PrintController extends Controller
         return $pdf->stream('invoice.pdf');
     }
 
+    public function invoicePrintVisaCount($id){
+        $visa = VisaUpdated::where('id', $id)->first();
+        $visa->print += 1;
+        $visa->update();
+    }
+
     public function invoicePrintVisa($id){
         $visa = VisaUpdated::where('id', $id)->with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->select('id', 'name','phone_number', 'email_address', 'rf_staff', 'address');}, 'passports'=>function($q){$q->with(['typet' =>function($q){$q->select('id', 'name');}, 'countryt' => function($q){$q->select('id', 'name');} ]);} ])->first();
         $passports = $visa->passports;

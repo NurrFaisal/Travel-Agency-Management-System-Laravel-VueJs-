@@ -53,7 +53,9 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Date</th>
+                                        <th class="center">DV No.</th>
                                         <th>Suplier Name</th>
+                                        <th>Phone Number</th>
                                         <th>Narration Name</th>
                                         <th>Received By</th>
                                         <th>Paid By</th>
@@ -67,7 +69,9 @@
                                     <tr v-for="(payment, index) in  payments">
                                         <td class="center">{{index+1}}</td>
                                         <td>{{payment.debit_voucher_date | timeformate}}</td>
+                                        <td>DV-{{payment.id}}</td>
                                         <td>{{payment.supliert.name}}</td>
+                                        <td>{{payment.supliert.phone_number}}</td>
                                         <td>{{payment.narration.substring(0,25)+"...."}}</td>
                                         <td>{{payment.received_by}}</td>
                                         <td>{{payment.paid_by}}</td>

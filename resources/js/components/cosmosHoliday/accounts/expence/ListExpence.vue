@@ -51,6 +51,7 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Date</th>
+                                        <th class="center">Expence No.</th>
                                         <th>Name</th>
                                         <th>Payment</th>
                                         <th>Narration</th>
@@ -66,6 +67,7 @@
                                     <tr v-for="(expence , index) in  expences">
                                         <td class="center">{{index+1}}</td>
                                          <td>{{expence.expence_date | timeformate}}</td>
+                                         <td>Ex-{{expence.id}}</td>
                                         <td>{{expence.expence_headt.name}}</td>
                                         <td v-if="expence.cash == 1 && expence.cheque == 1">Cash/Cheque</td>
                                         <td v-else-if="expence.cash == 1">Cash</td>

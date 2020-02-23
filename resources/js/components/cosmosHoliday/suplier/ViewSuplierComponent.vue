@@ -82,7 +82,7 @@
                                                                     <td v-if="transjaction.pack_id != null">P-{{transjaction.pack_id}}</td>
                                                                     <td v-if="transjaction.hotel_id != null">H-{{transjaction.hotel_id}}</td>
                                                                     <td v-if="transjaction.visa_id != null">P-{{transjaction.visa_id}}</td>
-                                                                    <td style="background-color: greenyellow;" v-if="transjaction.debit_voucher_id != null">DV-{{transjaction.received_id}}</td>
+                                                                    <td style="background-color: greenyellow;" v-if="transjaction.debit_voucher_id != null">DV-{{transjaction.debit_voucher_id}}</td>
                                                                     <td>{{transjaction.narration}}</td>
                                                                     <td>{{transjaction.debit_amount}}</td>
                                                                     <td>{{transjaction.credit_amount}}</td>

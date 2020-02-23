@@ -213,7 +213,7 @@ class HotelBookingController extends Controller
     }
 
     public function getAllHotelBookingSearch($search){
-        $hotel_bookings = HotelBooking::with(['guest' => function($q){$q->select('id', 'name');}, 'staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->where('id', 'like', $search.'%')->orWhere('created_at', 'like', $search.'%')->orWhere('customer_name', 'like', $search.'%')->orderBy('id', 'desc')->select('id',  'client', 'sell_person','customer_name', 'created_at', 'total_net_price', 'total_price')->paginate(10);
+        $hotel_bookings = HotelBooking::with(['guest' => function($q){$q->select('id', 'name', 'phone_number');}, 'staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->where('id', 'like', $search.'%')->orWhere('created_at', 'like', $search.'%')->orWhere('customer_name', 'like', $search.'%')->orderBy('id', 'desc')->select('id',  'client', 'sell_person','customer_name', 'created_at', 'total_net_price', 'total_price')->paginate(10);
         return response()->json([
             'hotel_bookings' => $hotel_bookings
         ]);

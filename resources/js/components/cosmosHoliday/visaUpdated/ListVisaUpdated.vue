@@ -1144,8 +1144,6 @@
 
                             this.delelvered_visas = response.data.delelvered_visas.data
                             this.d_pagination = response.data.delelvered_visas
-
-
                         }
 
                         this.isLoading = false
@@ -1389,11 +1387,17 @@
             },
             downLoadInvoice(id){
                 this.isLoading = true
+                axios.get('/invoice-print-visa-count/'+id)
+                    .then(responese => {
+                        this.downLoadInvoiceCount(id)
+                    })
+            },
+            downLoadInvoiceCount(id){
                 axios.get('/invoice-print-visa/'+id)
                     .then(responese => {
                         this.doAjax()
                     })
-            }
+            },
 
 
             // All Post Form End
