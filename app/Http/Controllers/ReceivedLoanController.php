@@ -314,4 +314,15 @@ class ReceivedLoanController extends Controller
         $this->updateReceivedTransaction($request, $received_loan);
         return 'Received Loan Updated Successfully';
     }
+    public function getAllReceivedLoanSearch($search){
+        $received_loans = ReceivedLoan::orderBy('id', 'desc')
+            ->where('id', $search.'%')
+            ->orWhere('rl_date', 'like', $search.'%')
+            ->orWhere('rl_head', 'like', $search.'%')
+            ->orWhere('total_received_loan_amount', 'like', $search.'%')
+            ->paginate(10);
+        return response()->json([
+            'received_loans' => $received_loans
+        ]);
+    }
 }

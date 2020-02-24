@@ -672,6 +672,7 @@ Route::post('/api/add-received-loan', 'ReceivedLoanController@addReceivedLoan');
 Route::get('/api/get-all-received-loan', 'ReceivedLoanController@getAllReceivedLoan');
 Route::get('/api/edit-received-loan/{id}', 'ReceivedLoanController@editReceivedLoan');
 Route::post('/api/update-received-loan', 'ReceivedLoanController@updateReceivedLoan');
+Route::get('/api/get-all-received-loan-search/{search}', 'ReceivedLoanController@getAllReceivedLoanSearch');
 // ReceivedLoanController End
 
 // RLInstallment Start
