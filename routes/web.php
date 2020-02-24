@@ -600,6 +600,7 @@ Route::post('/api/add-expence', 'ExpenceController@addExpence');
 Route::get('/api/get-all-expences', 'ExpenceController@getAllExpence');
 Route::get('/api/edit-expence/{id}', 'ExpenceController@editExpence');
 Route::post('/api/update-expence', 'ExpenceController@updateExpence');
+Route::get('/api/get-all-expence-search/{search}', 'ExpenceController@getAllExpenceSearch');
 
 // ExpenceController End
 

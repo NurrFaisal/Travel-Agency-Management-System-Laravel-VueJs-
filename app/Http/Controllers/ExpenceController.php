@@ -229,4 +229,20 @@ class ExpenceController extends Controller
         $this->expenceCheque($expence, $request);
 
     }
+    public function getAllExpenceSearch($search){
+        $expence_heads_id = [];
+        $expence_heads = ExpenceHead::where('name', 'like', $search.'%')->get();
+        foreach ($expence_heads as $key => $expence_head){
+            $expence_heads_id[$key] = $expence_head->id;
+        }
+        $expences = Expence::with(['expenceHeadt' => function($q){$q->select('id', 'name');}])
+            ->where('id', $search)->orWhere('expence_date', 'like', $search.'%')
+            ->orWhere('total_expence_amount', 'like', $search.'%')
+            ->orWhereIn('expence_head', $expence_heads_id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return response()->json([
+            'expences' => $expences
+        ]);
+    }
 }
