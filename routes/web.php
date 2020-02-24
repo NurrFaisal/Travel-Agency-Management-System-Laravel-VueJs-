@@ -30,6 +30,7 @@ Route::get('/invoice-print-hotel-count/{id}', 'PrintController@invoicePrintHotel
 Route::get('/invoice-print-package/{id}', 'PrintController@invoicePrintPackage');
 Route::get('/invoice-print-package-count/{id}', 'PrintController@invoicePrintPackageCount');
 Route::get('/invoice-print-money-receipt/{id}', 'PrintController@invoicePrintMoneyReceipt');
+Route::get('/invoice-print-money-receipt-count/{id}', 'PrintController@invoicePrintMoneyReceiptCount');
 Route::get('/invoice-print-debit-voucher/{id}', 'PrintController@invoicePrintDebitVoucher');
 Route::get('/invoice-print-contra-voucher/{id}', 'PrintController@invoicePrintContraVoucher');
 Route::get('/invoice-print-expense/{id}', 'PrintController@invoicePrintExpense');

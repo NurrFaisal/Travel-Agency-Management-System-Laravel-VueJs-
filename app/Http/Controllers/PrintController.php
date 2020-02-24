@@ -125,7 +125,11 @@ class PrintController extends Controller
         ])->setPaper('a4');
         return $pdf->stream('invoicePackage.pdf');
     }
-
+    public function invoicePrintMoneyReceiptCount($id){
+        $money_receipt = MoneyReceived::where('id', $id)->first();
+        $money_receipt->print += 1;
+        $money_receipt->update();
+    }
     public function invoicePrintMoneyReceipt($id){
         $money_receipt = MoneyReceived::with([ 'guestt'=>function($q){$q->select('id', 'name','phone_number', 'address');}, 'cashs' =>function($q){$q->select('id', 'received_id', 'debit_cash_amount');}, 'banks'=>function($q){$q->select('id', 'received_id', 'debit_bank_amount');}, 'cheques', 'others'])->where('id', $id)->first();
         $cash_amount = 0;

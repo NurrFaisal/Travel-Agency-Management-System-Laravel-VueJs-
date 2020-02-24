@@ -103,9 +103,13 @@
                     <font size="2" face="Courier New" >
                         <div class="row" style="margin: 0px 10px">
 
-                            <div class="col-xs-4 col-md-4" style=" float: left">Depositor's Signature : </div>
-
-                            <div class="col-xs-4 col-md-4" style="text-align: center; float: right" >Athorized Signature : </div>
+                            <div class="col-xs-4 col-md-4" style=" float: left">Depositor's Signature  </div>
+                            @if($money_receipt->print > 1)
+                                <div class="col-xs-4 col-md-4" style="" ><span style="margin-left: 50px">Douplicate Print : {{$money_receipt->print}}</span></div>
+                            @else
+                                <div class="col-xs-4 col-md-4" style="" ><span style="margin-left: 50px"></span></div>
+                            @endif
+                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Athorized Signature  </div>
                         </div>
                     </font>
                 </div>
@@ -183,9 +187,13 @@
                     <font size="2" face="Courier New" >
                         <div class="row" style="margin: 0px 10px">
 
-                            <div class="col-xs-4 col-md-4" style=" float: left">Depositor's Signature : </div>
-
-                            <div class="col-xs-4 col-md-4" style="text-align: center; float: right" >Athorized Signature : </div>
+                            <div class="col-xs-4 col-md-4" style=" float: left">Depositor's Signature  </div>
+                            @if($money_receipt->print > 1)
+                                <div class="col-xs-4 col-md-4" style="" ><span style="margin-left: 50px">Douplicate Print : {{$money_receipt->print}}</span></div>
+                            @else
+                                <div class="col-xs-4 col-md-4" style="" ><span style="margin-left: 50px"></span></div>
+                            @endif
+                            <div class="col-xs-4 col-md-4" style="text-align: right; float: right" >Athorized Signature  </div>
                         </div>
                     </font>
                 </div>
