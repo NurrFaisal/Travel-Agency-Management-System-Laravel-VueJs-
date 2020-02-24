@@ -612,6 +612,7 @@ Route::post('/api/add-incentive', 'IncentiveController@addIncentive');
 Route::get('/api/get-all-incentives', 'IncentiveController@getAllIncentive');
 Route::get('/api/edit-incentive/{id}', 'IncentiveController@editIncentive');
 Route::post('/api/update-incentive', 'IncentiveController@updateIncentive');
+Route::get('/api/get-all-incentive-search/{search}', 'IncentiveController@getAllIncentiveSearch');
 
 // IncentiveController End
 

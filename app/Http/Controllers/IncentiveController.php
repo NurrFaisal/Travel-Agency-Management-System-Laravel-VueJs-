@@ -203,4 +203,25 @@ class IncentiveController extends Controller
         $this->incentiveCash($incentive, $request);
         $this->incentiveCheque($incentive, $request);
     }
+    public function getAllIncentiveSearch($search){
+        $staff_id = [];
+        $staffs = Staff::where('first_name', 'like', $search.'%')
+            ->orWhere('last_name', 'like', $search.'%')
+            ->orWhere('phone_number', 'like', $search.'%')
+            ->orWhere('email_address', 'like', $search.'%')
+            ->select('id', 'first_name', 'last_name', 'phone_number', 'email_address')
+            ->get();
+        foreach ($staffs as $key => $staff){
+            $staff_id[$key] = $staff->id;
+        }
+        $incentives = Incentive::with(['stafft' => function($q){$q->select('id', 'first_name', 'last_name');}])
+            ->where('incentive_date', 'like', $search.'%')
+            ->orWhereIn('staff', $staff_id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return response()->json([
+            'incentives' => $incentives
+        ]);
+
+    }
 }
