@@ -209,7 +209,7 @@ class RLInstallmentController extends Controller
         return 'RL Installment Added Successfully';
     }
     public function getAllRLInstallment(){
-        $installments = RLInstallment::orderBy('rl_installment_date')->paginate(10);
+        $installments = RLInstallment::with('head')->orderBy('rl_installment_date')->paginate(10);
         return response()->json([
             'installments' => $installments
         ]);
@@ -300,5 +300,24 @@ class RLInstallmentController extends Controller
         $this->updateRLTransaction($request, $rl_installment);
 
         return 'Update RL Installment';
+    }
+    public function getAllRLInstallmentSearch($search){
+        $received_loans_id = [];
+        $received_loans = ReceivedLoan::orderBy('rl_head', 'asc')
+            ->where('rl_head', 'like', $search.'%')
+            ->get();
+        foreach ($received_loans as $key => $received_loan){
+            $received_loans_id[$key] = $received_loan->id;
+        }
+        $installments = RLInstallment::with('head')->orderBy('rl_installment_date')
+            ->where('id', $search)
+            ->orWhere('rl_installment_date', 'like', $search.'%')
+            ->orWhere('total_received_loan_installment_amount', 'like', $search.'%')
+            ->orWhereIn('loan_id', $received_loans_id)
+            ->paginate(10);
+        return response()->json([
+            'installments' => $installments
+        ]);
+
     }
 }

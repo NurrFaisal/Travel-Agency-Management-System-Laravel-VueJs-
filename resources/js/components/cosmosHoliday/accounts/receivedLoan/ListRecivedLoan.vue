@@ -23,16 +23,14 @@
 
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
-									<i class="ace-icon fa fa-search nav-search-icon"></i>
-								</span>
+                        <span class="input-icon">
+                            <input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </span>
                     </form>
                 </div><!-- /.nav-search -->
             </div>
-
             <div class="page-content">
-
                 <div class="page-header">
                     <h1>
                         Received Loan List
@@ -42,7 +40,6 @@
                         <br/>
                     </h1>
                 </div><!-- /.page-header -->
-
                 <div class="row">
                     <div class="col-xs-12">
                         <!-- PAGE CONTENT BEGINS -->
@@ -67,10 +64,8 @@
                                         <td>{{received_loan.rl_head}}</td>
                                         <td>{{received_loan.narration}}</td>
                                         <td>{{received_loan.total_received_loan_amount}}</td>
-
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
-
                                                 <router-link :to="`/edit-received-loan/${received_loan.id}`" style="margin-right: 1px;" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
@@ -82,7 +77,6 @@
 <!--                                                    &lt;!&ndash;                                                    <i class="ace-icon fa fa-eye bigger-120"></i>&ndash;&gt;-->
 <!--                                                    Installment-->
 <!--                                                </router-link>-->
-
                                             </div>
                                         </td>
                                     </tr>

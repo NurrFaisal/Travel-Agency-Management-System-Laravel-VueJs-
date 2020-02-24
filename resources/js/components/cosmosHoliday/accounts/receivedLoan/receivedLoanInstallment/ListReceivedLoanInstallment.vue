@@ -24,7 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
 									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
@@ -53,6 +53,7 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Date</th>
+                                        <th class="center">Head</th>
                                         <th>Installment By</th>
                                         <th>Narration</th>
                                         <th>Received Amount</th>
@@ -64,6 +65,7 @@
                                     <tr v-for="(installment, index) in  installments">
                                         <td class="center">{{index+1}}</td>
                                         <td>{{installment.rl_installment_date | timeformate}}</td>
+                                        <td>{{installment.head.rl_head}}</td>
                                         <td>{{installment.cash == 1 ? 'Cash-' : ''}}{{installment.cheque == 1 ? 'Cheque' : ''}}</td>
                                         <td>{{installment.narration}}</td>
                                         <td>{{installment.total_received_loan_installment_amount}}</td>
@@ -121,7 +123,7 @@
         },
         data(){
             return {
-                searchText:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -141,6 +143,23 @@
                         this.pagination = response.data.installments
                         this.doAjax();
                     })
+            },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSearchRLInstallment(this.search_text)
+                }else{
+                    this.getRLInstallment();
+                }
+            },1000),
+            getAllSearchRLInstallment(search_text){
+                axios.get('/api/get-all-rl-installment-search/'+search_text+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.installments = response.data.installments.data
+                        this.pagination = response.data.installments
+                        this.isLoading = false
+                    })
+
             },
             doAjax() {
                 setTimeout(() => {

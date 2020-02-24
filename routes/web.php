@@ -681,6 +681,7 @@ Route::get('/api/get-all-received-loan-name', 'RLInstallmentController@getAllRec
 Route::get('/api/get-all-rl-installment', 'RLInstallmentController@getAllRLInstallment');
 Route::get('/api/edit-rl-installment/{id}', 'RLInstallmentController@editRLInstallment');
 Route::post('/api/update-received-loan-installment', 'RLInstallmentController@updateRLInstallment');
+Route::get('/api/get-all-rl-installment-search/{search}', 'RLInstallmentController@getAllRLInstallmentSearch');
 // RLInstallment End
 
 
@@ -689,8 +690,8 @@ Route::post('/api/add-payment-loan', 'PaymentLoanController@addPaymentLoan');
 Route::get('/api/get-all-payment-loan', 'PaymentLoanController@getAllPaymentLoans');
 Route::get('/api/edit-payment-loan/{id}', 'PaymentLoanController@editPaymentLoan');
 Route::post('/api/update-payment-loan', 'PaymentLoanController@updatePaymentLoan');
+Route::get('/api/get-all-payment-loan-search/{search}', 'PaymentLoanController@getAllPaymentLoanSearch');
 // PaymentLoanController End
-
 // PLInstallment Start
 Route::get('/api/get-all-payment-loan-name', 'PLInstallmentController@getAllPaymentLoanName');
 Route::post('/api/add-payment-loan-installment', 'PLInstallmentController@addPaymentLoanInstallment');

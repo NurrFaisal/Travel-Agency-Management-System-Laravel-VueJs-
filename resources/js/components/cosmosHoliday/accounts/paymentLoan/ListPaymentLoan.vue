@@ -23,10 +23,10 @@
 
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
-									<i class="ace-icon fa fa-search nav-search-icon"></i>
-								</span>
+                        <span class="input-icon">
+                            <input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </span>
                     </form>
                 </div><!-- /.nav-search -->
             </div>
@@ -124,7 +124,7 @@
         },
         data(){
             return {
-                searchText:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -144,6 +144,23 @@
                         this.pagination = response.data.payment_loans
                         this.doAjax();
                     })
+            },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSearchPaymentLoan(this.search_text)
+                }else{
+                    this.getPaymentLoan();
+                }
+            },1000),
+            getAllSearchPaymentLoan(search_text){
+                axios.get('/api/get-all-payment-loan-search/'+search_text+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.payment_loans = response.data.payment_loans.data
+                        this.pagination = response.data.payment_loans
+                        this.isLoading = false
+                    })
+
             },
             doAjax() {
                 setTimeout(() => {

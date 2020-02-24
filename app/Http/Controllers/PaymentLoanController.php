@@ -285,4 +285,16 @@ class PaymentLoanController extends Controller
         $this->updatePaymentTransaction($request, $payment_loan);
         return 'Update Payment Loan Transaction';
     }
+    public function getAllPaymentLoanSearch($search){
+        $payment_loans = PaymentLoan::orderBy('id', 'desc')
+            ->where('id', $search.'%')
+            ->orWhere('pl_date', 'like', $search.'%')
+            ->orWhere('pl_name', 'like', $search.'%')
+            ->orWhere('total_payment_loan_amount', 'like', $search.'%')
+            ->paginate(10);
+        return response()->json([
+            'payment_loans' => $payment_loans
+        ]);
+
+    }
 }
