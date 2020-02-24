@@ -526,6 +526,7 @@ Route::post('/api/add-contra', 'ContraController@addContra');
 Route::get('/api/get-all-contra', 'ContraController@getAllContra');
 Route::get('/api/edit-contra/{id}', 'ContraController@editContra');
 Route::post('/api/update-contra', 'ContraController@updateContra');
+Route::get('/api/get-all-contra-search/{search}', 'ContraController@getAllContraSearch');
 
 //ContraController End
 

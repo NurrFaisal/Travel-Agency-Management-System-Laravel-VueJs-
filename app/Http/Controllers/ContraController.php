@@ -491,4 +491,10 @@ class ContraController extends Controller
         }
 
     }
+    public function getAllContraSearch($search){
+        $contras = Contra::with('bank', 'from_bank', 'to_bank')->where('id', $search)->orWhere('contra_date', 'like', $search.'%')->orWhere('contra_amount', 'like', $search.'%')->orderBy('id', 'desc')->paginate(10);
+        return response()->json([
+            'contras' => $contras
+        ]);
+    }
 }
