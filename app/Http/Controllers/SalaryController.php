@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class SalaryController extends Controller
 {
     public function getSalaryStaff(){
-        $staffs = Staff::orderBy('first_name', 'asc')->get();
+        $staffs = Staff::orderBy('first_name', 'asc') ->select('id', 'first_name', 'last_name', 'phone_number')->get();
         return response()->json([
             'staffs' => $staffs
         ]);
@@ -205,5 +205,25 @@ class SalaryController extends Controller
         $this->updateCheque($request);
         $this->salaryCash($salary, $request);
         $this->salaryCheque($salary, $request);
+    }
+    public function getAllSalarySearch($search){
+        $staff_id = [];
+        $staffs = Staff::where('first_name', 'like', $search.'%')
+            ->orWhere('last_name', 'like', $search.'%')
+            ->orWhere('phone_number', 'like', $search.'%')
+            ->orWhere('email_address', 'like', $search.'%')
+            ->select('id', 'first_name', 'last_name', 'phone_number', 'email_address')
+            ->get();
+        foreach ($staffs as $key => $staff){
+            $staff_id[$key] = $staff->id;
+        }
+        $salarys = Salary::with(['stafft' => function($q){$q->select('id', 'first_name', 'last_name');}])
+            ->where('salary_date', 'like', $search.'%')
+            ->orWhereIn('staff', $staff_id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return response()->json([
+            'salarys' => $salarys
+        ]);
     }
 }

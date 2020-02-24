@@ -622,6 +622,7 @@ Route::post('/api/add-salary', 'SalaryController@addSalary');
 Route::get('/api/get-all-salarys', 'SalaryController@getAllSalarys');
 Route::get('/api/edit-salary/{id}', 'SalaryController@editSalary');
 Route::post('/api/update-salary', 'SalaryController@updateSalary');
+Route::get('/api/get-all-salary-search/{search}', 'SalaryController@getAllSalarySearch');
 
 // SalaryController End
 
