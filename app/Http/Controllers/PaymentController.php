@@ -324,6 +324,7 @@ class PaymentController extends Controller
             }
             $payments = Payment::with(['supliert' => function($q){$q->select('id', 'name', 'phone_number');}])
                 ->whereIn('suplier', $suplier_id)
+                ->orWhere('debit_voucher_date', 'like', $search.'%')
                 ->orderBy('id', 'desc')
                 ->paginate(10);
         }
