@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\model\Agency;
 use App\model\BankBook;
 use App\model\CashBook;
 use App\model\Payment;
@@ -308,5 +309,26 @@ class PaymentController extends Controller
         $this->updatePaymentCash($request, $payment);
         $this->updatePaymentCheque($request, $payment);
         $this->updatePaymentSuplierTransaction($request, $payment);
+    }
+    public function getAllPaymentSearch($search){
+        $payments = Payment::with(['supliert' => function($q){$q->select('id', 'name', 'phone_number');}])
+            ->where('id', $search)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        $payments_count = count($payments);
+        if($payments_count == 0){
+            $suplier_id = [];
+            $supliers = Agency::where('name', 'like', $search.'%')->orWhere('phone_number', 'like', $search.'%')->select('id', 'name', 'phone_number')->get();
+            foreach ($supliers as $key => $suplier){
+                $suplier_id[$key] = $suplier->id;
+            }
+            $payments = Payment::with(['supliert' => function($q){$q->select('id', 'name', 'phone_number');}])
+                ->whereIn('suplier', $suplier_id)
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        }
+        return response()->json([
+            'payments' => $payments
+        ]);
     }
 }

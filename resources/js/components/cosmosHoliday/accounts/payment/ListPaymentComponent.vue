@@ -24,7 +24,7 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
 									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
@@ -136,7 +136,7 @@
         },
         data(){
             return {
-                searchText:'',
+                search_text:'',
                 width:128,
                 height:128,
                 isLoading: false,
@@ -155,6 +155,23 @@
                         this.pagination = response.data.payments
                         this.doAjax();
                     })
+            },
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.getAllSearchPayment(this.search_text)
+                }else{
+                    this.getPayment();
+                }
+            },1000),
+            getAllSearchPayment(search_text){
+                axios.get('/api/get-all-payment-search/'+search_text+'?page='+this.pagination.current_page)
+                    .then(response => {
+                        this.payments = response.data.payments.data
+                        this.pagination = response.data.payments
+                        this.isLoading = false
+                    })
+
             },
             doAjax() {
                 setTimeout(() => {

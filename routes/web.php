@@ -515,6 +515,7 @@ Route::post('/api/add-payment', 'PaymentController@addPayment');
 Route::get('/api/get-all-payment', 'PaymentController@getAllPayment');
 Route::get('/api/edit-payment/{id}', 'PaymentController@editPayment');
 Route::post('/api/update-payment', 'PaymentController@updatePayment');
+Route::get('/api/get-all-payment-search/{search}', 'PaymentController@getAllPaymentSearch');
 
 //PaymentController End
 
