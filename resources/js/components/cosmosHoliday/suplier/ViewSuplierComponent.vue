@@ -81,7 +81,8 @@
                                                                     <td v-if="transjaction.air_id != null">T-{{transjaction.air_id}}</td>
                                                                     <td v-if="transjaction.pack_id != null">P-{{transjaction.pack_id}}</td>
                                                                     <td v-if="transjaction.hotel_id != null">H-{{transjaction.hotel_id}}</td>
-                                                                    <td v-if="transjaction.visa_id != null">P-{{transjaction.visa_id}}</td>
+                                                                    <td v-if="transjaction.visa_id != null">V-{{transjaction.visa_id}}</td>
+                                                                    <td v-if="transjaction.air_ticket_refund_id != null">AR-{{transjaction.air_ticket_refund_id}}</td>
                                                                     <td style="background-color: greenyellow;" v-if="transjaction.debit_voucher_id != null">DV-{{transjaction.debit_voucher_id}}</td>
                                                                     <td>{{transjaction.narration}}</td>
                                                                     <td>{{transjaction.debit_amount}}</td>

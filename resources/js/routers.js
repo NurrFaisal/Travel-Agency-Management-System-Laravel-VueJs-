@@ -151,6 +151,8 @@ import ListTicket from "./components/cosmosHoliday/air-ticket/Ticket/ListTicket"
 import EditTicket from "./components/cosmosHoliday/air-ticket/Ticket/EditTicket";
 import ListHotel from "./components/cosmosHoliday/hotel-booking/hotel/ListHotel";
 import ViewPackageComponent from "./components/cosmosHoliday/package/ViewPackageComponent";
+import ListAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/ListAirTicketRefund";
+import EditAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/EditAirTicketRefund";
 
 
 
@@ -938,6 +940,18 @@ export const routes = [
     },
     // Payment Loan installment end
     // Payment Loan End
+
+
+    // AirTicket Refund Start
+    {
+        path:'/air-ticket-refund-list',
+        component: ListAirTicketRefund
+    },
+    {
+        path:'/edit-air-ticket-refund/:id',
+        component: EditAirTicketRefund
+    }
+    // AirTicket Refund End
 
 
 

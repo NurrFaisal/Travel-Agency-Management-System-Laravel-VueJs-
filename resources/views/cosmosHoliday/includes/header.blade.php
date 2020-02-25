@@ -11,12 +11,12 @@
         </button>
 
         <div class="navbar-header pull-left">
-            <a href="index.html" class="navbar-brand">
+            <router-link to="/dashboard" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
                     Cosmos Holiday..
                 </small>
-            </a>
+            </router-link>
         </div>
 
         <div class="navbar-buttons navbar-header pull-right" role="navigation">

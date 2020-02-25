@@ -338,4 +338,22 @@ class PLInstallmentController extends Controller
         $this->updatePLTransaction($request, $pl_installment);
         return "update payment loan transaction";
     }
+    public function getAllPLLoanInstallment($search){
+        $payment_loans_id = [];
+        $payment_loans = PaymentLoan::orderBy('pl_name', 'asc')
+            ->where('pl_name', 'like', $search.'%')
+            ->get();
+        foreach ($payment_loans as $key => $payment_loan){
+            $payment_loans_id[$key] = $payment_loan->id;
+        }
+        $installments = PLInstallment::orderBy('pl_installment_date')
+            ->where('id', $search)
+            ->orWhere('pl_installment_date', 'like', $search.'%')
+            ->orWhere('total_payment_loan_installment_amount', 'like', $search.'%')
+            ->orWhereIn('loan_id', $payment_loans_id)
+            ->paginate(10);
+        return response()->json([
+            'installments' => $installments
+        ]);
+    }
 }

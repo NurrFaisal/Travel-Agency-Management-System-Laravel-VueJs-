@@ -114,6 +114,7 @@ Route::get('/edit-payment-loan-installment/{anypath}', 'DashboardController@inde
 Route::get('/view-guest/{anypath}', 'DashboardController@index');
 Route::get('/view-suplier/{anypath}', 'DashboardController@index');
 Route::get('/view-package/{anypath}', 'DashboardController@index');
+Route::get('/edit-air-ticket-refund/{anypath}', 'DashboardController@index');
 // Vue JS Route Control
 
 Route::get('/', 'LoginController@login');
@@ -698,10 +699,18 @@ Route::post('/api/add-payment-loan-installment', 'PLInstallmentController@addPay
 Route::get('/api/get-all-payment-loan-installment', 'PLInstallmentController@getAllPaymentLoanInstallment');
 Route::get('/api/edit-payment-loan-installment/{id}', 'PLInstallmentController@editPaymentLoanInstallment');
 Route::post('/api/update-payment-loan-installment', 'PLInstallmentController@udpatePaymentLoanInstallment');
+Route::get('/api/get-all-pl-installment-search/{search}', 'PLInstallmentController@getAllPLLoanInstallment');
 // PLInstallment End
 
 
 // NewLoan End
+
+// AirTicketRefundController Start
+Route::post('/api/add-air-ticket-refund', 'AirTicketRefundController@addAirTicketRefund');
+Route::get('/api/get-all-air-ticket-refund', 'AirTicketRefundController@getAllAirTicketRefund');
+Route::get('/api/edit-air-ticket-refund/{id}', 'AirTicketRefundController@editAirTicketRefund');
+Route::post('/api/update-air-ticket-refund', 'AirTicketRefundController@updateAirTicketRefund');
+// AirTicketRefundController End
 
 
 

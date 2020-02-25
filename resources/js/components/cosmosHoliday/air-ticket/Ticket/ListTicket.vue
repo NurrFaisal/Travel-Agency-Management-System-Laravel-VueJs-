@@ -32,6 +32,52 @@
             </div>
 
             <div class="page-content">
+                <div class="modal fade" id="air_ticket_refound" aria-hidden="true" role="dialog"  tabindex="-1">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">×</button>
+                                <h4 class="modal-title">Air Ticket Refund</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form @submit.prevent="addAirTicketRefund()" method="post">
+                                    <div class="row">
+                                        <label for="refund_date" class="col-sm-5">Refund Date:</label>
+                                        <div class="col-sm-7">
+                                            <input type="date" v-model="form.refund_date" id="refund_date" name="refund_date" class="form-control"  style="max-width: 95%;" value="" required="">
+                                        </div>
+                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                            <has-error style="color:red" :form="form" field="refund_date"></has-error>
+                                            <span style="color: red">{{ errors.first('refund_date') }}</span>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <label for="amount" class="col-sm-5">Amount:</label>
+                                        <div class="col-sm-7">
+                                            <input type="number" v-model="form.amount" id="amount" name="amount" class="form-control"  style="max-width: 95%;" value="" required="">
+                                        </div>
+                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                            <has-error style="color:red" :form="form" field="amount"></has-error>
+                                            <span style="color: red">{{ errors.first('amount') }}</span>
+                                        </div>
+                                    </div>
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-sm-5 text-right"></div>
+                                        <div class="col-sm-5">
+                                            <input type="submit" name="" class="button" style="background-color: #d3d3d380 !important;" value="Submit">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="page-header">
                     <h1>
@@ -58,6 +104,7 @@
                                         <th  class="center" >Departure Date</th>
                                         <th  class="center" >Return Date</th>
                                         <th  class="center" >Air Line</th>
+                                        <th  class="center" >Net Price</th>
                                         <th  class="center" >Sector</th>
                                         <th  class="center" >Action</th>
                                     </tr>
@@ -71,15 +118,20 @@
                                         <td class="center">{{ticket.departure_date}}</td>
                                         <td class="center">{{ticket.return_date}}</td>
                                         <td class="center">{{ticket.airlines.name}}</td>
+                                        <td class="center">{{ticket.net_price}}</td>
                                         <td class="center">{{ticket.sector}}</td>
                                         <td class="center">
                                             <div class="btn-group center">
                                                 <!--                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
                                                 <!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
-                                                <!--                                                </a>-->
+                                                <!--
+                                                                                           </a>-->
                                                 <router-link  :to="`/edit-air-ticket/${ticket.airticket_id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
+                                                <a v-if="ticket.refund != 1" href="#" @click.prevent="openModalCollected(ticket.id)" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#air_ticket_refound">
+                                                    Refund
+                                                </a>
                                                 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
                                                 <!--                                                                    Follow Up-->
                                                 <!--                                                                </a>-->
@@ -144,6 +196,11 @@
                     current_page: 1,
                 },
                 tickets: '',
+                form: new Form({
+                    id:'',
+                    refund_date:'',
+                    amount:'',
+                }),
             }
         },
         methods:{
@@ -180,7 +237,6 @@
                         this.pagination = response.data.tickets
                         this.doAjax();
                     })
-
             },
             downLoadInvoice(id){
                 this.isLoading = true
@@ -188,11 +244,49 @@
                     .then(responese => {
                         this.doAjax()
                     })
+            },
+            openModalCollected(id){
+                this.form.id = id
+            },
+            addAirTicketRefund(){
+                this.form.post('/api/add-air-ticket-refund')
+                    .then((response) => {
+                        this.form.reset()
+                        if(this.searchText != ''){
+                            this.getAllSearchAirTicket(this.searchText)
+                        }else{
+                            this.getAirTicket();
+                        }
+                        $('#air_ticket_refound').modal("hide");
+                        $('.modal-backdrop').remove();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Air-Ticket Refunded Successfully'
+                        })
+                    })
             }
         }
     }
 </script>
 
 <style scoped>
+    input {
+        background-color: rgb(223, 240, 216) !important;
+        color: rgb(0, 0, 0) !important;
+        height: 25px !important;
+        border-radius: 4px !important;
+    }
+    textarea {
+        background-color: rgb(223, 240, 216) !important;
+        color: rgb(0, 0, 0) !important;
+    }
+
+    select {
+        background-color: #dff0d8 !important;
+        color: #000 !important;
+        height: 25px !important;
+        font-size: 11px;
+        border-radius: 4px !important;
+    }
 
 </style>
