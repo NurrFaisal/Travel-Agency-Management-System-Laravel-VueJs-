@@ -14,7 +14,7 @@
             <router-link to="/dashboard" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
-                    Cosmos Holiday..
+                    Cosmos Holiday.. {{Session::get('location') == 1 ? '( Dhanmondi )' : '(Banani)'}}
                 </small>
             </router-link>
         </div>

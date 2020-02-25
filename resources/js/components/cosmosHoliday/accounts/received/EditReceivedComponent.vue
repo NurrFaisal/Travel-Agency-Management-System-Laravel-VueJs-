@@ -627,6 +627,7 @@
             updateReceived(){
                 this.form.post('/api/update-received')
                     .then((response) => {
+                        console.log(response.data)
                         this.form.id = ''
                         this.form.guest = ''
                         this.form.staff = ''

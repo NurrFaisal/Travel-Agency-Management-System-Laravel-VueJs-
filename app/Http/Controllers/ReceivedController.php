@@ -14,6 +14,7 @@ use App\model\Transjaction;
 use Illuminate\Http\Request;
 use mysql_xdevapi\Collection;
 use phpDocumentor\Reflection\Types\Null_;
+use Session;
 
 class ReceivedController extends Controller
 {
@@ -47,8 +48,13 @@ class ReceivedController extends Controller
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $received->created_at->format('Y-m-d'))->first();
         }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $received->created_at->format('Y-m-d'))->where('branch_id', $received->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $received->created_at->format('Y-m-d'))->where('branch_id', $received->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->received_id = $received->id;
+        $cash_book->branch_id = $received->location;
         $cash_book->cash_date = $received->created_at->format('Y-m-d');
         $cash_book->narration = $request->narration;
         $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
@@ -57,10 +63,18 @@ class ReceivedController extends Controller
         }else{
             $cash_book->blance = $pre_cash_book->blance + $request->cashs[0]['debit_cash_amount'];
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = $request->cashs[0]['debit_cash_amount'];
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance + $request->cashs[0]['debit_cash_amount'];
+        }
         $cash_book->save();
         $next_dates = CashBook::orderBy('cash_date', 'asc')->where('cash_date', '>', $received->created_at->format('Y-m-d'))->get();
         foreach ($next_dates as $next_date){
             $next_date->blance += $cash_book->debit_cash_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_date->update();
         }
 
@@ -255,13 +269,11 @@ class ReceivedController extends Controller
         $discount = new Discount();
         $discount->guest_id = $request->guest;
         $discount->staff_id = $request->staff;
-        $discount->money_receipt_id = $received->id;
+        $discount->received_id = $received->id;
         $discount->discount_date = $received->created_at->format('Y-m-d');
         $discount->amount = $request->discount;
         $discount->save();
-
         // Discount Transaction Start
-
         $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('guest_id', $request->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->where('staff_id', $request->guest)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
 
@@ -314,6 +326,7 @@ class ReceivedController extends Controller
         $this->receivedValidation($request);
         $this->allValidation($request);
         $received = new MoneyReceived();
+        $received->location = Session::get('location');
         $this->receivedBasic($received, $request);
         $received->save();
         $this->saveallbooks($request, $received);
@@ -342,17 +355,23 @@ class ReceivedController extends Controller
         ]);
     }
     public function updateCashBook($request, $received){
-        $cash_book = CashBook::where('received_id', $received->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance', 'narration')->first();
+        $cash_book = CashBook::where('received_id', $received->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance', 'narration', 'branch_id', 'branch_blance')->first();
         if($cash_book != null){
             $old_amount = $cash_book->debit_cash_amount;
-            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance', 'branch_id', 'branch_blance')->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_date_cashs as $next_same_date_cash){
                 $next_same_date_cash->blance -= $old_amount;
+                if($next_same_date_cash->branch_id == $cash_book->branch_id){
+                    $next_same_date_cash->branch_blance -= $old_amount;
+                }
                 $next_same_date_cash->update();
             }
-            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance','branch_id', 'branch_blance')->get();
             foreach ($next_date_cashs as $next_date_cash){
                 $next_date_cash->blance -=$old_amount;
+                if($next_date_cash->branch_id == $cash_book->branch_id){
+                    $next_date_cash->branch_blance -= $old_amount;
+                }
                 $next_date_cash->update();
             }
             $cash_book->delete();
@@ -419,7 +438,7 @@ class ReceivedController extends Controller
             }
             $next_same_date_transaction->update();
         }
-        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transaction_date)->get();
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaciton_date)->get();
         foreach ($next_date_transactions as $next_date_transaction){
             $next_date_transaction->blance += $old_amount;
             if($next_date_transaction->guest_id == $transjaction->guest_id){
@@ -435,8 +454,8 @@ class ReceivedController extends Controller
     }
     protected function updateReceivedDiscount($request, $received){
         $discount = Discount::where('received_id', $received->id)->first();
-        $old_amount = $discount->amount;
         if ($discount != null){
+            $old_amount = $discount->amount;
             $discount_transaction = Transjaction::where('discount_id', $discount->id)->first();
             $next_same_date_discount_trans = Transjaction::where('id', '>', $discount_transaction->id)->where('transjaction_date', $discount_transaction->transjaction_date)->get();
             foreach ($next_same_date_discount_trans as $next_same_date_discount_tran){
@@ -479,7 +498,33 @@ class ReceivedController extends Controller
         $this->updateBankBook($request, $received);
         $this->updateChequeBook($request, $received);
         $this->updateOtherBook($request, $received);
-        $this->updateReceivedTransaction($request, $received);
+//        $this->updateReceivedTransaction($request, $received);
+        $transjaction = Transjaction::where('received_id', $received->id)->select('id', 'guest_id', 'staff_id', 'received_id', 'transjaction_date', 'narration', 'credit_amount', 'blance', 'guest_blance', 'staff_blance')->first();
+        $old_amount = $transjaction->credit_amount;
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction){
+            $next_same_date_transaction->blance += $old_amount;
+            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+                $next_same_date_transaction->guest_blance += $old_amount;
+            }
+            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+                $next_same_date_transaction->staff_blance += $old_amount;
+            }
+            $next_same_date_transaction->update();
+        }
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction){
+            $next_date_transaction->blance += $old_amount;
+            if($next_date_transaction->guest_id == $transjaction->guest_id){
+                $next_date_transaction->guest_blance += $old_amount;
+            }
+            if($next_date_transaction->staff_id == $transjaction->staff_id){
+                $next_date_transaction->staff_blance += $old_amount;
+            }
+            $next_date_transaction->update();
+        }
+        $transjaction->delete();
+        $this->saveReceivedTransaction($request, $received);
         $this->updateReceivedDiscount($request, $received);
         return "Success Update";
     }
