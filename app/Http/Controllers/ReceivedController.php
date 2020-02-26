@@ -144,6 +144,7 @@ class ReceivedController extends Controller
                 $cheque_book->cheque_date = $cheques_arry[$i]['cheque_date'];
                 $cheque_book->cheque_amount = $cheques_arry[$i]['cheque_amount'];
                 $cheque_book->status = 0;
+                $cheque_book->location = $received->location;
                 $cheque_book->save();
             }
 
