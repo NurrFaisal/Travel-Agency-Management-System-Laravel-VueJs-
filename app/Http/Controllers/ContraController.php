@@ -6,6 +6,7 @@ use App\model\BankBook;
 use App\model\CashBook;
 use App\model\Contra;
 use Illuminate\Http\Request;
+use Session;
 
 class ContraController extends Controller
 {
@@ -26,9 +27,18 @@ class ContraController extends Controller
     }
     protected function cashBookCredit($request, $contra){
         // CashBook Credit Start
-        $pre_cash_book = $this->preCashQuery($contra);
+//        $pre_cash_book = $this->preCashQuery($contra);
+        $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $contra->contra_date)->first();
+        if($pre_cash_book == null){
+            $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $contra->contra_date)->first();
+        }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $contra->contra_date)->where('branch_id', $contra->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $contra->contra_date)->where('branch_id', $contra->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->contra_id = $contra->id;
+        $cash_book->branch_id = $contra->location;
         $cash_book->cash_date = $contra->contra_date;
         $cash_book->narration = $request->narration;
         $cash_book->credit_cash_amount = $request->contra_amount;
@@ -37,42 +47,73 @@ class ContraController extends Controller
         }else{
             $cash_book->blance = -$request->contra_amount;
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = -$request->contra_amount;
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance - $request->contra_amount;
+        }
         $cash_book->save();
 
         $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance -= $contra->contra_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance -= $cash_book->credit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::where('cash_date','>', $cash_book->cash_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $contra->contra_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance -= $cash_book->credit_cash_amount;
+            }
             $next_date->update();
         }
         // CashBook Credit End
     }
     protected function cashBookDebit($request, $contra){
-        $pre_cash_book = $this->preCashQuery($contra);
+        $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $contra->contra_date)->first();
+        if($pre_cash_book == null){
+            $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $contra->contra_date)->first();
+        }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $contra->contra_date)->where('branch_id', $contra->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $contra->contra_date)->where('branch_id', $contra->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->contra_id = $contra->id;
+        $cash_book->branch_id = $contra->location;
         $cash_book->cash_date = $contra->contra_date;
         $cash_book->narration = $request->narration;
         $cash_book->debit_cash_amount = $request->contra_amount;
+//        $pre_cash_book = $this->preCashQuery($contra);
         if($pre_cash_book == null){
             $cash_book->blance = $request->contra_amount;
         }else{
-            $cash_book->blance = $pre_cash_book->blance +$request->contra_amount;
+            $cash_book->blance = $pre_cash_book->blance + $request->contra_amount;
+        }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = $request->contra_amount;
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance + $request->contra_amount;
         }
         $cash_book->save();
 
         $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_book)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance += $contra->contra_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::where('cash_date','>', $cash_book->cash_date)->orderBy('cash_date', 'asc')->get();
         foreach ($next_dates as $next_date){
             $next_date->blance += $contra->contra_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_date->update();
         }
     }
@@ -280,6 +321,7 @@ class ContraController extends Controller
         $this->contraValidation($request);
         $contra = new Contra();
         $this->contraBasic($request, $contra);
+        $contra->location = Session::get('location');
         if($request->contra_type == 1){
             $request->validate([
                 'bank_name' => 'required'
@@ -333,11 +375,17 @@ class ContraController extends Controller
         $next_same_cash_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
         foreach ($next_same_cash_dates as $next_same_cash_date){
             $next_same_cash_date->blance += $old_amount;
+            if($next_same_cash_date->branch_id == $cash_book->branch_id){
+                $next_same_cash_date->branch_blance += $old_amount;
+            }
             $next_same_cash_date->update();
         }
         $next_cash_dates = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
         foreach ($next_cash_dates as $next_cash_date){
             $next_cash_date->blance += $old_amount;
+            if($next_cash_date->branch_id == $cash_book->branch_id){
+                $next_cash_date->branch_blance += $old_amount;
+            }
             $next_cash_date->update();
         }
         $cash_book->delete();
@@ -387,11 +435,17 @@ class ContraController extends Controller
         $next_same_cash_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
         foreach ($next_same_cash_dates as $next_same_cash_date){
             $next_same_cash_date->blance -= $old_amount;
+            if($next_same_cash_date->branch_id == $cash_book->branch_id){
+                $next_same_cash_date->branch_blance -= $old_amount;
+            }
             $next_same_cash_date->update();
         }
         $next_dates = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $old_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance -= $old_amount;
+            }
             $next_date->update();
         }
         $cash_book->delete();

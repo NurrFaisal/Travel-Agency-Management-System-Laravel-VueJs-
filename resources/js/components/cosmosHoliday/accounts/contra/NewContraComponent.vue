@@ -375,14 +375,14 @@
                 this.form.post('/api/add-contra')
                     .then((response) => {
                         console.log(response.data)
-                        // this.form.contra_type = ''
-                        // this.form.contra_date = ''
-                        // this.form.bank_name = ''
-                        // this.form.contra_amount = ''
-                        // this.form.narration = ''
-                        //
-                        // this.isLoading = false
-                        // this.$router.push('/contra-list')
+                        this.form.contra_type = ''
+                        this.form.contra_date = ''
+                        this.form.bank_name = ''
+                        this.form.contra_amount = ''
+                        this.form.narration = ''
+
+                        this.isLoading = false
+                        this.$router.push('/contra-list')
                         Toast.fire({
                             type: 'success',
                             title: 'New Contra Voucher Added successfully'
