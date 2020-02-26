@@ -7,6 +7,7 @@ use App\model\CashBook;
 use App\model\Expence;
 use App\model\ExpenceHead;
 use Illuminate\Http\Request;
+use Session;
 
 class ExpenceController extends Controller
 {
@@ -54,8 +55,13 @@ class ExpenceController extends Controller
             if($pre_cash_book == null){
                 $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $request->expence_date)->first();
             }
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $request->expence_date)->where('branch_id', $expence->location)->first();
+            if($pre_branch_cash_book == null){
+                $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $request->expence_date)->where('branch_id', $expence->location)->first();
+            }
             $cash_book = new CashBook();
             $cash_book->expence_id = $expence->id;
+            $cash_book->branch_id = $expence->location;
             $cash_book->cash_date = $expence->expence_date;
             $cash_book->narration = $request->narration;
             $cash_book->credit_cash_amount = $request->cashs[0]['credit_cash_amount'];
@@ -64,16 +70,27 @@ class ExpenceController extends Controller
             }else{
                 $cash_book->blance = $pre_cash_book->blance - $request->cashs[0]['credit_cash_amount'];
             }
+            if($pre_branch_cash_book == null){
+                $cash_book->branch_blance = -$request->cashs[0]['credit_cash_amount'];
+            }else{
+                $cash_book->branch_blance = $pre_branch_cash_book->branch_blance - $request->cashs[0]['credit_cash_amount'];
+            }
             $cash_book->save();
 
             $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_dates as $next_same_date){
                 $next_same_date->blance -= $request->cashs[0]['credit_cash_amount'];
+                if($next_same_date->branch_id == $cash_book->branch_id){
+                    $next_same_date->branch_blance -= $cash_book->credit_cash_amount;
+                }
                 $next_same_date->update();
             }
             $next_dates = CashBook::where('cash_date','>', $cash_book->cash_date)->get();
             foreach ($next_dates as $next_date){
                 $next_date->blance -= $request->cashs[0]['credit_cash_amount'];
+                if($next_date->branch_id == $cash_book->branch_id){
+                    $next_date->branch_blance -= $cash_book->credit_cash_amount;
+                }
                 $next_date->update();
             }
         }
@@ -146,6 +163,7 @@ class ExpenceController extends Controller
         $this->expenceValidation($request);
         $expence = new  Expence();
         $this->expenceBasic($expence, $request);
+        $expence->location = Session::get('location');
         $expence->save();
         $this->expenceCash($expence, $request);
         $this->expenceCheque($expence, $request);
@@ -172,11 +190,17 @@ class ExpenceController extends Controller
             $next_same_dates = CashBook::where('cash_date', $cash_book->cash_date)->where('id', '>', $cash_book->id)->get();
             foreach ($next_same_dates as $next_same_date){
                 $next_same_date->blance += $old_credit_amount;
+                if($next_same_date->branch_id == $cash_book->branch_id){
+                    $next_same_date->branch_blance += $old_credit_amount;
+                }
                 $next_same_date->update();
             }
             $next_dates = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
             foreach ($next_dates as $next_date){
                 $next_date->blance += $old_credit_amount;
+                if($next_date->branch_id == $cash_book->branch_id){
+                    $next_date->branch_blance += $old_credit_amount;
+                }
                 $next_date->update();
             }
             $cash_book->delete();
