@@ -20,8 +20,13 @@ class ChequeBookController extends Controller
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $request->cash_date)->first();
         }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $request->cash_date)->where('branch_id', $cheque_book->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $request->cash_date)->where('branch_id', $cheque_book->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->cheque_id = $cheque_book->id;
+        $cash_book->branch_id = $cheque_book->location;
         $cash_book->cash_date = $request->cash_date;
         $cash_book->narration = 'Cheque To Cash';
         $cash_book->debit_cash_amount = $cheque_book->cheque_amount;
@@ -30,15 +35,26 @@ class ChequeBookController extends Controller
         }else{
             $cash_book->blance = $pre_cash_book->blance + $cheque_book->cheque_amount;
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = $cheque_book->cheque_amount;
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance + $cheque_book->cheque_amount;
+        }
         $cash_book->save();
         $next_same_dates = CashBook::where('id','>', $cash_book->id)->where('cash_date', $request->cash_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance += $cash_book->debit_cash_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::where('cash_date', '>', $request->cash_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance += $cash_book->debit_cash_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_date->update();
         }
 
