@@ -8,6 +8,7 @@ use App\model\CashBook;
 use App\model\Payment;
 use App\model\SuplierTransaction;
 use Illuminate\Http\Request;
+use Session;
 
 class PaymentController extends Controller
 {
@@ -66,8 +67,13 @@ class PaymentController extends Controller
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $payment->debit_voucher_date)->first();
         }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $payment->debit_voucher_date)->where('branch_id', $payment->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $payment->debit_voucher_date)->where('branch_id', $payment->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->payment_id = $payment->id;
+        $cash_book->branch_id = $payment->location;
         $cash_book->cash_date = $payment->debit_voucher_date;
         $cash_book->narration = $request->narration;
         $cash_book->credit_cash_amount = $request->cashs[0]['credit_cash_amount'];
@@ -76,15 +82,26 @@ class PaymentController extends Controller
         }else{
             $cash_book->blance = $pre_cash_book->blance - $request->cashs[0]['credit_cash_amount'];
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = -$request->cashs[0]['credit_cash_amount'];
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance - $request->cashs[0]['credit_cash_amount'];
+        }
         $cash_book->save();
         $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $payment->debit_voucher_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance -= $cash_book->credit_cash_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance -= $cash_book->credit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::orderBy('cash_date', 'asc')->where('cash_date', '>', $payment->debit_voucher_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $cash_book->credit_cash_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance -= $cash_book->credit_cash_amount;
+            }
             $next_date->update();
         }
     }
@@ -148,8 +165,6 @@ class PaymentController extends Controller
 
         }
     }
-
-
     protected function savePaymentSuplierTransaction($request, $payment){
         // SuplierTransaction Start
         $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $payment->debit_voucher_date)->where('suplier_id', $payment->suplier)->first();
@@ -198,6 +213,7 @@ class PaymentController extends Controller
     public function addPayment(Request $request){
         $this->paymentValidation($request);
         $payment = new Payment();
+        $payment->location = Session::get('location');
         $this->paymentBasic($request, $payment);
         $payment->save();
         if($request->cash == 1){
@@ -232,11 +248,17 @@ class PaymentController extends Controller
             $next_same_dates = CashBook::where('cash_date', $cash_book->cash_date)->where('id', '>', $cash_book->id)->get();
             foreach ($next_same_dates as $next_same_date){
                 $next_same_date->blance += $old_credit_amount;
+                if($next_same_date->branch_id == $cash_book->branch_id){
+                    $next_same_date->branch_blance += $old_credit_amount;
+                }
                 $next_same_date->update();
             }
             $next_dates = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
             foreach ($next_dates as $next_date){
                 $next_date->blance += $old_credit_amount;
+                if($next_date->branch_id == $cash_book->branch_id){
+                    $next_date->branch_blance += $old_credit_amount;
+                }
                 $next_date->update();
             }
             $cash_book->delete();

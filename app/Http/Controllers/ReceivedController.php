@@ -438,7 +438,7 @@ class ReceivedController extends Controller
             }
             $next_same_date_transaction->update();
         }
-        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaciton_date)->get();
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
         foreach ($next_date_transactions as $next_date_transaction){
             $next_date_transaction->blance += $old_amount;
             if($next_date_transaction->guest_id == $transjaction->guest_id){
@@ -498,33 +498,7 @@ class ReceivedController extends Controller
         $this->updateBankBook($request, $received);
         $this->updateChequeBook($request, $received);
         $this->updateOtherBook($request, $received);
-//        $this->updateReceivedTransaction($request, $received);
-        $transjaction = Transjaction::where('received_id', $received->id)->select('id', 'guest_id', 'staff_id', 'received_id', 'transjaction_date', 'narration', 'credit_amount', 'blance', 'guest_blance', 'staff_blance')->first();
-        $old_amount = $transjaction->credit_amount;
-        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
-        foreach ($next_same_date_transactions as $next_same_date_transaction){
-            $next_same_date_transaction->blance += $old_amount;
-            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
-                $next_same_date_transaction->guest_blance += $old_amount;
-            }
-            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
-                $next_same_date_transaction->staff_blance += $old_amount;
-            }
-            $next_same_date_transaction->update();
-        }
-        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_date_transactions as $next_date_transaction){
-            $next_date_transaction->blance += $old_amount;
-            if($next_date_transaction->guest_id == $transjaction->guest_id){
-                $next_date_transaction->guest_blance += $old_amount;
-            }
-            if($next_date_transaction->staff_id == $transjaction->staff_id){
-                $next_date_transaction->staff_blance += $old_amount;
-            }
-            $next_date_transaction->update();
-        }
-        $transjaction->delete();
-        $this->saveReceivedTransaction($request, $received);
+        $this->updateReceivedTransaction($request, $received);
         $this->updateReceivedDiscount($request, $received);
         return "Success Update";
     }
