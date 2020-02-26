@@ -514,7 +514,7 @@
                                     cheque_amount:'',
                                 }
                             ]
-                        this.$router.push('/list-payment-loan-installment')
+                        this.$router.push('/payment-loan-installment-list')
                         this.isLoading = false
                         Toast.fire({
                             type: 'success',

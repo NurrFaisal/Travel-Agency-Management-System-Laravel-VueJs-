@@ -10,6 +10,7 @@ use App\model\PaymentLoanTransaction;
 use App\model\PLInstallment;
 use App\model\ReceivedLoanTransaction;
 use Illuminate\Http\Request;
+use Session;
 
 class PLInstallmentController extends Controller
 {
@@ -83,8 +84,13 @@ class PLInstallmentController extends Controller
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $pl_installment->pl_installment_date)->first();
         }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $pl_installment->pl_installment_date)->where('branch_id', $pl_installment->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $pl_installment->pl_installment_date)->where('branch_id', $pl_installment->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->pl_installment_id = $pl_installment->id;
+        $cash_book->branch_id = $pl_installment->location;
         $cash_book->cash_date = $pl_installment->pl_installment_date;
         $cash_book->narration = $request->narration;
         $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
@@ -93,15 +99,26 @@ class PLInstallmentController extends Controller
         }else{
             $cash_book->blance = $pre_cash_book->blance + $request->cashs[0]['debit_cash_amount'];
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = $request->cashs[0]['debit_cash_amount'];
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance + $request->cashs[0]['debit_cash_amount'];
+        }
         $cash_book->save();
         $next_same_dates = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $pl_installment->pl_installment_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance += $cash_book->debit_cash_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::orderBy('cash_date', 'asc')->where('cash_date', '>', $pl_installment->pl_installment_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance += $cash_book->debit_cash_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_date->update();
         }
     }
@@ -224,6 +241,7 @@ class PLInstallmentController extends Controller
         $this->allValidation($request);
         $pl_installment = new PLInstallment();
         $this->plInstallmentBasic($request, $pl_installment);
+        $pl_installment->location = Session::get('location');
         $pl_installment->save();
         $this->savePaymentLoanTransaction($request, $pl_installment);
         if($request->cash){
@@ -253,14 +271,20 @@ class PLInstallmentController extends Controller
         $cash_book = CashBook::where('pl_installment_id', $pl_installment->id)->first();
         if($cash_book != null){
             $old_amount = $cash_book->debit_cash_amount;
-            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'pl_installment_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_date_cashs as $next_same_date_cash){
                 $next_same_date_cash->blance -= $old_amount;
+                if($next_same_date_cash->branch_id == $cash_book->branch_id){
+                    $next_same_date_cash->branch_blance -= $old_amount;
+                }
                 $next_same_date_cash->update();
             }
-            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'pl_installment_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
             foreach ($next_date_cashs as $next_date_cash){
                 $next_date_cash->blance -=$old_amount;
+                if($next_date_cash->branch_id == $cash_book->branch_id){
+                    $next_date_cash->branch_blance -= $old_amount;
+                }
                 $next_date_cash->update();
             }
             $cash_book->delete();
