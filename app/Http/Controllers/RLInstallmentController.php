@@ -9,6 +9,7 @@ use App\model\ReceivedLoanTransaction;
 use App\ReceivedLoanHead;
 use App\RLInstallment;
 use Illuminate\Http\Request;
+use Session;
 
 class RLInstallmentController extends Controller
 {
@@ -71,6 +72,10 @@ class RLInstallmentController extends Controller
         $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $rl_installment->rl_installment_date)->first();
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $rl_installment->rl_installment_date)->first();
+        }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $rl_installment->rl_installment_date)->where('branch_id', $rl_installment->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $rl_installment->rl_installment_date)->where('branch_id', $rl_installment->location)->first();
         }
         $cash_book = new CashBook();
         $cash_book->rl_installment_id = $rl_installment->id;
@@ -198,6 +203,7 @@ class RLInstallmentController extends Controller
         $this->allValidation($request);
         $rl_installment = new RLInstallment();
         $this->rlInstallmentBasic($request, $rl_installment);
+        $rl_installment->location = Session::get('location');
         $rl_installment->save();
         $this->saveReceivedLoanTransaction($request, $rl_installment);
         if($request->cash == 1) {

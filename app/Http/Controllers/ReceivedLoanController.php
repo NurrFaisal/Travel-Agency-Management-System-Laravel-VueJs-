@@ -244,10 +244,10 @@ class ReceivedLoanController extends Controller
         ]);
     }
     public function updateCashBook($request, $received_loan){
-        $cash_book = CashBook::where('received_loan_id', $received_loan->id)->select('id', 'received_loan_id', 'debit_cash_amount', 'cash_date', 'blance', 'narration')->first();
+        $cash_book = CashBook::where('received_loan_id', $received_loan->id)->first();
         if($cash_book != null){
             $old_amount = $cash_book->debit_cash_amount;
-            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_loan_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_date_cashs as $next_same_date_cash){
                 $next_same_date_cash->blance -= $old_amount;
                 if($next_same_date_cash->branch_id == $cash_book->branch_id){
@@ -255,7 +255,7 @@ class ReceivedLoanController extends Controller
                 }
                 $next_same_date_cash->update();
             }
-            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
             foreach ($next_date_cashs as $next_date_cash){
                 $next_date_cash->blance -=$old_amount;
                 if($next_date_cash->branch_id == $cash_book->branch_id){
