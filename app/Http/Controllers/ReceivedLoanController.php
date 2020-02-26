@@ -8,6 +8,7 @@ use App\model\ChequeBook;
 use App\model\ReceivedLoan;
 use App\model\ReceivedLoanTransaction;
 use Illuminate\Http\Request;
+use Session;
 
 class ReceivedLoanController extends Controller
 {
@@ -66,8 +67,13 @@ class ReceivedLoanController extends Controller
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $received_loan->rl_date)->first();
         }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $received_loan->rl_date)->where('branch_id', $received_loan->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $received_loan->rl_date)->where('branch_id', $received_loan->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->received_loan_id = $received_loan->id;
+        $cash_book->branch_id = $received_loan->location;
         $cash_book->cash_date = $received_loan->rl_date;
         $cash_book->narration = $request->narration;
         $cash_book->debit_cash_amount = $request->cashs[0]['debit_cash_amount'];
@@ -76,15 +82,26 @@ class ReceivedLoanController extends Controller
         }else{
             $cash_book->blance = $pre_cash_book->blance + $request->cashs[0]['debit_cash_amount'];
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = $request->cashs[0]['debit_cash_amount'];
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance + $request->cashs[0]['debit_cash_amount'];
+        }
         $cash_book->save();
         $next_same_dates = CashBook::where('id','>', $cash_book->id)->where('cash_date', $received_loan->rl_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance += $cash_book->debit_cash_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::where('cash_date', '>', $received_loan->rl_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance += $cash_book->debit_cash_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance += $cash_book->debit_cash_amount;
+            }
             $next_date->update();
         }
 
@@ -208,6 +225,7 @@ class ReceivedLoanController extends Controller
         $this->allValidation($request);
         $received_loan = new ReceivedLoan();
         $this->receivedLoanBasic($request, $received_loan);
+        $received_loan->location = Session::get('location');
         $received_loan->save();
         $this->saveReceivedLoanTransaction($request, $received_loan);
         $this->saveallbooks($request, $received_loan);
@@ -232,11 +250,17 @@ class ReceivedLoanController extends Controller
             $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'received_loan_id', 'debit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_date_cashs as $next_same_date_cash){
                 $next_same_date_cash->blance -= $old_amount;
+                if($next_same_date_cash->branch_id == $cash_book->branch_id){
+                    $next_same_date_cash->branch_blance -= $old_amount;
+                }
                 $next_same_date_cash->update();
             }
             $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'received_id', 'debit_cash_amount', 'cash_date', 'blance')->get();
             foreach ($next_date_cashs as $next_date_cash){
                 $next_date_cash->blance -=$old_amount;
+                if($next_date_cash->branch_id == $cash_book->branch_id){
+                    $next_date_cash->branch_blance -= $old_amount;
+                }
                 $next_date_cash->update();
             }
             $cash_book->delete();
