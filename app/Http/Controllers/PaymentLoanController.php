@@ -7,6 +7,7 @@ use App\model\CashBook;
 use App\model\PaymentLoan;
 use App\model\PaymentLoanTransaction;
 use Illuminate\Http\Request;
+use Session;
 
 class PaymentLoanController extends Controller
 {
@@ -94,8 +95,13 @@ class PaymentLoanController extends Controller
         if($pre_cash_book == null){
             $pre_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $payment_loan->pl_date)->first();
         }
+        $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', $payment_loan->pl_date)->where('branch_id', $payment_loan->location)->first();
+        if($pre_branch_cash_book == null){
+            $pre_branch_cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->where('cash_date', '<', $payment_loan->pl_date)->where('branch_id', $payment_loan->location)->first();
+        }
         $cash_book = new CashBook();
         $cash_book->payment_loan_id = $payment_loan->id;
+        $cash_book->branch_id = $payment_loan->location;
         $cash_book->cash_date = $payment_loan->pl_date;
         $cash_book->narration = $request->narration;
         $cash_book->credit_cash_amount = $request->cashs[0]['credit_cash_amount'];
@@ -104,15 +110,26 @@ class PaymentLoanController extends Controller
         }else{
             $cash_book->blance = $pre_cash_book->blance - $request->cashs[0]['credit_cash_amount'];
         }
+        if($pre_branch_cash_book == null){
+            $cash_book->branch_blance = -$request->cashs[0]['credit_cash_amount'];
+        }else{
+            $cash_book->branch_blance = $pre_branch_cash_book->branch_blance - $request->cashs[0]['credit_cash_amount'];
+        }
         $cash_book->save();
         $next_same_dates = CashBook::where('id','>', $cash_book->id)->where('cash_date', $payment_loan->pl_date)->get();
         foreach ($next_same_dates as $next_same_date){
             $next_same_date->blance -= $cash_book->credit_cash_amount;
+            if($next_same_date->branch_id == $cash_book->branch_id){
+                $next_same_date->branch_blance -= $cash_book->credit_cash_amount;
+            }
             $next_same_date->update();
         }
         $next_dates = CashBook::where('cash_date', '>', $payment_loan->pl_date)->get();
         foreach ($next_dates as $next_date){
             $next_date->blance -= $cash_book->credit_cash_amount;
+            if($next_date->branch_id == $cash_book->branch_id){
+                $next_date->branch_blance -= $cash_book->credit_cash_amount;
+            }
             $next_date->update();
         }
 
@@ -139,6 +156,7 @@ class PaymentLoanController extends Controller
             }
             $bank_book = new BankBook();
             $bank_book->payment_loan_id = $payment_loan->id;
+            $bank_book->branch_id = $payment_loan->location;
             $bank_book->narration = $request->narration;
             $bank_book->bank_name = $cheques_arry[$i]['bank_name'];
             $bank_book->bank_date = $cheques_arry[$i]['bank_date'];
@@ -184,6 +202,7 @@ class PaymentLoanController extends Controller
         $this->allValidation($request);
         $payment_loan = new PaymentLoan();
         $this->paymentLoanBasic($request, $payment_loan);
+        $payment_loan->location = Session::get('location');
         $payment_loan->save();
         $this->savePaymentTransaction($request, $payment_loan);
         if($request->cash == 1){
@@ -207,17 +226,23 @@ class PaymentLoanController extends Controller
         ]);
     }
     public function updateCashBook($request, $payment_loan){
-        $cash_book = CashBook::where('payment_loan_id', $payment_loan->id)->select('id', 'payment_loan_id', 'credit_cash_amount', 'cash_date', 'blance', 'narration')->first();
+        $cash_book = CashBook::where('payment_loan_id', $payment_loan->id)->first();
         if($cash_book != null){
             $old_amount = $cash_book->credit_cash_amount;
-            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->select('id', 'payment_loan_id', 'credit_cash_amount', 'cash_date', 'blance')->where('cash_date', $cash_book->cash_date)->get();
+            $next_same_date_cashs = CashBook::where('id', '>', $cash_book->id)->where('cash_date', $cash_book->cash_date)->get();
             foreach ($next_same_date_cashs as $next_same_date_cash){
                 $next_same_date_cash->blance += $old_amount;
+                if($next_same_date_cash->branch_id == $cash_book->branch_id){
+                    $next_same_date_cash->branch_blance += $old_amount;
+                }
                 $next_same_date_cash->update();
             }
-            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->select('id', 'payment_loan_id', 'credit_cash_amount', 'cash_date', 'blance')->get();
+            $next_date_cashs = CashBook::where('cash_date', '>', $cash_book->cash_date)->get();
             foreach ($next_date_cashs as $next_date_cash){
                 $next_date_cash->blance +=$old_amount;
+                if($next_date_cash->branch_id == $cash_book->branch_id){
+                    $next_date_cash->branch_blance += $old_amount;
+                }
                 $next_date_cash->update();
             }
             $cash_book->delete();
