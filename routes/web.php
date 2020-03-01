@@ -712,7 +712,8 @@ Route::get('/api/edit-air-ticket-refund/{id}', 'AirTicketRefundController@editAi
 Route::post('/api/update-air-ticket-refund', 'AirTicketRefundController@updateAirTicketRefund');
 // AirTicketRefundController End
 
-
-
+// AtAGlanceController Start
+Route::get('/api/view-at-a-glance', 'AtAGlanceController@viewAtAGlance');
+// AtAGlanceController End
 
 

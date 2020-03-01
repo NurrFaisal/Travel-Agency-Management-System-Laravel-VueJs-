@@ -153,6 +153,7 @@ import ListHotel from "./components/cosmosHoliday/hotel-booking/hotel/ListHotel"
 import ViewPackageComponent from "./components/cosmosHoliday/package/ViewPackageComponent";
 import ListAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/ListAirTicketRefund";
 import EditAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/EditAirTicketRefund";
+import AtAGlanceComponent from "./components/cosmosHoliday/AtAGlanceComponent";
 
 
 
@@ -950,9 +951,16 @@ export const routes = [
     {
         path:'/edit-air-ticket-refund/:id',
         component: EditAirTicketRefund
-    }
+    },
     // AirTicket Refund End
 
+
+    // At a Glance Start
+    {
+        path:'/at-a-glance',
+        component: AtAGlanceComponent
+    }
+    // At a Glance End
 
 
 

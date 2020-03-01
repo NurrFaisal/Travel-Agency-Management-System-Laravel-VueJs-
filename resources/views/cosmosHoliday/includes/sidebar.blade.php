@@ -42,6 +42,14 @@
 
             <b class="arrow"></b>
         </li>
+        <li class="">
+            <router-link to="/at-a-glance">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text"> At a Glance </span>
+            </router-link>
+
+            <b class="arrow"></b>
+        </li>
 
         <li class="">
             <a href="#" class="dropdown-toggle">

@@ -521,9 +521,6 @@
         mounted(){
             this.viewPackage()
         },
-        computed:{
-
-        },
         data(){
             return {
                 package:'',

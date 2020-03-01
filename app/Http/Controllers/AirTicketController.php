@@ -9,6 +9,7 @@ use App\model\SuplierTransaction;
 use App\model\Transjaction;
 use App\Profit;
 use App\SubAirticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Session;
 
@@ -186,24 +187,24 @@ class AirTicketController extends Controller
         $profit->save();
     }
     protected function transjaction($request, $airticket){
-        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $airticket->created_at->format('Y-m-d'))->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $airticket->created_at)->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         if($pre_guest_transjaction_blance == null){
-            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $airticket->created_at->format('Y-m-d'))->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $airticket->created_at)->where('guest_id', $request->selling_to)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         }
-        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $airticket->created_at->format('Y-m-d'))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $airticket->created_at)->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         if($pre_staff_transjaction_blance == null){
-            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $airticket->created_at->format('Y-m-d'))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $airticket->created_at)->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         }
-        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date',$airticket->created_at->format('Y-m-d'))->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date',$airticket->created_at)->select('id', 'transjaction_date', 'narration', 'blance')->first();
         if($pre_transjaction_blance == null){
-            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<',$airticket->created_at->format('Y-m-d'))->first();
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<',$airticket->created_at)->first();
         }
         $transjaction = new Transjaction();
         $transjaction->guest_id = $request->selling_to;
         $transjaction->staff_id = Session::get('staff_id');
         $transjaction->air_id = $airticket->id;
         $transjaction->narration = $airticket->narration;
-        $transjaction->transjaction_date = $airticket->created_at->format('Y-m-d');
+        $transjaction->transjaction_date = $airticket->created_at;
         $transjaction->debit_amount = $airticket->total_price;
         if($pre_guest_transjaction_blance == null){
             $transjaction->guest_blance = $airticket->total_price;
@@ -239,6 +240,7 @@ class AirTicketController extends Controller
         $this->airTicketValidation($request);
         $airticket = new Airticket();
         $this->airTicketBasic($airticket, $request);
+        $airticket->invoice_date = Carbon::now()->format('Y-m-d');
         $airticket->sell_person = Session::get('staff_id');
         $airticket->save();
         $this->savePaxLoop($request, $airticket);

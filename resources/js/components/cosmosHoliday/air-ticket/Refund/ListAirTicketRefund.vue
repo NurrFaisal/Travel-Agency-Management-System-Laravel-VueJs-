@@ -79,7 +79,7 @@
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
                                                 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
-                                                <!--                                                                    Follow Up-->
+                                                <!--                                                     airticket_id               Follow Up-->
                                                 <!--                                                                </a>-->
 <!--                                                <a @click.prevent="downLoadInvoice(atr.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">-->
 <!--                                                    Invoice-->
