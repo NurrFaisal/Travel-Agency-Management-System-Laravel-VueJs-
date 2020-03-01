@@ -75,7 +75,7 @@
 <!--                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                </a>-->
-                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-air-ticket/${air_ticket.id}`" class="btn btn-xs btn-info">
+                                                <router-link   :to="`/edit-air-ticket/${air_ticket.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
                                                 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->

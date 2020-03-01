@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\model\AirLine;
+use App\SubAirticket;
 use Illuminate\Http\Request;
 
 class AirLineController extends Controller
@@ -41,8 +42,13 @@ class AirLineController extends Controller
 
     }
     public function deleteAirLine($id){
-        $air_line = AirLine::where('id', $id)->first();
-        $air_line->delete();
-        return 'delete';
+        $sub_air_ticket = SubAirticket::where('air_lines', $id)->count();
+        if($sub_air_ticket > 0){
+            $air_line = AirLine::where('id', $id)->first();
+            $air_line->delete();
+            return 'Deleted';
+        }
+        return 'Not Delete';
+
     }
 }

@@ -70,9 +70,9 @@
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
 
-                                                <button class="btn btn-xs btn-success">
-                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
-                                                </button>
+<!--                                                <button class="btn btn-xs btn-success">-->
+<!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
+<!--                                                </button>-->
                                                 <router-link :to="`/edit-air-line/${air_line.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
@@ -100,17 +100,17 @@
 
                                                         <li>
                                                             <a href="#" class="tooltip-success" data-rel="tooltip" title="Edit">
-																			<span class="green">
-																				<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
-																			</span>
+                                                                <span class="green">
+                                                                    <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
+                                                                </span>
                                                             </a>
                                                         </li>
 
                                                         <li>
                                                             <a href="#" @click.prevent="deleteGuestTitle(air_line.id)" class="tooltip-error" data-rel="tooltip" title="Delete">
-																			<span class="red">
-																				<i class="ace-icon fa fa-trash-o bigger-120"></i>
-																			</span>
+                                                                <span class="red">
+                                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                                </span>
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -181,7 +181,7 @@
                             .then((response) =>{
                                 Toast.fire({
                                     type: 'success',
-                                    title: 'Air Line Deleted successfully'
+                                    title: 'Air Line '+response.data +' successfully'
                                 })
                                 this.$store.dispatch("allAirLine")
                             })
