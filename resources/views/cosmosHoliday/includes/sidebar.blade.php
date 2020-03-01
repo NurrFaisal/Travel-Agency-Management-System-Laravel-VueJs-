@@ -42,6 +42,7 @@
 
             <b class="arrow"></b>
         </li>
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin')
         <li class="">
             <router-link to="/at-a-glance">
                 <i class="menu-icon fa fa-tachometer"></i>
@@ -50,164 +51,10 @@
 
             <b class="arrow"></b>
         </li>
-
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text">
-								Air-Tickets
-							</span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-
-                <li class="">
-                    <router-link to="/air-ticket-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Air Tickers List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/ticket-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Ticket List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/air-ticket-refund-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Ticket Refund
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/air-line-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Air Lines List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-
-
-            </ul>
-        </li>
-
-{{--        <li class="active open">--}}
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-list"></i>
-                <span class="menu-text"> VISA </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-
-            <b class="arrow"></b>
-
-            <ul class="submenu">
-{{--                <li class="active">--}}
-{{--                <li class="">--}}
-{{--                    <router-link to="/visa-list">--}}
-{{--                        <i class="menu-icon fa fa-caret-right"></i>--}}
-{{--                        Visa List--}}
-{{--                    </router-link>--}}
-
-{{--                    <b class="arrow"></b>--}}
-{{--                </li>--}}
-                <li class="">
-                    <router-link to="/visa-updated-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Visa List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-
-
-
-{{--                <li class="">--}}
-{{--                    <router-link to="/visa-agency-list">--}}
-{{--                        <i class="menu-icon fa fa-caret-right"></i>--}}
-{{--                        Visa Agency--}}
-{{--                    </router-link>--}}
-
-{{--                    <b class="arrow"></b>--}}
-{{--                </li>--}}
-
-                <li class="">
-                    <router-link to="/visa-category-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Visa Categories
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/visa-country-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Visa Country List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-pencil-square-o"></i>
-                <span class="menu-text"> Package </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="">
-                    <router-link to="/package-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Package List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-pencil-square-o"></i>
-                <span class="menu-text"> Hotel Booking </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="">
-                    <router-link to="/hotel-booking-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Hotel Booking List
-                    </router-link>
-                    <router-link to="/hotel-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Hotel List
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-
+        @endif
         <li class="">
             <router-link to="/guest-list">
-                <i class="menu-icon fa fa-list-alt"></i>
+                <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Guest </span>
             </router-link>
 
@@ -215,24 +62,113 @@
         </li>
         <li class="">
             <router-link to="/suplier-list">
-                <i class="menu-icon fa fa-list-alt"></i>
+                <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Suplier </span>
             </router-link>
 
             <b class="arrow"></b>
         </li>
-{{--        <li class="">--}}
-{{--            <router-link to="/guest-query-list">--}}
-{{--                <i class="menu-icon fa fa-list-alt"></i>--}}
-{{--                <span class="menu-text"> Guest Query</span>--}}
-{{--            </router-link>--}}
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 3)
+            <li class="">
+            <router-link to="/air-ticket-list" class="dropdown-toggle">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text">
+                    Air-Tickets (Invoice)
+                </span>
+            </router-link>
+            </li>
+            <li class="">
+                <router-link to="/air-line-list" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Air-Lines
+                </span>
+                </router-link>
+            </li>
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('user_type') == 'operation')
+            <li class="">
+                <router-link to="/ticket-list" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Ticket List
+                </span>
+                </router-link>
+            </li>
 
-{{--            <b class="arrow"></b>--}}
-{{--        </li>--}}
+            <li class="">
+                <router-link to="/air-ticket-refund-list" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Refund Received
+                </span>
+                </router-link>
+            </li>
+        @endif
+
+
+        @endif
+
+{{--        <li class="active open">--}}
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 4)
+            <li class="">
+                <router-link to="/visa-updated-list" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    VISA (Invoice)
+                </span>
+                </router-link>
+            </li>
+            <li class="">
+                <router-link to="/visa-category-list" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Visa Categories
+                </span>
+                </router-link>
+            </li>
+        @endif
 
         <li class="">
+            <router-link to="/visa-country-list">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text"> Country </span>
+            </router-link>
+
+            <b class="arrow"></b>
+        </li>
+
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 5)
+            <li class="">
+                <router-link to="/package-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> Package </span>
+                </router-link>
+
+                <b class="arrow"></b>
+            </li>
+        @endif
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 7)
+            <li class="">
+                <router-link to="/hotel-booking-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> Hotel Booking </span>
+                </router-link>
+
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <router-link to="/hotel-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text"> Hotel List </span>
+                </router-link>
+
+                <b class="arrow"></b>
+            </li>
+        @endif
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin')
+        <li class="">
             <router-link to="/staff-list">
-                <i class="menu-icon fa fa-calendar"></i>
+                <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">
                     Staff
                 </span>
@@ -240,125 +176,153 @@
 
             <b class="arrow"></b>
         </li>
+        @endif
 
-{{--        <li class="">--}}
-{{--            <router-link to="/suplier-list">--}}
-{{--                <i class="menu-icon fa fa-picture-o"></i>--}}
-{{--                <span class="menu-text"> Agency </span>--}}
-{{--            </router-link>--}}
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 6)
+            <li class="">
+                <router-link to="/received-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                   Money Reciept
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <router-link to="/payment-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                   Debit Vouchure
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <router-link to="/contra-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                   Contra Voucher
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <router-link to="/salary-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Salary
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <router-link to="/incentive-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Incentive
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">Expense </span>
 
-{{--            <b class="arrow"></b>--}}
-{{--        </li>--}}
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="">
+                        <router-link to="/expence-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Expense List
+                        </router-link>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <router-link to="/expence-head-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Expense Head
+                        </router-link>
+                        <b class="arrow"></b>
+                    </li>
 
+                </ul>
+            </li>
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">Books </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="">
+                        <router-link to="/cash-book-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Cash-Book
+                        </router-link>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <router-link to="/bank-book-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Bank-Book
+                        </router-link>
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">Cheque </span>
+
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li class="">
+                        <router-link to="/cheque-book-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Unclear Cheque
+                        </router-link>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <router-link to="/clear-cheque-book-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Clear Cheque
+                        </router-link>
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="">
+                <router-link to="/others-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Other's
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
+            <li class="">
+                <router-link to="/Bank-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Bank
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
         <li class="">
             <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-tag"></i>
-                <span class="menu-text"> Accounts </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="">
-                    <router-link to="/received-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                      Money Reciept
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/payment-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Debit Vouchure
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/contra-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Contra Voucher
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/expence-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Expence
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/salary-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Salary
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/incentive-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Incentive
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-tag"></i>
-                <span class="menu-text"> Books </span>
-
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="">
-                    <router-link to="/cash-book-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Cash Book
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/bank-book-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Bank Book
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/cheque-book-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Cheque Book
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/clear-cheque-book-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Clear Cheque Book
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/others-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Others
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/bank-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Bank Info
-                    </router-link>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
-        <li class="">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-tag"></i>
+                <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">Received Loan </span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -384,7 +348,7 @@
         </li>
         <li class="">
             <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-tag"></i>
+                <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">Payment Loan </span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -407,10 +371,11 @@
                 </li>
             </ul>
         </li>
+        @endif
 
         <li class="">
             <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-tag"></i>
+                <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Setting </span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -437,15 +402,7 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="">
-                    <router-link to="/staff-designation-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Staff Desigantion
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
-
+                @if(Session::get('user_type') == 'super-admin')
                 <li class="">
                     <router-link to="/department-list">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -454,22 +411,17 @@
 
                     <b class="arrow"></b>
                 </li>
-                <li class="">
-                    <router-link to="/bank-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Bank
-                    </router-link>
+                @endif
+                @if(Session::get('user_type') == 'super-admin' || Session::get('user_type') == 'admin')
+                    <li class="">
+                        <router-link to="/staff-designation-list">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Staff Desigantion
+                        </router-link>
 
-                    <b class="arrow"></b>
-                </li>
-                <li class="">
-                    <router-link to="/expence-head-list">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        Expence Head
-                    </router-link>
-
-                    <b class="arrow"></b>
-                </li>
+                        <b class="arrow"></b>
+                    </li>
+                    @endif
             </ul>
         </li>
 

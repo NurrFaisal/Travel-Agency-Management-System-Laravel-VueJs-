@@ -22,7 +22,7 @@ class LoginController extends Controller
             Session::flash('message', $validator->messages()->first());
             return redirect()->back()->withInput();
         }
-        $staff = Staff::where('email_address' , $request->email_address)->select('id','first_name', 'last_name', 'email_address', 'password', 'image', 'user_type', 'location')->first();
+        $staff = Staff::where('email_address' , $request->email_address)->select('id','first_name', 'last_name', 'email_address', 'password', 'image', 'user_type', 'location', 'department')->first();
         if($staff){
             if (password_verify($request->password, $staff->password)){
                 Session::put('staff_id', $staff->id);
