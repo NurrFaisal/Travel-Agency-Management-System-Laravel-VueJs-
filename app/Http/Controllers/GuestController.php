@@ -57,14 +57,15 @@ class GuestController extends Controller
 
     public function getAllGuest(){
         $user_type = Session::get('user_type');
-        if($user_type == 'super-admin' || $user_type == 'admin' || $user_type == 'operation'){
+        if($user_type == 'super-admin' || $user_type == 'admin'){
             $guests = Guest::with(['Staff' =>function($q){$q->select('id', 'first_name', 'last_name');}, 'transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])
                 ->orderBy('updated_at', 'desc')
                 ->select('id', 'name', 'phone_number', 'email_address', 'rf_staff', 'status')
                 ->paginate(10);
         }else{
-            $guests = Guest::with(['Staff' =>function($q){$q->select('id', 'first_name', 'last_name');},'transjactions'=>function($q){$q->select('id','guest_id', 'transjaction_date',  'guest_blance')->where('rf_staff', Session::get('staff_id'))->orderBy('transjaction_date', 'desc')->orderBy('id', 'desc');}])->orderBy('updated_at', 'desc')->select('id', 'name', 'phone_number', 'email_address', 'rf_staff', 'status')->paginate(10);
+            $guests = Guest::with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}, 'transjactions' => function($q){$q->select('id', 'guest_id', 'transjaction_date', 'guest_blance')->orderBy('transjaction_date', 'desc');}])->where('rf_staff', Session::get('staff_id'))->paginate(10);
         }
+
         return response()->json([
             'guests' => $guests,
             'user_type' => $user_type
