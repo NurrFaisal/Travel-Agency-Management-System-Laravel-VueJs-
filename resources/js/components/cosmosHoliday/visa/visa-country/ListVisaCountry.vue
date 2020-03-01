@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -8,7 +16,7 @@
                         <router-link to="/dashboard">Home</router-link>
                     </li>
                     <li>
-                        <router-link to="/visa-country-list">Visa Country List</router-link>
+                        <router-link to="/visa-country-list">Country List</router-link>
                     </li>
                 </ul><!-- /.breadcrumb -->
                 <div class="nav-search" id="nav-search">
@@ -23,7 +31,7 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>
-                        Visa Country List
+                        Country List
                         <div class="card-tools" style="float:right">
                             <router-link to="/new-visa-country" class="btn btn-success">Add New Visa Country</router-link>
                         </div>
@@ -52,16 +60,16 @@
                                         <td>{{visa_country.updated_at | timeformate}}</td>
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
-                                                <button class="btn btn-xs btn-success">
-                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
-                                                </button>
+<!--                                                <button class="btn btn-xs btn-success">-->
+<!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
+<!--                                                </button>-->
                                                 <router-link :to="`/edit-visa-country/${visa_country.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <button @click.prevent="deleteVisaCountry(visa_country.id)" class="btn btn-xs btn-danger">
-                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                </button>
+<!--                                                <button @click.prevent="deleteVisaCountry(visa_country.id)" class="btn btn-xs btn-danger">-->
+<!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
+<!--                                                </button>-->
                                             </div>
                                             <div class="hidden-md hidden-lg">
                                                 <div class="inline pos-rel">
@@ -108,15 +116,34 @@
     </div>
 </template>
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "ListVisaContry",
-
         mounted(){
+            this.isLoading = true
             this.$store.dispatch("allVisaCountry")
+            this.doAjax()
+        },
+        components: {
+            Loading
         },
         computed:{
             getAllVisaCountry(){
                 return this.$store.getters.get_visa_country
+            }
+        },
+        data(){
+            return{
+                user_type:'',
+                search_text:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
             }
         },
         methods:{
@@ -142,7 +169,12 @@
 
                     }
                 })
-            }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
         }
     }
 </script>

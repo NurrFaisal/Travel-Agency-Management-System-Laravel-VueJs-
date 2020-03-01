@@ -25,6 +25,7 @@ class VisaCountryController extends Controller
     }
 
     public function deleteVisaCountry($id){
+        return 'Not Perfect';
         $visa_country = VisaCountry::where('id', $id)->first();
         $visa_country->delete();
         return 'delete';

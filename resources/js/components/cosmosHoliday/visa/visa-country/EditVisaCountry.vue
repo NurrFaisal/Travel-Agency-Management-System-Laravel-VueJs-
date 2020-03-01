@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -90,16 +98,33 @@
     </div>
 </template>
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "allVisaCountry",
         mounted(){
+            this.isLoading = true
             axios.get(`/api/edit-visa-country/${this.$route.params.id}`)
                 .then((response) => {
                     this.form.fill(response.data.visa_country)
+                    this.doAjax()
                 })
+        },
+        components: {
+            Loading
         },
         data(){
             return{
+                user_type:'',
+                search_text:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
                 form: new Form({
                     name: "",
                     id:""
@@ -122,7 +147,12 @@
                     .catch((response) => {
 
                     })
-            }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
         }
     }
 </script>
