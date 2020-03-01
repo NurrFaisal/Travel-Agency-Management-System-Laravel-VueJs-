@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\model\VisaCountry;
 use Illuminate\Http\Request;
+use Session;
 
 class VisaCountryController extends Controller
 {
@@ -32,9 +33,11 @@ class VisaCountryController extends Controller
     }
 
     public function editVisaCountry($id){
+        $user_type = Session::get('user_type');
         $visa_country = VisaCountry::where('id', $id)->first();
         return response()->json([
-            'visa_country' => $visa_country
+            'visa_country' => $visa_country,
+            'user_type' => $user_type
         ]);
     }
     public function updateVisaCountry(Request $request){

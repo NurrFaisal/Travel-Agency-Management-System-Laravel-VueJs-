@@ -67,7 +67,7 @@
                                                         <span style="color: red">{{ errors.first('name') }}</span>
                                                     </div>
                                                 </div>
-                                                <div class="clearfix form-actions">
+                                                <div class="clearfix form-actions" v-if="user_type == 'super-admin' || user_type == 'admin'">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>
@@ -90,8 +90,6 @@
                             </div>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
-
-                    <!-- PAGE CONTENT ENDS -->
                 </div><!-- /.col -->
             </div>
         </div>
@@ -110,6 +108,7 @@
             axios.get(`/api/edit-visa-country/${this.$route.params.id}`)
                 .then((response) => {
                     this.form.fill(response.data.visa_country)
+                    this.user_type = response.data.user_type
                     this.doAjax()
                 })
         },
