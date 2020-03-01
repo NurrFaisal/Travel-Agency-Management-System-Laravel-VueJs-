@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -86,6 +94,62 @@
     </div>
 </template>
 
+
+<script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
+    export default {
+        name: "NewAirLIneComponent",
+        components: {
+            Loading
+        },
+        data(){
+            return{
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
+
+                form: new Form({
+                    name: ""
+                })
+            }
+
+        },
+        methods:{
+            addAirLine(){
+                this.isLoading = true
+                this.form.post('/api/add-air-line')
+                    .then((response) => {
+                        this.form.guest_title = ''
+                        this.$router.push('/air-line-list')
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Air Line Added successfully'
+                        })
+                        this.doAjax()
+                    })
+                    .catch((respose) => {
+                        this.doAjax()
+                    })
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
+            onCancel() {
+                console.log('User cancelled the loader.')
+            },
+        }
+    }
+</script>
+
 <style scoped>
     input {
         background-color: rgb(223, 240, 216) !important;
@@ -101,37 +165,4 @@
         color: #000 !important;
     }
 </style>
-<script>
-    export default {
-        name: "NewAirLIneComponent",
 
-        data(){
-            return{
-                form: new Form({
-                    name: ""
-                })
-            }
-
-        },
-        methods:{
-            addAirLine(){
-                this.form.post('/api/add-air-line')
-                    .then((response) => {
-                        this.form.guest_title = ''
-                        this.$router.push('/air-line-list')
-                        Toast.fire({
-                            type: 'success',
-                            title: 'Air Line Added successfully'
-                        })
-                    })
-                    .catch((respose) => {
-
-                    })
-            }
-        }
-    }
-</script>
-
-<style scoped>
-
-</style>

@@ -257,13 +257,13 @@ class AirTicketController extends Controller
                 $q->select('id', 'first_name', 'last_name');
             }, 'guest' => function ($q) {
                 $q->select('id', 'name', 'phone_number');
-            }])->select('id', 'destination', 'sell_person', 'total_price', 'selling_to')->orderBy('id', 'desc')->paginate(10);
+            }])->select('id', 'destination', 'sell_person', 'total_price', 'selling_to', 'print')->orderBy('id', 'desc')->paginate(10);
         }else{
             $air_tickets = Airticket::with(['staff' => function ($q) {
                 $q->select('id', 'first_name', 'last_name');
             }, 'guest' => function ($q) {
-                $q->select('id', 'name', 'phone_number');
-            }])->where('sell_person', Session::get('staff_id'))->select('id', 'destination', 'sell_person', 'total_price', 'selling_to')->orderBy('id', 'desc')->paginate(10);
+                $q->select('id', 'name', 'phone_number', 'print');
+            }])->where('sell_person', Session::get('staff_id'))->select('id', 'destination', 'sell_person', 'total_price', 'selling_to', 'print')->orderBy('id', 'desc')->paginate(10);
         }
         return response()->json([
             'air_tickets' => $air_tickets,

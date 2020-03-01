@@ -53,8 +53,11 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th  class="center" >Name</th>
+                                        <th  class="center" >Destination</th>
+                                        <th  class="center" >Sell Person</th>
                                         <th  class="center" >Total Price</th>
                                         <th  class="center" >Ticket Type</th>
+                                        <th  class="center" >Print</th>
                                         <th  class="center" >Action</th>
                                     </tr>
                                     </thead>
@@ -62,8 +65,11 @@
                                     <tr v-for="(air_ticket, index) in air_tickets">
                                         <td class="center">{{index+1}}</td>
                                         <td class="center">{{air_ticket.guest.name}}</td>
+                                        <td class="center">{{air_ticket.destination}}</td>
+                                        <td class="center">{{air_ticket.staff.first_name+ ' '+air_ticket.staff.last_name}}</td>
                                         <td class="center">{{air_ticket.total_price}}</td>
                                         <td class="center">{{air_ticket.ticket_type == 0 ? 'Domestic' : 'International' }}</td>
+                                        <td class="center">{{air_ticket.print }}</td>
                                         <td class="center">
                                             <div class="btn-group center">
 <!--                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
