@@ -30,6 +30,7 @@
     </style>
 </head>
 <body>
+
 <div class="wrapper container" style="width: 100%">
     <!-- Main content -->
     <section class="invoice container" style="margin: 10px -15px; border: 0; height: 900px">
@@ -204,11 +205,35 @@
                     @endphp
                     @while($i <=$paxs_arry_len)
                     <tr >
-                        <td height="5" width="33%" style="padding: 2px">{{$i+1}}. {{$paxs_arry[$i]['pax_title'] ?? ''}}. {{$paxs_arry[$i]['name'] ?? ''}}</td>
+                        <td height="5" width="33%" style="padding: 2px">{{$i+1}}.
+                            {{$paxs_arry[$i]['pax_title'] == 1 ? 'Mr.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 2 ? 'Mrs.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 3 ? 'Miss.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 4 ? 'Mstr.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 5 ? 'Ms.': ''}}
+                            {{$paxs_arry[$i]['name'] ?? ''}}
+                        </td>
                         @php $i++ @endphp
-                        <td height="5" width="33%" style="padding: 2px">{{$i+1}}. {{$paxs_arry[$i]['pax_title'] ?? ''}}. {{$paxs_arry[$i]['name'] ?? ''}}</td>
+                        <td height="5" width="33%" style="padding: 2px">{{$i+1}}.
+                            @if($i < $paxs_arry_len)
+                                {{$paxs_arry[$i]['pax_title'] == 1 ? 'Mr.': ''}}
+                                {{$paxs_arry[$i]['pax_title'] == 2 ? 'Mrs.': ''}}
+                                {{$paxs_arry[$i]['pax_title'] == 3 ? 'Miss.': ''}}
+                                {{$paxs_arry[$i]['pax_title'] == 4 ? 'Mstr.': ''}}
+                                {{$paxs_arry[$i]['pax_title'] == 5 ? 'Ms.': ''}}
+                                {{$paxs_arry[$i]['name'] ?? ''}}
+                            @endif
+                        </td>
                         @php $i++ @endphp
-                        <td height="5" width="34%" style="padding: 2px">{{$i+1}}. {{$paxs_arry[$i]['pax_title'] ?? ''}}. {{$paxs_arry[$i]['name'] ?? ''}}</td>
+                        <td height="5" width="34%" style="padding: 2px">{{$i+1}}.
+                        @if($i < $paxs_arry_len)
+                            {{$paxs_arry[$i]['pax_title'] == 1 ? 'Mr.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 2 ? 'Mrs.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 3 ? 'Miss.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 4 ? 'Mstr.': ''}}
+                            {{$paxs_arry[$i]['pax_title'] == 5 ? 'Ms.': ''}}
+                            {{$paxs_arry[$i]['name'] ?? ''}}
+                        @endif
                         @php $i++ @endphp
                     </tr>
                     @endwhile

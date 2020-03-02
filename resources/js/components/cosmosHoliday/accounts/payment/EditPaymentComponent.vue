@@ -273,7 +273,7 @@
                                                 </div>
 
 
-                                                <div class="clearfix form-actions">
+                                                <div class="clearfix form-actions" v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>
@@ -333,6 +333,7 @@
                 height:128,
                 isLoading: false,
                 fullPage: false,
+                user_type:'',
 
 
                 form: new Form({
@@ -483,8 +484,7 @@
                 axios.get(`/api/edit-payment/${this.$route.params.id}`)
                     .then((respose) => {
                         this.form.fill(respose.data.payment)
-
-
+                        this.user_type = respose.data.user_type;
                     })
             },
         }

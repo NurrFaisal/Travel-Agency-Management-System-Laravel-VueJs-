@@ -350,9 +350,11 @@ class ReceivedController extends Controller
     }
 
     public function editReceived($id){
+        $user_type = Session::get('user_type');
         $received = MoneyReceived::with(['cashs', 'banks', 'cheques', 'others', 'guestt' => function($q){$q->select('id', 'name','phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'received' => $received
+            'received' => $received,
+            'user_type' => $user_type
         ]);
     }
     public function updateCashBook($request, $received){

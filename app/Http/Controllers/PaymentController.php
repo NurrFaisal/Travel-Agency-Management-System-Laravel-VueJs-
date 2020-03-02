@@ -234,9 +234,11 @@ class PaymentController extends Controller
     }
 
     public function editPayment($id){
+        $user_type = Session::get('user_type');
         $payment = Payment::where('id', $id)->with(['cashs' => function($q){$q->select('id', 'payment_id', 'credit_cash_amount');}, 'cheques' => function($q){$q->select('id', 'payment_id', 'bank_name','bank_date', 'bank_cheque_number', 'credit_bank_amount');}])->first();
         return response()->json([
-            'payment' => $payment
+            'payment' => $payment,
+            'user_type' => $user_type
         ]);
     }
 

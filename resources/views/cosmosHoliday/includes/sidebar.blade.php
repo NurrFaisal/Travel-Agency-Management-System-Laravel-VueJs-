@@ -42,7 +42,7 @@
 
             <b class="arrow"></b>
         </li>
-        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin')
+        @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || (Session::get('department') == 6 && Session::get('user_type') == 'operation'))
         <li class="">
             <router-link to="/at-a-glance">
                 <i class="menu-icon fa fa-tachometer"></i>
@@ -206,6 +206,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
+            @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || (Session::get('department') == 6 && Session::get('user_type') == 'operation'))
             <li class="">
                 <router-link to="/salary-list">
                     <i class="menu-icon fa fa-tachometer"></i>
@@ -224,6 +225,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
+            @endif
             <li class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
