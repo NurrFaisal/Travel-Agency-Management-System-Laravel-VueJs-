@@ -44,10 +44,7 @@
                                     <thead>
                                     <tr>
                                         <th class="center">Sl.</th>
-                                        <th>Date</th>
                                         <th>Bank Name</th>
-                                        <th>Debit </th>
-                                        <th>Credit</th>
                                         <th>Balance</th>
                                         <th>Action</th>
                                     </tr>
@@ -56,11 +53,9 @@
                                     <tbody>
                                     <tr v-for="(bank, index) in  banks">
                                         <td class="center">{{index+1}}</td>
-                                        <td>{{bank.updated_at | timeformate}}</td>
                                         <td>{{bank.bank_name}}</td>
-                                        <td>{{sumDebit(bank.bank_bookt)}}</td>
-                                        <td>{{sumCredit(bank.bank_bookt)}}</td>
-                                        <td>{{allBalance()}}</td>
+                                        <td v-if="bank.bank_bookt">{{bank.bank_bookt.bank_blance}}</td>
+                                        <td v-else>0.00</td>
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
                                                 <router-link :to="`/bank-book-by-id/${bank.id}`" class="btn btn-xs btn-success">
@@ -90,7 +85,7 @@
                         </div><!-- /.row -->
 
                         <div class="hr hr-18 dotted hr-double"></div>
-                        <h1 style="float: right">Total Balace : {{allBalance()}}   /=</h1>
+                        <h1 style="float: right">Total Balance :   {{bank_book_blance.blance}} /=</h1>
 
                         <!-- PAGE CONTENT ENDS -->
                     </div><!-- /.col -->
@@ -114,6 +109,7 @@
                 //     current_page: 1,
                 // },
                 banks: '',
+                bank_book_blance: '',
             }
         },
         methods:{
@@ -122,35 +118,10 @@
                 axios.get('/api/get-all-bank')
                     .then(response => {
                         this.banks = response.data.banks
+                        this.bank_book_blance = response.data.bank_book_blance
                         // this.pagination = response.data.banks
                     })
             },
-
-            sumDebit(blances){
-                let sum =0
-                for(let i=0; i< blances.length; i++){
-                    sum +=parseFloat(blances[i].debit_bank_amount)
-                }
-                total +=sum
-
-                return sum
-
-            },
-            sumCredit(blances){
-                let csum = 0
-                for(let i=0; i< blances.length; i++){
-                    csum +=parseFloat(blances[i].credit_bank_amount)
-                }
-                total -=csum
-
-                return csum
-
-            },
-            allBalance(){
-             return total
-            },
-
-
 
             deleteBank(id){
                 Swal.fire({

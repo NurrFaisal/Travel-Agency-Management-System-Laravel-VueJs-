@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\model\Bank;
+use App\model\BankBook;
 use Illuminate\Http\Request;
 
 class BankController extends Controller
@@ -18,9 +19,11 @@ class BankController extends Controller
     }
 
     public function getAllBank(){
-        $banks = Bank::with(['bank_bookt' => function($q){$q->select('bank_name', 'debit_bank_amount', 'credit_bank_amount','blance', 'bank_blance');}])->orderBy('updated_at', 'asc')->get();
+        $banks = Bank::with(['bank_bookt' => function($q){$q->select('bank_name', 'debit_bank_amount', 'credit_bank_amount','blance', 'bank_blance')->orderBy('bank_date', 'desc');}])->orderBy('updated_at', 'asc')->get();
+        $bank_book_blance = BankBook::select('blance')->orderBy('bank_date', 'desc')->first();
         return response()->json([
-            'banks' => $banks
+            'banks' => $banks,
+            'bank_book_blance' =>  $bank_book_blance
         ]);
     }
 

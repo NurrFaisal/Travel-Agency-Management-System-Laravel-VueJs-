@@ -9,6 +9,6 @@ class Bank extends Model
     protected $fillable = ['bank_name'];
 
     public function bank_bookt(){
-        return $this->hasMany(BankBook::class, 'bank_name', 'id');
+        return $this->hasOne(BankBook::class, 'bank_name', 'id');
     }
 }
