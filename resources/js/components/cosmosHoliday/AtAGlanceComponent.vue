@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -13,12 +21,8 @@
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
-                                    <select  id="type" name="type" class="col-xs-12 col-sm-12" >
-                                        <option value="">--Select--</option>
-                                        <option value="">--Today--</option>
-                                        <option value="">--This Month--</option>
-                                        <option value="">--This Year--</option>
-                                    </select>
+									<input type="text" placeholder="Search ..." class="nav-search-input" @keyup="searchText()" id="nav-search-input" v-model="search_text" autocomplete="off" />
+									<i class="ace-icon fa fa-search nav-search-icon"></i>
 								</span>
                     </form>
                 </div><!-- /.nav-search -->
@@ -219,7 +223,11 @@
 </template>
 
 <script>
-    import Loading from "vue-loading-overlay";
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "AtAGlanceComponent",
         components: {Loading},
@@ -234,6 +242,13 @@
 
         data(){
             return {
+                search_text:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
+
                 air_ticket_count:0,
                 package_count:0,
                 visa_count:0,
@@ -274,7 +289,6 @@
                 this.isLoading = true
                 axios.get(`/api/view-at-a-glance`)
                     .then((response) => {
-                        console.log(response.data)
                         this.air_ticket_count = response.data.air_ticket_count
                         this.package_count = response.data.package_count
                         this.visa_count = response.data.visa_count
@@ -298,7 +312,46 @@
                         this.incentive = response.data.incentive
                         this.isLoading = false
                     })
-            }
+            },
+
+
+
+            searchText:_.debounce(function () {
+                this.isLoading = true
+                if(this.search_text != ''){
+                    this.atAGlanceSearch(this.search_text)
+                }else{
+                    this.atAGlance();
+                }
+            },1000),
+            atAGlanceSearch(search_text){
+                axios.get('/api/view-at-a-glance-search/'+search_text)
+                    .then(response => {
+                        this.air_ticket_count = response.data.air_ticket_count
+                        this.package_count = response.data.package_count
+                        this.visa_count = response.data.visa_count
+                        this.hotel_booking_count = response.data.hotel_booking_count
+                        this.air_ticket_sum = response.data.air_ticket_sum
+                        this.package_sum = response.data.package_sum
+                        this.visa_sum = response.data.visa_sum
+                        this.hotel_booking_sum = response.data.hotel_booking_sum
+                        this.cash_book = response.data.cash_book.blance
+                        this.bank_book = response.data.bank_book.blance
+                        this.cheque = response.data.cheque
+                        this.others = response.data.others
+                        this.guest_blance = response.data.guest_blance.blance
+                        this.suplier_blance = response.data.suplier_blance.balance
+                        this.received = response.data.received
+                        this.payment = response.data.payment
+                        this.received_loan = response.data.received_loan.blance
+                        this.payment_loan = response.data.payment_loan.blance
+                        this.expense = response.data.expense
+                        this.salary = response.data.salary
+                        this.incentive = response.data.incentive
+                        this.isLoading = false
+                    })
+
+            },
         }
     }
 </script>
