@@ -35,9 +35,11 @@ class PackageTicketController extends Controller
         ]);
     }
     public function EditPackageTicket($id){
+        $user_type = Session::get('user_type');
         $package = Package::with(['package_days','guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'package_ticket' => $package
+            'package_ticket' => $package,
+            'user_type' => $user_type
         ]);
     }
     protected function updatePackageTicketValidation($request){

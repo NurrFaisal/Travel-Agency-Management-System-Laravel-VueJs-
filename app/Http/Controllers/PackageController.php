@@ -170,9 +170,11 @@ class PackageController extends Controller
 
     }
     public function editPackageQuery($id){
+        $user_type = Session::get('user_type');
         $package_query = Package::with(['package_days', 'guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'package_query' => $package_query
+            'package_query' => $package_query,
+            'user_type' => $user_type
         ]);
     }
     public function updatePackageQuery(Request $request){

@@ -43,9 +43,11 @@ class PackageFollowUpController extends Controller
     }
 
     public function editPackageFollowUp($id){
+        $user_type = Session::get('user_type');
        $package_follow_up = Package::with(['package_days','guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
        return response()->json([
-           'package_follow_up' => $package_follow_up
+           'package_follow_up' => $package_follow_up,
+           'user_type' => $user_type
        ]);
     }
     protected function addPackageQueryValidation($request){

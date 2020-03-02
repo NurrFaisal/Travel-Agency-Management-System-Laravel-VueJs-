@@ -224,11 +224,13 @@ class VisaUpdatedController extends Controller
 
     public function editReceivedVisaUpdated($id)
     {
+        $user_type = Session::get('user_type');
         $received_visa = VisaUpdated::where('id', $id)->with(['passports', 'guest' => function ($q) {
             $q->select('id', 'name', 'phone_number');
         }])->first();
         return response()->json([
-            'received_visa' => $received_visa
+            'received_visa' => $received_visa,
+            'user_type' => $user_type
         ]);
     }
 
@@ -875,5 +877,11 @@ class VisaUpdatedController extends Controller
             'visa' => $visa
         ]);
 
+    }
+    public function getAllVisaStaffsBy(){
+        $staffs = Staff::where('department', 4)->orderBy('first_name', 'asc')->get();
+        return response()->json([
+            'staffs' => $staffs
+        ]);
     }
 }

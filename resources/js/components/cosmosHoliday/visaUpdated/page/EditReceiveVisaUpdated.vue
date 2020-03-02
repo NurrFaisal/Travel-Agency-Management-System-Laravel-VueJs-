@@ -676,7 +676,7 @@
                                                 </div>
 
 
-                                                <div class="clearfix form-actions">
+                                                <div class="clearfix form-actions" v-if="user_type == 'admin' || user_type == 'super-admin' || user_type == 'operation'">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>

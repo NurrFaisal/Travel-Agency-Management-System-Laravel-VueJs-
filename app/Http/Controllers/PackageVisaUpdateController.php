@@ -186,9 +186,11 @@ class PackageVisaUpdateController extends Controller
 
 
     public function editPackageUpdateVisa($id){
+        $user_type = Session::get('user_type');
         $update_visa = Package::with(['package_days','guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'update_visa' => $update_visa
+            'update_visa' => $update_visa,
+            'user_type' => $user_type
         ]);
     }
 

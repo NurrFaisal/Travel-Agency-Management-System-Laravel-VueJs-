@@ -661,6 +661,8 @@ Route::post('/api/update-visa-updated-delevered-by', 'VisaUpdatedController@upda
 Route::get('/api/get-all-staff', 'VisaUpdatedController@getAlltaff');
 Route::get('/api/get-all-visa-search/{search}', 'VisaUpdatedController@getAllVisaSearch');
 
+Route::get('/api/get-all-visa-staffs-by', 'VisaUpdatedController@getAllVisaStaffsBy');
+
 // VisaUPdatedController End
 
 

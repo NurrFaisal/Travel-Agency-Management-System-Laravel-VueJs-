@@ -36,9 +36,11 @@ class DRFDPController extends Controller
     }
 
     public function editDRFDP($id){
+        $user_type = Session::get('user_type');
         $drfdp = Package::with(['net_prices','package_days', 'guestt'=> function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'drfdp' => $drfdp
+            'drfdp' => $drfdp,
+            'user_type' => $user_type
         ]);
     }
     protected function updateDrfdpValidation($request){

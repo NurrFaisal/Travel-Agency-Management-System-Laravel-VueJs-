@@ -92,9 +92,11 @@ class GuestConfirmDateController extends Controller
 
 
     public function editGuestConfirmation($id){
+        $user_type = Session::get('user_type');
         $guest_confirmation = Package::with(['package_days', 'guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'guest_confirmation' => $guest_confirmation
+            'guest_confirmation' => $guest_confirmation,
+            'user_type' => $user_type
         ]);
     }
     protected function updateGuestConfirmationValidation($request){

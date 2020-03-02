@@ -545,7 +545,7 @@
                                                 </div>
 
 
-                                                <div class="clearfix form-actions">
+                                                <div class="clearfix form-actions" v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>
@@ -594,9 +594,6 @@
                     this.name = respose.data.package_follow_up.guestt.name;
                     this.phone_number = respose.data.package_follow_up.guestt.phone_number;
                     this.user_type = respose.data.user_type;
-                    if(this.user_type == 'admin' || this.user_type == 'super-admin'){
-                        this.buttonContent = true
-                    }
                     this.isLoading = false
                 })
 

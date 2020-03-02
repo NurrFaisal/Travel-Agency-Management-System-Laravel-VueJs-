@@ -60,7 +60,7 @@
                                     <li @click="packageSession(7)" :class="p_state == 7 ? 'active' : ''"><a data-toggle="tab" href="#drfdp">Ticket</a></li>
 
 
-                                    <li  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" @click="packageSession(8)" :class="p_state == 8 ? 'active' : ''"><a data-toggle="tab" href="#package_net_price">Net Price</a></li>
+                                    <li  @click="packageSession(8)" :class="p_state == 8 ? 'active' : ''"><a data-toggle="tab" href="#package_net_price">Net Price</a></li>
 
 
                                     <li @click="packageSession(9)" :class="p_state == 9 ? 'active' : ''"><a data-toggle="tab" href="#pddin">Document Ready</a></li>
@@ -172,7 +172,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${pq.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-package-query/${pq.id}`" class="btn btn-xs btn-info">
@@ -265,7 +265,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${pfu.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-package-follow-up/${pfu.id}`" class="btn btn-xs btn-info">
@@ -401,7 +401,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${icsd.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-itinerary-cost-submit-date/${icsd.id}`" class="btn btn-xs btn-info">
@@ -456,7 +456,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${gr.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-guest-reaction/${gr.id}`" class="btn btn-xs btn-info">
@@ -512,7 +512,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${gcd.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-guest-confirmation-date/${gcd.id}`" class="btn btn-xs btn-info">
@@ -618,7 +618,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${vu.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-package-visa-update/${vu.id}`" class="btn btn-xs btn-info">
@@ -676,13 +676,13 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${dp.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-drfdp/${dp.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
-                                                                <router-link :to="`/package-net-price/${dp.id}`" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#payment_modal">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/package-net-price/${dp.id}`" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#payment_modal">
                                                                     Net Price
                                                                 </router-link>
                                                                 <a @click.prevent="downLoadInvoice(dp.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
@@ -769,7 +769,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${net_price.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-package-net-price/${net_price.id}`" class="btn btn-xs btn-info">
@@ -861,7 +861,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${doj.id}`" class="btn btn-xs btn-success">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/view-package/${pddin.id}`" class="btn btn-xs btn-success">
                                                                     <i class="ace-icon fa fa-eye bigger-120"></i>
                                                                 </router-link>
                                                                 <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-pddin/${pddin.id}`" class="btn btn-xs btn-info">
@@ -1189,7 +1189,6 @@
 
                             this.date_of_journey = response.data.date_of_journey.data
                             this.doj_pagination = response.data.date_of_journey
-
 
                         }
 

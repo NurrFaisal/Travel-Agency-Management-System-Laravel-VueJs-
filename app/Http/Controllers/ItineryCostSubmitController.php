@@ -35,9 +35,11 @@ class ItineryCostSubmitController extends Controller
         ]);
     }
     public function editItineraryCostSubmitDate($id){
+        $user_type = Session::get('user_type');
         $itinerary_cost_submit_date = Package::with(['package_days','guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'itinerary_cost_submit_date' => $itinerary_cost_submit_date
+            'itinerary_cost_submit_date' => $itinerary_cost_submit_date,
+            'user_type' => $user_type
         ]);
     }
     protected function itineraryCostSubmitDateValidation($request){

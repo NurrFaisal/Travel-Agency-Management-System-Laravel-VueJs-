@@ -46,9 +46,11 @@ class GuestReactionController extends Controller
 
 
     public function editGuestReaction($id){
+        $user_type = Session::get('user_type');
         $edit_guest_reaction = Package::with(['package_days','guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'edit_guest_reaction' => $edit_guest_reaction
+            'edit_guest_reaction' => $edit_guest_reaction,
+            'user_type' => $user_type
         ]);
     }
     protected function updateGuestReacitonValidation($request){

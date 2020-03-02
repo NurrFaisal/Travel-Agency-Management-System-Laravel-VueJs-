@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -62,16 +70,16 @@
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
 
-                                                <button class="btn btn-xs btn-success">
-                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
-                                                </button>
+<!--                                                <button class="btn btn-xs btn-success">-->
+<!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
+<!--                                                </button>-->
                                                 <router-link :to="`/edit-guest-title/${guest_title.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <button @click.prevent="deleteGuestTitle(guest_title.id)" class="btn btn-xs btn-danger">
-                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                </button>
+<!--                                                <button @click.prevent="deleteGuestTitle(guest_title.id)" class="btn btn-xs btn-danger">-->
+<!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
+<!--                                                </button>-->
 
                                             </div>
 
@@ -124,15 +132,36 @@
 </template>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
+
     export default {
         name: "ListGuestTitleComponent",
 
         mounted(){
+            this.isLoading = true
             this.$store.dispatch("allGuestTitle")
+            this.doAjax()
+        },
+        components: {
+            Loading
         },
         computed:{
             getAllGuestTitle(){
                return this.$store.getters.getGuestTitle
+            }
+        },
+        data(){
+            return {
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
             }
         },
         methods:{
@@ -158,7 +187,12 @@
 
                     }
                 })
-            }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
         }
     }
 </script>

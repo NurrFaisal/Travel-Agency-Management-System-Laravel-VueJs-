@@ -37,9 +37,11 @@ class DateOfJourneyController extends Controller
     }
 
     public function editDateOfJourney($id){
+        $user_type = Session::get('user_type');
         $doj = Package::with(['net_prices','package_days', 'guestt' =>function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'doj' => $doj
+            'doj' => $doj,
+            'user_type', $user_type
         ]);
     }
 

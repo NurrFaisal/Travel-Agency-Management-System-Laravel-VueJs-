@@ -121,9 +121,11 @@ class PackageNetPriceController extends Controller
         ]);
     }
     public function editPackageNetPrice($id){
+        $user_type = Session::get('user_type');
         $package_net = Package::with(['net_prices','package_days', 'guestt'=> function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
-            'package_net' => $package_net
+            'package_net' => $package_net,
+            'user_type' => $user_type
         ]);
     }
     protected function updatePackageNetPriceValidation($request){

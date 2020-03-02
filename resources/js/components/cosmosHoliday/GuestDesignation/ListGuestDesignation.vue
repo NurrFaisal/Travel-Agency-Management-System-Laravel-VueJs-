@@ -57,16 +57,16 @@
                                         <td>{{guest_designation.updated_at | timeformate}}</td>
                                         <td class="center">
                                             <div class="hidden-sm hidden-xs btn-group">
-                                                <button class="btn btn-xs btn-success">
-                                                    <i class="ace-icon fa fa-eye bigger-120"></i>
-                                                </button>
+<!--                                                <button class="btn btn-xs btn-success">-->
+<!--                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
+<!--                                                </button>-->
                                                 <router-link :to="`/edit-guest-designation/${guest_designation.id}`" class="btn btn-xs btn-info">
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <button @click.prevent="deleteGuestDesignaiton(guest_designation.id)" class="btn btn-xs btn-danger">
-                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                </button>
+<!--                                                <button @click.prevent="deleteGuestDesignaiton(guest_designation.id)" class="btn btn-xs btn-danger">-->
+<!--                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>-->
+<!--                                                </button>-->
                                             </div>
 
                                             <div class="hidden-md hidden-lg">

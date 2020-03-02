@@ -79,7 +79,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form.work_by" class="form-control " id="work_by" name="work_by" required style="width: 95%;">
                                                                         <option value="">--Select Work By--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -104,7 +104,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form.notary_by" class="form-control " id="notary_by" name="notary_by" style="width: 95%;">
                                                                         <option value="">--Select Notary By--</option>
-                                                                        <option :value="notary.id" v-for="notary in getAllVisaStaff">{{notary.first_name+' '+notary.last_name}}</option>
+                                                                        <option :value="notary.id" v-for="notary in staffs">{{notary.first_name+' '+notary.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -167,7 +167,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-received-visa-updated/${r_visa.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-received-visa-updated/${r_visa.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openModal(r_visa.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#submit_visa_modal">
@@ -206,7 +206,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form2.checked_by_asst" class="form-control " id="checked_by_asst" name="checked_by_asst" required style="width: 95%;">
                                                                         <option value="">--Select Checked By Asst--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -276,7 +276,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-work-and-notary-visa-update/${work.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-work-and-notary-visa-update/${work.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#" @click.prevent="openModalwork(work.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#work_visa_modal">
@@ -315,7 +315,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form3.checked_by_officer" class="form-control " id="checked_by_officer" name="checked_by_officer" required style="width: 95%;">
                                                                         <option value="">--Select Checked By Offier--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -386,7 +386,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-checked-by-asst-visa-updated/${c_asst.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-checked-by-asst-visa-updated/${c_asst.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#" @click.prevent="openModalCheckedAsst(c_asst.id)"  class="btn btn-xs btn-primary" data-toggle="modal" data-target="#checked_asst_visa_modal">
@@ -426,7 +426,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form4.submit_by" class="form-control " id="submit_by" name="submit_by" required style="width: 95%;">
                                                                         <option value="">--Select Embassy Submit Person--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -500,7 +500,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-checked-by-officer-visa-updated/${c_officer.id}`"  class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-checked-by-officer-visa-updated/${c_officer.id}`"  class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#" @click.prevent="openModalOfficer(c_officer.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#checked_officer_visa_modal">
@@ -540,7 +540,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form5.collected_by" class="form-control " id="collected_by" name="collected_by" required style="width: 95%;">
                                                                         <option value="">--Select Collected Person--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -612,7 +612,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-submited-visa-updated/${s_visa.id}`"  class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-submited-visa-updated/${s_visa.id}`"  class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#" @click.prevent="openModalSubmit(s_visa.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#submit_embassy_visa_modal">
@@ -652,7 +652,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form6.call_and_sms_by" class="form-control " id="call_and_sms_by" name="call_and_sms_by" required style="width: 95%;">
                                                                         <option value="">--Select Call and SMS By--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -727,7 +727,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-collected-visa-updated/${collected.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-collected-visa-updated/${collected.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#" @click.prevent="openModalCollected(collected.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#guest_call_and_sms_visa_modal">
@@ -767,7 +767,7 @@
                                                                 <div class="col-sm-7">
                                                                     <select v-model="form7.delevered_by" class="form-control " id="delevered_by" name="delevered_by" required style="width: 95%;">
                                                                         <option value="">--Select Delevered Person--</option>
-                                                                        <option :value="work.id" v-for="work in getAllVisaStaff">{{work.first_name+' '+work.last_name}}</option>
+                                                                        <option :value="work.id" v-for="work in staffs">{{work.first_name+' '+work.last_name}}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -842,7 +842,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'"  :to="`/edit-call-and-sms-visa-updated/${gcs.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/edit-call-and-sms-visa-updated/${gcs.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#" @click.prevent="openModalDelevered(gcs.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#deliver_visa_modal">
@@ -906,7 +906,7 @@
 <!--                                                                <a href="http://demo.iglweb.com/ta/user/visa-register/show/41" class="btn btn-xs btn-success">-->
 <!--                                                                    <i class="ace-icon fa fa-eye bigger-120"></i>-->
 <!--                                                                </a>-->
-                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin'" :to="`/edit-delivery-visa-updated/${d_visa.id}`" class="btn btn-xs btn-info">
+                                                                <router-link v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'" :to="`/edit-delivery-visa-updated/${d_visa.id}`" class="btn btn-xs btn-info">
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <!--                                <a href="#" onclick="deliver_visa_modal_open('41')" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#deliver_visa_modal">-->
@@ -952,7 +952,8 @@
         name: "ListVisaUpdated",
         mounted() {
             this.isLoading = true
-            this.$store.dispatch("allVisaStaff")
+            this.getAllVisaStaffBy()
+            // this.$store.dispatch("allVisaStaff")
             this.sessionSet()
             this.visaSession(this.state)
             this.sessionSet()
@@ -1010,6 +1011,8 @@
                 collected_visas: '',
                 gcs_visas: '',
                 delelvered_visas: '',
+
+                staffs:'',
                 form: new Form({
                     id:'',
                     work_by:'',
@@ -1050,6 +1053,16 @@
             }
         },
         methods: {
+            getAllVisaStaffBy(){
+                axios.get('/api/get-all-visa-staffs-by?page='+this.r_pagination.current_page)
+                    .then(response => {
+                       this.staffs = response.data.staffs
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            },
+
             visaSession(state){
                 this.isLoading = true
                 this.state = state
@@ -1160,7 +1173,6 @@
 
             //All Get Data Start
             getAllReceivedWithPagination(){
-                console.log('ok')
                 axios.get('/api/get-all-recieved-visa-updated?page='+this.r_pagination.current_page)
                     .then(response => {
                         this.recieved_visas = response.data.recieved_visa.data
@@ -1278,7 +1290,6 @@
                 this.form7.id = id
             },
             // All Modal End
-
             // All Post Form Start
             addVisaWorkAndNotary(){
                 this.form.post('/api/add-visa-updated-work-and-notary')
@@ -1398,8 +1409,6 @@
                         this.doAjax()
                     })
             },
-
-
             // All Post Form End
 
 

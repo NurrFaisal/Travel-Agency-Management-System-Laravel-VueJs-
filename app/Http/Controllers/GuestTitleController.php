@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\model\GuestTitle;
 use Illuminate\Http\Request;
+use Session;
 
 class GuestTitleController extends Controller
 {
@@ -36,9 +37,11 @@ class GuestTitleController extends Controller
         return 'Delete Guest Title';
     }
     public function editGuestTitle($id){
+        $user_type = Session::get('user_type');
         $guest_title_info = GuestTitle::find($id);
         return response()->json([
-            'guest_title_info' => $guest_title_info
+            'guest_title_info' => $guest_title_info,
+            'user_type' => $user_type
         ], 200);
     }
     public function updateGuestTitle(Request $request){
