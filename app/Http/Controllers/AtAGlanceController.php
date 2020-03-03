@@ -39,6 +39,9 @@ class AtAGlanceController extends Controller
         $hotel_booking_sum = HotelBooking::whereDate('created_at','=', $today)->sum('total_price');
 
         $cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
+        $dhanmondi_cash_book = CashBook::where('branch_id', 1)->orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance', 'branch_blance')->first();
+        $banani_cash_book = CashBook::where('branch_id', 2)->orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance', 'branch_blance')->first();
+
         $bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->select('bank_date', 'blance')->first();
         $cheque = ChequeBook::where('cheque_date', $today)->sum('cheque_amount');
         $others = Other::whereDate('created_at','=', $today)->sum('others_amount');
@@ -64,7 +67,11 @@ class AtAGlanceController extends Controller
             'visa_sum' => $visa_sum,
             'hotel_booking_count' => $hotel_booking_count,
             'hotel_booking_sum' => $hotel_booking_sum,
+
             'cash_book' => $cash_book,
+            'dhanmondi_cash_book' => $dhanmondi_cash_book,
+            'banani_cash_book' => $banani_cash_book,
+
             'bank_book' => $bank_book,
             'cheque' => $cheque,
             'others' => $others,
@@ -94,6 +101,10 @@ class AtAGlanceController extends Controller
         $hotel_booking_sum = HotelBooking::whereDate('created_at','like', $today.'%')->sum('total_price');
 
         $cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
+        $dhanmondi_cash_book = CashBook::where('branch_id', 1)->orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
+        $banani_cash_book = CashBook::where('branch_id', 2)->orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
+
+
         $bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->select('bank_date', 'blance')->first();
         $cheque = ChequeBook::where('cheque_date', 'like', $today.'%')->sum('cheque_amount');
         $others = Other::whereDate('created_at','like', $today.'%')->sum('others_amount');
@@ -119,7 +130,11 @@ class AtAGlanceController extends Controller
             'visa_sum' => $visa_sum,
             'hotel_booking_count' => $hotel_booking_count,
             'hotel_booking_sum' => $hotel_booking_sum,
+
             'cash_book' => $cash_book,
+            'dhanmondi_cash_book' => $dhanmondi_cash_book,
+            'banani_cash_book' => $banani_cash_book,
+
             'bank_book' => $bank_book,
             'cheque' => $cheque,
             'others' => $others,

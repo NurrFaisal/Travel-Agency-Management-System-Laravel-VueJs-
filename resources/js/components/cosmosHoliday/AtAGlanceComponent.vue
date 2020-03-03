@@ -203,6 +203,23 @@
                                                         </tr>
                                                         </tbody>
                                                     </table>
+                                                    <table class="table  table-bordered table-hover">
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="background-color: whitesmoke; font-size: 17px" colspan="2" class="center widget-title"><strong>Accounts</strong></th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th  class="center" style="background-color: #9ABC32; color:white"><strong>Dhanmondi Cash Closing Balance</strong></th>
+                                                            <th class="center" style="background-color: #6FB3E0; color:white"><strong>Banani Cash Closing Balance</strong></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <th style="font-size: 17px; color: #9ABC32" class="center"><strong>{{dhanmondi_cash_book}}</strong></th>
+                                                            <th style="font-size: 17px; color: #6FB3E0" class="center"><strong>{{banani_cash_book}}</strong></th>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
 
 
 
@@ -269,6 +286,9 @@
                 cheque:0,
                 others:0,
 
+                dhanmondi_cash_book:'',
+                banani_cash_book:'',
+
                 received_loan:'',
                 payment_loan:'',
                 expense:0,
@@ -298,6 +318,17 @@
                         this.visa_sum = response.data.visa_sum
                         this.hotel_booking_sum = response.data.hotel_booking_sum
                         this.cash_book = response.data.cash_book.blance
+                        if(response.data.dhanmondi_cash_book != null){
+                            this.dhanmondi_cash_book = response.data.dhanmondi_cash_book.branch_blance
+                        }else{
+                            this.dhanmondi_cash_book = 0.00
+                        }
+                        if(response.data.banani_cash_book != null){
+                            this.banani_cash_book = response.data.banani_cash_book.branch_blance
+                        }else{
+                            this.banani_cash_book = 0.00
+                        }
+
                         this.bank_book = response.data.bank_book.blance
                         this.cheque = response.data.cheque
                         this.others = response.data.others
