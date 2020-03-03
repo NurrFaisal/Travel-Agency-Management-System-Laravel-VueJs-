@@ -81,6 +81,9 @@
                                                 <!--                                                                <a href="#"  @click.prevent="openPackageQueryModal(doj.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#package_query_modal">-->
                                                 <!--                                                                    Follow Up-->
                                                 <!--                                                                </a>-->
+<!--                                                <a :href="`/invoice-print-air-ticket/${air_ticket.id}`" target="_blank" class="btn btn-xs btn-primary" >-->
+<!--                                                    Invoice-->
+<!--                                                </a>-->
                                                 <a @click.prevent="downLoadInvoice(air_ticket.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                     Invoice
                                                 </a>

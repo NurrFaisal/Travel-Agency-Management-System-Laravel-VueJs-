@@ -30,6 +30,9 @@
     </style>
 </head>
 <body>
+{{--<script>--}}
+{{--    window.print()--}}
+{{--</script>--}}
 
 <div class="wrapper container" style="width: 100%">
     <!-- Main content -->
