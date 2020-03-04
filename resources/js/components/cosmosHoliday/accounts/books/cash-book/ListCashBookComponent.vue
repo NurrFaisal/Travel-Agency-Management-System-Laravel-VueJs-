@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -57,7 +65,16 @@
                                         <td>{{cash.cash_date | timeformate}}</td>
                                         <td v-if="cash.received_id != null"> M-{{cash.received_id}}</td>
                                         <td v-else-if="cash.payment_id != null"> DV-{{cash.payment_id}}</td>
-                                        <td v-else> Updated</td>
+                                        <td v-else-if="cash.expence_id != null"> Ex-{{cash.expence_id}}</td>
+                                        <td v-else-if="cash.incentive_id != null"> In-{{cash.incentive_id}}</td>
+                                        <td v-else-if="cash.salary_id != null"> S-{{cash.salary_id}}</td>
+                                        <td v-else-if="cash.contra_id != null"> C-{{cash.contra_id}}</td>
+                                        <td v-else-if="cash.cheque_id != null"> CQ-{{cash.cheque_id}}</td>
+                                        <td v-else-if="cash.payment_loan_id != null"> PL-{{cash.payment_loan_id}}</td>
+                                        <td v-else-if="cash.pl_installment_id != null"> PLI-{{cash.pl_installment_id}}</td>
+                                        <td v-else-if="cash.received_loan_id != null"> RL-{{cash.received_loan_id}}</td>
+                                        <td v-else-if="cash.rl_installment_id != null"> RLI-{{cash.rl_installment_id}}</td>
+                                        <td v-else> N/A</td>
                                         <td>{{cash.narration}}</td>
                                         <td>{{cash.debit_cash_amount}}</td>
                                         <td>{{cash.credit_cash_amount}}</td>
@@ -101,14 +118,29 @@
 </template>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     let sum = 0
     export default {
         name: "ListCashBookComponent",
+        components: {
+            Loading
+        },
         mounted() {
+            this.isLoading = true
             this.getCashBook()
+
         },
         data(){
             return {
+                search_text:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
 
                 pagination:{
                     current_page: 1,
@@ -122,7 +154,13 @@
                     .then(response => {
                         this.cash_books = response.data.cash_books.data
                         this.pagination = response.data.cash_books
+                        this.doAjax();
                     })
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
             },
             sumdebit(x, y){
 

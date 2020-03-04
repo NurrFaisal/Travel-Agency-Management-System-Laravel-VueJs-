@@ -57,6 +57,16 @@
                                         <td>{{bank_book.bank_date | timeformate}}</td>
                                         <td v-if="bank_book.received_id != null"> M-{{bank_book.received_id}}</td>
                                         <td v-else-if="bank_book.payment_id != null"> DV-{{bank_book.payment_id}}</td>
+                                        <td v-else-if="bank_book.expence_id != null"> EX-{{bank_book.expence_id}}</td>
+                                        <td v-else-if="bank_book.incentive_id != null"> IN-{{bank_book.incentive_id}}</td>
+                                        <td v-else-if="bank_book.salary_id != null"> S-{{bank_book.salary_id}}</td>
+                                        <td v-else-if="bank_book.contra_id != null"> C-{{bank_book.contra_id}}</td>
+                                        <td v-else-if="bank_book.cheque_id != null"> CQ-{{bank_book.cheque_id}}</td>
+                                        <td v-else-if="bank_book.payment_loan_id != null"> PL-{{bank_book.payment_loan_id}}</td>
+                                        <td v-else-if="bank_book.ins_payment_id != null"> PLI(ins)-{{bank_book.ins_payment_id}}</td>
+                                        <td v-else-if="bank_book.received_loan_id != null"> RL-{{bank_book.received_loan_id}}</td>
+                                        <td v-else-if="bank_book.rl_installment_id != null"> RLI-{{bank_book.rl_installment_id}}</td>
+                                        <td v-else-if="bank_book.pl_installment_id != null"> PLI-{{bank_book.	pl_installment_id}}</td>
                                         <td v-else> Updated</td>
                                         <td>{{bank_book.narration}}</td>
                                         <td>{{bank_book.debit_bank_amount}}</td>
