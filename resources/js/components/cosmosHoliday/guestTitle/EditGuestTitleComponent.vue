@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -108,16 +116,34 @@
 </style>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "EditGuestTitleComponent",
+        components: {
+            Loading
+        },
         mounted(){
+            this.isLoading = true
             axios.get(`/api/edit-guest-title/${this.$route.params.id}`)
                 .then((respose) => {
                     this.form.fill(respose.data.guest_title_info)
+                    this.doAjax()
                 })
         },
         data(){
             return{
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
+
+
                 form: new Form({
                     guest_title: "",
                     id:""
@@ -127,6 +153,7 @@
         },
         methods:{
             updateGuestTitle(){
+                this.isLoading = true
                 this.form.post('/api/update-guest-title')
                     .then((respose) => {
                         this.form.guest_title = ''
@@ -136,11 +163,17 @@
                             type: 'success',
                             title: 'Guest Title Updated successfully'
                         })
+                        this.doAjax()
                     })
                     .catch((respose) => {
-
+                        this.doAjax()
                     })
-            }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
         }
     }
 </script>

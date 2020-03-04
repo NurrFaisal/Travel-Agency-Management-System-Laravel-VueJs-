@@ -308,7 +308,7 @@
             atAGlance(){
                 this.isLoading = true
                 axios.get(`/api/view-at-a-glance`)
-                    .then((response) => {
+                    .then(response => {
                         this.air_ticket_count = response.data.air_ticket_count
                         this.package_count = response.data.package_count
                         this.visa_count = response.data.visa_count
@@ -317,7 +317,12 @@
                         this.package_sum = response.data.package_sum
                         this.visa_sum = response.data.visa_sum
                         this.hotel_booking_sum = response.data.hotel_booking_sum
-                        this.cash_book = response.data.cash_book.blance
+                        if(response.data.cash_book != null){
+                            this.cash_book = response.data.cash_book.blance
+                        }else{
+                            this.cash_book = 0.00
+                        }
+
                         if(response.data.dhanmondi_cash_book != null){
                             this.dhanmondi_cash_book = response.data.dhanmondi_cash_book.branch_blance
                         }else{
@@ -328,16 +333,25 @@
                         }else{
                             this.banani_cash_book = 0.00
                         }
-
-                        this.bank_book = response.data.bank_book.blance
+                        if(response.data.bank_book != null){
+                            this.bank_book = response.data.bank_book.blance
+                        }
                         this.cheque = response.data.cheque
                         this.others = response.data.others
-                        this.guest_blance = response.data.guest_blance.blance
-                        this.suplier_blance = response.data.suplier_blance.balance
+                        if(response.data.guest_blance != null){
+                            this.guest_blance = response.data.guest_blance.blance
+                        }
+                        if(response.data.suplier_blance !=null){
+                            this.suplier_blance = response.data.suplier_blance.balance
+                        }
                         this.received = response.data.received
                         this.payment = response.data.payment
-                        this.received_loan = response.data.received_loan.blance
-                        this.payment_loan = response.data.payment_loan.blance
+                        if(response.data.received_loan != null){
+                            this.received_loan = response.data.received_loan.blance
+                        }
+                        if(response.data.payment_loan != null){
+                            this.payment_loan = response.data.payment_loan.blance
+                        }
                         this.expense = response.data.expense
                         this.salary = response.data.salary
                         this.incentive = response.data.incentive
@@ -366,16 +380,41 @@
                         this.package_sum = response.data.package_sum
                         this.visa_sum = response.data.visa_sum
                         this.hotel_booking_sum = response.data.hotel_booking_sum
-                        this.cash_book = response.data.cash_book.blance
-                        this.bank_book = response.data.bank_book.blance
+                        if(response.data.cash_book != null){
+                            this.cash_book = response.data.cash_book.blance
+                        }else{
+                            this.cash_book = 0.00
+                        }
+
+                        if(response.data.dhanmondi_cash_book != null){
+                            this.dhanmondi_cash_book = response.data.dhanmondi_cash_book.branch_blance
+                        }else{
+                            this.dhanmondi_cash_book = 0.00
+                        }
+                        if(response.data.banani_cash_book != null){
+                            this.banani_cash_book = response.data.banani_cash_book.branch_blance
+                        }else{
+                            this.banani_cash_book = 0.00
+                        }
+                        if(response.data.bank_book != null){
+                            this.bank_book = response.data.bank_book.blance
+                        }
                         this.cheque = response.data.cheque
                         this.others = response.data.others
-                        this.guest_blance = response.data.guest_blance.blance
-                        this.suplier_blance = response.data.suplier_blance.balance
+                        if(response.data.guest_blance != null){
+                            this.guest_blance = response.data.guest_blance.blance
+                        }
+                        if(response.data.suplier_blance !=null){
+                            this.suplier_blance = response.data.suplier_blance.balance
+                        }
                         this.received = response.data.received
                         this.payment = response.data.payment
-                        this.received_loan = response.data.received_loan.blance
-                        this.payment_loan = response.data.payment_loan.blance
+                        if(response.data.received_loan != null){
+                            this.received_loan = response.data.received_loan.blance
+                        }
+                        if(response.data.payment_loan != null){
+                            this.payment_loan = response.data.payment_loan.blance
+                        }
                         this.expense = response.data.expense
                         this.salary = response.data.salary
                         this.incentive = response.data.incentive
