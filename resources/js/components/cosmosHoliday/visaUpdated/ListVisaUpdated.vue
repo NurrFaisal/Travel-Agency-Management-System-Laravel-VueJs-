@@ -1092,7 +1092,6 @@
                         this.getAllDelevetedWithPagination();
                     }
                 }
-                this.doAjax()
             },
             searchText:_.debounce(function () {
                 this.isLoading = true
@@ -1159,7 +1158,7 @@
                             this.d_pagination = response.data.delelvered_visas
                         }
 
-                        this.isLoading = false
+                        this.doAjax()
                     })
 
             },
@@ -1173,87 +1172,98 @@
 
             //All Get Data Start
             getAllReceivedWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-recieved-visa-updated?page='+this.r_pagination.current_page)
                     .then(response => {
                         this.recieved_visas = response.data.recieved_visa.data
                         this.r_pagination = response.data.recieved_visa
                         this.user_type = response.data.user_type
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllWorkWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-work-visa-updated?page='+this.w_pagination.current_page)
                     .then(response => {
                         this.work_visas = response.data.work_visa.data
                         this.w_pagination = response.data.work_visa
                         this.user_type = response.data.user_type
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllCheckedByAsstWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-checked-by-asst-visa-updated?page='+this.cba_pagination.current_page)
                     .then(response => {
                         this.checked_by_asst_visas = response.data.checked_by_asst_visa.data
                         this.cba_pagination = response.data.checked_by_asst_visa
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllCheckedByOfficerWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-checked-by-offcer-visa-updated?page='+this.cbo_pagination.current_page)
                     .then(response => {
                         this.checked_by_officer_visas = response.data.checked_officer_visa.data
                         this.cbo_pagination = response.data.checked_officer_visa
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllSubmitedWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-submit-visa-updated?page='+this.s_pagination.current_page)
                     .then(response => {
                         this.submit_visas = response.data.submit_visa.data
                         this.s_pagination = response.data.submit_visa
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllCollectedWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-collected-visa-updated?page='+this.c_pagination.current_page)
                     .then(response => {
                         this.collected_visas = response.data.collected_visa.data
                         this.c_pagination = response.data.collected_visa
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllGCSWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-gcs-visa-updated?page='+this.g_pagination.current_page)
                     .then(response => {
                         this.gcs_visas = response.data.gcs_visa.data
                         this.g_pagination = response.data.gcs_visa
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllDelevetedWithPagination(){
+                this.isLoading = true
                 axios.get('/api/get-all-delevered-visa-updated?page='+this.d_pagination.current_page)
                     .then(response => {
                         this.delelvered_visas = response.data.delelvered_visa.data
                         this.d_pagination = response.data.delelvered_visa
-                        this.isLoading = false
+                        this.doAjax()
 
                     })
                     .catch(e => {

@@ -1112,7 +1112,6 @@
                         this.getAllDateOfJourney();
                     }
                 }
-                this.doAjax()
             },
             searchText:_.debounce(function () {
                 this.isLoading = true
@@ -1207,39 +1206,48 @@
 
             //All Get Data Start
             getPackageQuery(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-query?page='+this.pq_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.package_query = response.data.package_query.data
                         this.pq_pagination = response.data.package_query
+                        this.doAjax()
                     })
             },
             getAllPackageFollowUp(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-follow-up?page='+this.pf_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.package_follow_up = response.data.package_follow_up.data
                         this.pf_pagination = response.data.package_follow_up
+                        this.doAjax()
+
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             itineraryCostSubmitDate(){
+                this.isLoading = true
                 axios.get('/api/get-all-itinerary-cost-submit-date?page='+this.icsd_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.itinerary_cost_submit_date = response.data.itinerary_cost_submit_date.data
                         this.icsd_pagination = response.data.itinerary_cost_submit_date
+                        this.doAjax()
                     })
 
             },
             getAllGuestReactionPackage(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-guest-reaction?page='+this.gr_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.guest_reaction = response.data.guest_reaction.data
                         this.gr_pagination = response.data.guest_reaction
+                        this.doAjax()
 
                     })
                     .catch(e => {
@@ -1247,70 +1255,76 @@
                     })
             },
             getAllGuestConfirmDate(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-confirm-date?page='+this.gcd_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.guest_confirm_date = response.data.guest_confirm_date.data
                         this.gcd_pagination = response.data.guest_confirm_date
+                        this.doAjax()
 
                     })
             },
             getAllPackageVisaUpdate(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-visa-update?page='+this.vu_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.package_visa_update = response.data.package_visa_update.data
                         this.vu_pagination = response.data.package_visa_update
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllTicket(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-ticket?page='+this.dp_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.pacakge_ticket = response.data.pacakge_ticket.data
                         this.dp_pagination = response.data.pacakge_ticket
-
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllPackageNetPrice(){
+                this.isLoading = true
                 axios.get('/api/get-all-package-net-price?page='+this.pddin_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.net_prices = response.data.net_prices.data
                         this.net_pagination = response.data.net_prices
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllDocumentReady(){
+                this.isLoading = true
                 axios.get('/api/get-all-document-ready?page='+this.pddin_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.payment_done_due_invoice_no = response.data.drfdp.data
                         this.pddin_pagination = response.data.drfdp
-
+                        this.doAjax()
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
             getAllDateOfJourney(){
+                this.isLoading = true
                 axios.get('/api/get-all-date-of-journey?page='+this.doj_pagination.current_page)
                     .then(response => {
                         this.user_type = response.data.user_type
                         this.date_of_journey = response.data.date_of_journey.data
                         this.doj_pagination = response.data.date_of_journey
-
+                        this.doAjax()
                     })
 
             },
