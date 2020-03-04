@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -458,7 +466,7 @@
                                                                 Password<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required|min:6|max:35|confirmed:confirm_password'" ref="password"  v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }"   class="col-xs-12 col-sm-12" id="password" name="password" placeholder="Enter Password"  type="password">
+                                                                <input v-validate="'required|min:6|max:35|confirmed:confirm_password'" ref="password"  v-model="form.password_up" :class="{ 'is-invalid': form.errors.has('password') }"   class="col-xs-12 col-sm-12" id="password" name="password" placeholder="Enter Password"  type="password">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -472,7 +480,7 @@
                                                                 Confirm Passwored<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required|confirmed:password'"  ref="confirm_password" v-model="form.confirm_password" :class="{ 'is-invalid': form.errors.has('confirm_password') }"   class="col-xs-12 col-sm-12" id="confirm_password" name="confirm_password" placeholder="Enter confirm Password"  type="password">
+                                                                <input v-validate="'required|confirmed:password'"  ref="confirm_password" v-model="form.confirm_password_up" :class="{ 'is-invalid': form.errors.has('confirm_password') }"   class="col-xs-12 col-sm-12" id="confirm_password" name="confirm_password" placeholder="Enter confirm Password"  type="password">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -558,11 +566,26 @@
 </style>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "EditStaffComponent",
+        components: {
+            Loading
+        },
         data(){
             return {
-                user_type: '',
+                searchText:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+                user_type:'',
+                staff_count:'',
+
                 form: new Form({
                     //Personal Information
                     id:'',
@@ -602,6 +625,7 @@
             }
         },
         mounted() {
+            this.isLoading = true
             this.$store.dispatch('allStaffDesignation')
             this.$store.dispatch('allDepartment')
         },
@@ -619,7 +643,7 @@
                     $('#image').show()
                     this.user_type = response.data.user_type
                     this.form.fill(response.data.staff)
-
+                    this.doAjax()
                 })
         },
         methods:{
@@ -634,14 +658,15 @@
                 reader.readAsDataURL(file);
             },
             updateStaffInformation(){
+                this.isLoading = true
                 this.form.post('/api/update-staff')
                     .then((response) => {
+                        this.doAjax()
                         this.$router.push('/staff-list')
                         Toast.fire({
                             type: 'success',
                             title: 'Staff Updated successfully'
                         })
-                        console.log(response.data)
                     })
             }
         }

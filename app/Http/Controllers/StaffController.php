@@ -146,7 +146,7 @@ class StaffController extends Controller
     public function updateStaff(Request $request){
         $staff = Staff::where('id', $request->id)->first();
         $this->staffValidation($request);
-        if(isset($request->password_up)){
+        if($request->password_up != ''){
             $this->pwdValidationUpdate($request);
         }
         if($request->email_address != $staff->email_address){

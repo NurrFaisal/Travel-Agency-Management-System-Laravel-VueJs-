@@ -128,6 +128,7 @@
         name: "ListStaffComponent",
 
         mounted() {
+            this.isLoading = true
             this.getAllStaff()
         },
         components: {
@@ -152,7 +153,6 @@
         },
         methods:{
             getAllStaff(){
-                this.isLoading = true
                 axios.get('/api/get-all-staffs?page='+this.pagination.current_page)
                     .then(response => {
                         this.staffs = response.data.staffs.data

@@ -1,5 +1,13 @@
 <template>
     <div>
+        <loading :active.sync="isLoading"
+                 :can-cancel="false"
+                 color="#438EB9"
+                 :width=this.width
+                 :height=this.height
+                 loader="bars"
+                 :is-full-page="fullPage">
+        </loading>
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <ul class="breadcrumb">
@@ -559,10 +567,26 @@
 </style>
 
 <script>
+    // Import component
+    import Loading from 'vue-loading-overlay';
+    // Import stylesheet
+    import 'vue-loading-overlay/dist/vue-loading.css';
+    import _ from "lodash";
     export default {
         name: "NewStaffComponent",
+        components: {
+            Loading
+        },
         data(){
           return {
+              searchText:'',
+              width:128,
+              height:128,
+              isLoading: false,
+              fullPage: false,
+              user_type:'',
+              staff_count:'',
+
               form: new Form({
                   //Personal Information
                   first_name: '',
@@ -601,12 +625,10 @@
           }
         },
         mounted() {
-            // $(function () {
-            //     //Initialize Select2 Elements
-            //     $('.select2').select2()
-            // })
+            this.isLoading = true
             this.$store.dispatch('allStaffDesignation')
             this.$store.dispatch('allDepartment')
+            this.doAjax()
         },
         computed:{
             StaffDesignation(){
@@ -618,7 +640,7 @@
         },
         methods:{
             addStaffInformation(){
-                console.log(this.form)
+                this.isLoading = true
                 if(this.form.password === this.form.confirm_password){
                     this.form.post('/api/add-staff-information')
                         .then((response) => {
@@ -658,10 +680,10 @@
                                 type: 'success',
                                 title: 'New Staff Added successfully'
                             })
-                            console.log(response.data)
+                            this.doAjax()
                         })
                         .catch((response) => {
-
+                            this.doAjax()
                         })
                 }else{
                     Swal.fire({
@@ -671,6 +693,11 @@
                         footer: '<a href>Why do I have this issue?</a>'
                     })
                 }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
             },
             changePhoto(event){
                 $('#image').show()
