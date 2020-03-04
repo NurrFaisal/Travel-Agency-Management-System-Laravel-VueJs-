@@ -77,9 +77,9 @@
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <a @click.prevent="downLoadInvoice(installment.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
-                                                    Receipt
-                                                </a>
+<!--                                                <a @click.prevent="downLoadInvoice(installment.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">-->
+<!--                                                    Receipt-->
+<!--                                                </a>-->
 
                                             </div>
                                         </td>

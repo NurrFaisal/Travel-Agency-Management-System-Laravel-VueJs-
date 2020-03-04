@@ -956,6 +956,7 @@
 </template>
 
 <script>
+
     // Import component
     import Loading from 'vue-loading-overlay';
     // Import stylesheet
@@ -1523,10 +1524,20 @@
                     })
             },
             downLoadInvoiceCount(id){
-                axios.get('/invoice-print-package/'+id)
-                    .then(responese => {
+                axios.get(`/invoice-print-package/${id}`, {responseType: 'blob'})
+                    .then(response => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'package.pdf'); //or any other extension
+                        document.body.appendChild(link);
+                        link.click();
                         this.doAjax()
                     })
+
+                // let route = this.$router.resolve({path: `/invoice-print-package/${id}`});
+                // // let route = this.$router.resolve('/link/to/page'); // This also works.
+                // window.open(route.href, '_blank');
             },
             doAjax() {
                 setTimeout(() => {

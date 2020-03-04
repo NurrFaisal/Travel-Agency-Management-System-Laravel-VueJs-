@@ -70,9 +70,9 @@
                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </router-link>
 
-                                                <a @click.prevent="downLoadInvoice(received_loan.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
-                                                    Receipt
-                                                </a>
+<!--                                                <a @click.prevent="downLoadInvoice(received_loan.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">-->
+<!--                                                    Receipt-->
+<!--                                                </a>-->
 <!--                                                <router-link :to="`/list-received-loan-installment/${received_loan.id}`" class="btn btn-xs btn-success">-->
 <!--                                                    &lt;!&ndash;                                                    <i class="ace-icon fa fa-eye bigger-120"></i>&ndash;&gt;-->
 <!--                                                    Installment-->
@@ -166,7 +166,7 @@
             },
             downLoadInvoice(id){
                 this.isLoading = true
-                axios.get('/invoice-print-money-receipt/'+id)
+                axios.get('/invoice-print-money-receipt/'+id, {responseType: 'blob'})
                     .then(responese => {
                         this.doAjax()
                     })
