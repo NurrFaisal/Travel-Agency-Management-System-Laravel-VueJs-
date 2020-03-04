@@ -16,12 +16,29 @@
             background: #dff0d8!important;
         }
     </style>
+
+
+
+
+
+
+{{--    chosen start--}}
+{{--    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>--}}
+{{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css">--}}
+{{--    chosen end--}}
+
+
+
+
+
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/font-awesome/4.5.0/css/font-awesome.min.css" />
+
     <!-- page specific plugin styles -->
 
     <!-- text fonts -->
+    <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/fonts.googleapis.com.css" />
 
     <!-- ace styles -->
     <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
@@ -31,7 +48,7 @@
     <![endif]-->
     <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/ace-skins.min.css" />
     <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/ace-rtl.min.css" />
-{{--    <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/chosen.min.css" />--}}
+    <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/chosen.min.css" />
 
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="{{asset('cosmosHoliday/new-assets/')}}/css/ace-ie.min.css" />
@@ -49,8 +66,8 @@
     <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
     <!--[if lte IE 8]>
-{{--    <script src="{{asset('cosmosHoliday/new-assets/')}}/js/html5shiv.min.js"></script>--}}
-{{--    <script src="{{asset('cosmosHoliday/new-assets/')}}/js/respond.min.js"></script>--}}
+    <script src="{{asset('cosmosHoliday/new-assets/')}}/js/html5shiv.min.js"></script>
+    <script src="{{asset('cosmosHoliday/new-assets/')}}/js/respond.min.js"></script>
 
 
 
@@ -62,6 +79,10 @@
 <div id="app">
     @include('cosmosHoliday.includes.header')
     <div class="main-container ace-save-state" id="main-container">
+{{--        <script type="text/javascript">--}}
+{{--            try{ace.settings.loadState('main-container')}catch(e){}--}}
+{{--        </script>--}}
+
         @include('cosmosHoliday.includes.sidebar')
 
         <div class="main-content">
@@ -77,6 +98,16 @@
 </div>
 
 
+
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script src="{{asset('cosmosHoliday/new-assets/')}}/js/jquery-2.1.4.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
 <script src="{{asset('cosmosHoliday/new-assets/')}}/js/jquery-1.11.3.min.js"></script>
 <![endif]-->
 <script type="text/javascript">
@@ -84,15 +115,26 @@
 </script>
 <script src="{{asset('cosmosHoliday/new-assets/')}}/js/bootstrap.min.js"></script>
 
-{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/chosen.jquery.min.js"></script>--}}
+<!-- page specific plugin scripts -->
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/jquery.dataTables.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/jquery.dataTables.bootstrap.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/dataTables.buttons.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/buttons.flash.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/buttons.html5.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/buttons.print.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/buttons.colVis.min.js"></script>--}}
+{{--<script src="{{asset('cosmosHoliday/new-assets/')}}/js/dataTables.select.min.js"></script>--}}
+
+<!-- ace scripts -->
+<script src="{{asset('cosmosHoliday/new-assets/')}}/js/ace-elements.min.js"></script>
+<script src="{{asset('cosmosHoliday/new-assets/')}}/js/ace.min.js"></script>
+<script src="{{asset('cosmosHoliday/new-assets/')}}/js/chosen.jquery.min.js"></script>
 <script src="{{asset('/js/app.js')}}"></script>
 
 <!-- inline scripts related to this page -->
 
 
-<script type="text/javascript">
 
-</script>
 <script>
     var date = new Date();
     document.getElementById("year").innerHTML = date.getFullYear();
