@@ -203,7 +203,7 @@
                         <td height="5" style="text-align:right; padding: 2px"><strong>{{$visa->grand_total_price}}</strong></td>
                     </tr>
                     <tr >
-                        <td height="5" colspan="5" style="text-align: left; padding: 2px"><strong>In Word: {{$visa->word}}</strong></td>
+                        <td height="5" colspan="5" style="text-align: left; padding: 2px"><strong>In Word: {{$clear_total_price}}</strong></td>
 
                     </tr>
 

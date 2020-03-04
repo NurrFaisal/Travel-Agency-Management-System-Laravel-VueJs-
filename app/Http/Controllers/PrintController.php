@@ -70,13 +70,17 @@ class PrintController extends Controller
     public function invoicePrintVisa($id){
         $visa = VisaUpdated::where('id', $id)->with(['staff' => function ($q){$q->select('id', 'first_name', 'last_name');}, 'guest' => function($q){$q->with(['Staff' => function($q){$q->select('id', 'first_name', 'last_name');}])->select('id', 'name','phone_number', 'email_address', 'rf_staff', 'address');}, 'passports'=>function($q){$q->with(['typet' =>function($q){$q->select('id', 'name');}, 'countryt' => function($q){$q->select('id', 'name');} ]);} ])->first();
         $passports = $visa->passports;
+        $total_price = $this->convert_number_to_words($visa->grand_total_price);
+        $banned = array('point zero zero'); //add more words as you want. KEEP THE SPACE around the word
+        $clear_total_price   = str_ireplace($banned, ' ', $total_price);
 //        return view('cosmosHoliday.page.invoiceVisa', [
 //            'visa' => $visa,
 //            'passports' => $passports
 //        ]);
         $pdf = PDF::loadView('cosmosHoliday.page.invoiceVisa',[
             'visa' => $visa,
-            'passports' => $passports
+            'passports' => $passports,
+            'clear_total_price' => $clear_total_price
         ])->setPaper('a4');
         return $pdf->stream('invoiceVisa.pdf');
     }
