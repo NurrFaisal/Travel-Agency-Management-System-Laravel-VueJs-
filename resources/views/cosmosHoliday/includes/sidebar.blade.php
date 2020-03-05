@@ -33,8 +33,8 @@
         </div>
     </div><!-- /.sidebar-shortcuts -->
 
-    <ul class="nav nav-list">
-        <li class="">
+    <ul id="myDiv" class="nav nav-list">
+        <li class="btn_cos active">
             <router-link to="/dashboard">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Dashboard </span>
@@ -43,7 +43,7 @@
             <b class="arrow"></b>
         </li>
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || (Session::get('department') == 6 && Session::get('user_type') == 'operation'))
-        <li class="">
+        <li class="btn_cos">
             <router-link to="/at-a-glance">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> At a Glance </span>
@@ -52,7 +52,7 @@
             <b class="arrow"></b>
         </li>
         @endif
-        <li class="">
+        <li class="btn_cos">
             <router-link to="/guest-list">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Guest </span>
@@ -60,7 +60,7 @@
 
             <b class="arrow"></b>
         </li>
-        <li class="">
+        <li class="btn_cos">
             <router-link to="/suplier-list">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Suplier </span>
@@ -69,7 +69,7 @@
             <b class="arrow"></b>
         </li>
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 3)
-            <li class="">
+            <li class="btn_cos">
             <router-link to="/air-ticket-list" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">
@@ -77,7 +77,7 @@
                 </span>
             </router-link>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/air-line-list" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -86,7 +86,7 @@
                 </router-link>
             </li>
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('user_type') == 'operation')
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/ticket-list" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -95,7 +95,7 @@
                 </router-link>
             </li>
 
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/air-ticket-refund-list" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -110,7 +110,7 @@
 
 {{--        <li class="active open">--}}
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 4)
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/visa-updated-list" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -118,7 +118,7 @@
                 </span>
                 </router-link>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/visa-category-list" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -128,7 +128,7 @@
             </li>
         @endif
 
-        <li class="">
+        <li class="btn_cos">
             <router-link to="/visa-country-list">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Country </span>
@@ -138,7 +138,7 @@
         </li>
 
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 5)
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/package-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text"> Package </span>
@@ -148,7 +148,7 @@
             </li>
         @endif
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 7)
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/hotel-booking-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text"> Hotel Booking </span>
@@ -156,7 +156,7 @@
 
                 <b class="arrow"></b>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/hotel-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text"> Hotel List </span>
@@ -166,7 +166,7 @@
             </li>
         @endif
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin')
-        <li class="">
+        <li class="btn_cos">
             <router-link to="/staff-list">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">
@@ -179,7 +179,7 @@
         @endif
 
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 6)
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/received-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -188,7 +188,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/payment-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -197,7 +197,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/contra-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -207,7 +207,7 @@
                 <b class="arrow"></b>
             </li>
             @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || (Session::get('department') == 6 && Session::get('user_type') == 'operation'))
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/salary-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -216,7 +216,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/incentive-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -226,7 +226,7 @@
                 <b class="arrow"></b>
             </li>
             @endif
-            <li class="">
+            <li class="btn_cos">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">Expense </span>
@@ -235,14 +235,14 @@
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/expence-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Expense List
                         </router-link>
                         <b class="arrow"></b>
                     </li>
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/expence-head-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Expense Head
@@ -252,7 +252,7 @@
 
                 </ul>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">Books </span>
@@ -261,14 +261,14 @@
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/cash-book-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Cash-Book
                         </router-link>
                         <b class="arrow"></b>
                     </li>
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/bank-book-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Bank-Book
@@ -278,7 +278,7 @@
 
                 </ul>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">Cheque </span>
@@ -287,14 +287,14 @@
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/cheque-book-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Unclear Cheque
                         </router-link>
                         <b class="arrow"></b>
                     </li>
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/clear-cheque-book-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Clear Cheque
@@ -304,7 +304,7 @@
 
                 </ul>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/others-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -313,7 +313,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
-            <li class="">
+            <li class="btn_cos">
                 <router-link to="/Bank-list">
                     <i class="menu-icon fa fa-tachometer"></i>
                     <span class="menu-text">
@@ -322,7 +322,7 @@
                 </router-link>
                 <b class="arrow"></b>
             </li>
-        <li class="">
+        <li class="btn_cos">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">Received Loan </span>
@@ -331,14 +331,14 @@
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/received-loan-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Received Loan List
                     </router-link>
                     <b class="arrow"></b>
                 </li>
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/list-received-loan-installment">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Installment List
@@ -348,7 +348,7 @@
 
             </ul>
         </li>
-        <li class="">
+        <li class="btn_cos">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">Payment Loan </span>
@@ -357,14 +357,14 @@
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/payment-loan-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Payment Loan List
                     </router-link>
                     <b class="arrow"></b>
                 </li>
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/payment-loan-installment-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Installment
@@ -375,18 +375,17 @@
         </li>
         @endif
 
-        <li class="">
+        <li class="btn_cos">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text"> Setting </span>
-
                 <b class="arrow fa fa-angle-down"></b>
             </a>
 
             <b class="arrow"></b>
 
             <ul class="submenu">
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/guest-title-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Guest Title
@@ -395,7 +394,7 @@
                     <b class="arrow"></b>
                 </li>
 
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/guest-designation-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Guest Designation
@@ -405,7 +404,7 @@
                 </li>
 
                 @if(Session::get('user_type') == 'super-admin')
-                <li class="">
+                <li class="btn_cos">
                     <router-link to="/department-list">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Department
@@ -415,7 +414,7 @@
                 </li>
                 @endif
                 @if(Session::get('user_type') == 'super-admin' || Session::get('user_type') == 'admin')
-                    <li class="">
+                    <li class="btn_cos">
                         <router-link to="/staff-designation-list">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Staff Desigantion

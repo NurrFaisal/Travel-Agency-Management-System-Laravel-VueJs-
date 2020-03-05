@@ -139,6 +139,18 @@
     var date = new Date();
     document.getElementById("year").innerHTML = date.getFullYear();
 </script>
+<script>
+    // Add active class to the current button (highlight it)
+    var header = document.getElementById("myDiv");
+    var btns = header.getElementsByClassName("btn_cos");
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+    }
+</script>
 
 </body>
 </html>
