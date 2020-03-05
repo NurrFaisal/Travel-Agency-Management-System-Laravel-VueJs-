@@ -668,7 +668,13 @@
                             title: 'Staff Updated successfully'
                         })
                     })
-            }
+            },
+            doAjax() {
+                setTimeout(() => {
+                    this.isLoading = false
+                },100)
+            },
+
         }
     }
 </script>

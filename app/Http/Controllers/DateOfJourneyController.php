@@ -41,7 +41,7 @@ class DateOfJourneyController extends Controller
         $doj = Package::with(['net_prices','package_days', 'guestt' =>function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
         return response()->json([
             'doj' => $doj,
-            'user_type', $user_type
+            'user_type'=> $user_type
         ]);
     }
 

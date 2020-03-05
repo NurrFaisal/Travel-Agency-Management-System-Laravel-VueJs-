@@ -104,9 +104,18 @@
     import _ from "lodash";
     export default {
         name: "NewVisaCountry",
-
+        components: {
+            Loading
+        },
         data(){
             return{
+                user_type:'',
+                search_text:'',
+                width:128,
+                height:128,
+                isLoading: false,
+                fullPage: false,
+
                 form: new Form({
                     name: ""
                 })
