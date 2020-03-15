@@ -154,6 +154,7 @@ import ViewPackageComponent from "./components/cosmosHoliday/package/ViewPackage
 import ListAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/ListAirTicketRefund";
 import EditAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/EditAirTicketRefund";
 import AtAGlanceComponent from "./components/cosmosHoliday/AtAGlanceComponent";
+import ListDueGuest from "./components/cosmosHoliday/due-guest/ListDueGuest";
 
 
 
@@ -959,8 +960,18 @@ export const routes = [
     {
         path:'/at-a-glance',
         component: AtAGlanceComponent
-    }
+    },
     // At a Glance End
+
+
+    // Due Guest Start
+    {
+        path:'/due-guest',
+        component: ListDueGuest
+    }
+    // Due Guest End
+
+
 
 
 

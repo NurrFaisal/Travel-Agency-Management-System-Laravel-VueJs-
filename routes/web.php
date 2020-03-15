@@ -201,6 +201,9 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
     Route::get('/api/get-all-guest-transaction/{id}', 'GuestController@getAllGuestTransaction');
     Route::get('/api/get-all-staff-transaction-search/{id}/{search}', 'GuestController@getAllGuestTransactionSearch');
     Route::get('/api/get-all-guest-search/{search}', 'GuestController@getAllGuestSearch');
+    // Due Guest start
+    Route::get('/api/get-all-due-guest', 'GuestController@dueGuest');
+    // Due Guest End
 //GuestControler End
 
 //Guest Query Controller Start
@@ -719,6 +722,9 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
     Route::get('/api/view-at-a-glance', 'AtAGlanceController@viewAtAGlance');
     Route::get('/api/view-at-a-glance-search/{search}', 'AtAGlanceController@viewAtAGlanceSearch');
 // AtAGlanceController End
+
+
+
 
 });
 
