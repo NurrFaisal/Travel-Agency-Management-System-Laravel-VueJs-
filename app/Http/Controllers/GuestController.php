@@ -6,6 +6,7 @@ use App\model\Guest;
 use App\model\Transjaction;
 use Illuminate\Http\Request;
 use Session;
+use DB;
 
 class GuestController extends Controller
 {
@@ -71,9 +72,12 @@ class GuestController extends Controller
             'user_type' => $user_type
         ]);
     }
+
+
     public function dueGuest(){
-       
+
     }
+
     public function getAllGuestSearch($search){
         $user_type = Session::get('user_type');
         if($user_type == 'super-admin' || $user_type == 'admin' || $user_type == 'operation'){
@@ -153,6 +157,8 @@ class GuestController extends Controller
             'transjactions' => $transjactions
         ]);
     }
+
+
 
 
 

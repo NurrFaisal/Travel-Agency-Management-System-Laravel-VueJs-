@@ -17,4 +17,5 @@ class Guest extends Model
     public function transjactions(){
         return $this->hasOne(Transjaction::class, 'guest_id');
     }
+
 }
