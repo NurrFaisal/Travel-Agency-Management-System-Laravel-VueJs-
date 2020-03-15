@@ -72,8 +72,9 @@
                                         <td>{{guest.staff.first_name+' '+ guest.staff.last_name}}</td>
                                         <td class="hidden-480">{{guest.email_address}}</td>
                                         <td v-if="guest.transjactions == null" style="text-align: right" >-</td>
-                                        <td v-if="guest.transjactions != null && guest.transjactions.guest_blance > 0" style="text-align: right; background-color:red; color:white" ><strong>{{guest.transjactions != null ? guest.transjactions.guest_blance: '-'}}</strong></td>
-                                        <td v-if="guest.transjactions != null && guest.transjactions.guest_blance < 0" style="text-align: right; background-color:green; color:white" ><strong>{{guest.transjactions != null ? guest.transjactions.guest_blance: '-'}}</strong></td>
+                                        <td v-else-if="guest.transjactions != null && guest.transjactions.guest_blance > 0" style="text-align: right; background-color:red; color:white" ><strong>{{guest.transjactions != null ? guest.transjactions.guest_blance: '-'}}</strong></td>
+                                        <td v-else-if="guest.transjactions != null && guest.transjactions.guest_blance < 0" style="text-align: right; background-color:green; color:white" ><strong>{{guest.transjactions != null ? guest.transjactions.guest_blance: '-'}}</strong></td>
+                                        <td v-else style="text-align: right;" ><strong>-</strong></td>
 
                                         <td class="hidden-480">
 
