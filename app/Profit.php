@@ -3,6 +3,7 @@
 namespace App;
 
 use App\model\Guest;
+use App\model\Staff;
 use Illuminate\Database\Eloquent\Model;
 
 class Profit extends Model
@@ -12,4 +13,9 @@ class Profit extends Model
     public function guest(){
         return $this->belongsTo(Guest::class, 'guest_id');
     }
+    public function staff(){
+        return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
+
 }

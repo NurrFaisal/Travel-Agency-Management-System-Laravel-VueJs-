@@ -155,6 +155,7 @@ import ListAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/Li
 import EditAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/EditAirTicketRefund";
 import AtAGlanceComponent from "./components/cosmosHoliday/AtAGlanceComponent";
 import ListDueGuest from "./components/cosmosHoliday/due-guest/ListDueGuest";
+import ListIncome from "./components/cosmosHoliday/income/ListIncome";
 
 
 
@@ -968,8 +969,16 @@ export const routes = [
     {
         path:'/due-guest',
         component: ListDueGuest
-    }
+    },
     // Due Guest End
+
+
+    //Income Start
+    {
+        path:'/income-list',
+        component: ListIncome
+    }
+    // Income End
 
 
 

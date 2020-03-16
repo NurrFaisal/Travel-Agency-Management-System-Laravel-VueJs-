@@ -724,6 +724,11 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
 // AtAGlanceController End
 
 
+    // ProfitController Start
+    Route::get('/api/get-all-profit', 'ProfitController@getAllProfit');
+    Route::get('/api/get-all-profit-search/{search}', 'ProfitController@getAllProfitSearch');
+    // ProfitController End
+
 
 
 });

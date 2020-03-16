@@ -382,6 +382,15 @@
                 </li>
             </ul>
         </li>
+            <li class="btn_cos">
+                <router-link to="/income-list">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">
+                    Profit
+                </span>
+                </router-link>
+                <b class="arrow"></b>
+            </li>
         @endif
 
         <li class="btn_cos">
