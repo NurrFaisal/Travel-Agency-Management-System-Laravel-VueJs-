@@ -203,7 +203,7 @@
                         <td height="5" style="text-align:right; padding: 2px"><strong>{{$visa->grand_total_price}}</strong></td>
                     </tr>
                     <tr >
-                        <td height="5" colspan="5" style="text-align: left; padding: 2px"><strong>In Word: {{$clear_total_price}}</strong></td>
+                        <td height="5" colspan="5" style="text-align: left; padding: 2px"><strong>In Word: {{$clear_total_price}} taka only.</strong></td>
 
                     </tr>
 
@@ -221,19 +221,19 @@
     <br/>
     <br/>
 
-    <div class="row" style="position: absolute;width: 100%; bottom: 150px">
+{{--    <div class="row" style="position: absolute;width: 100%; bottom: 150px">--}}
 
-        <div>
-            <font size="2" face="Courier New" >
-                <div class="row" style="margin: 0px 10px">
+{{--        <div>--}}
+{{--            <font size="2" face="Courier New" >--}}
+{{--                <div class="row" style="margin: 0px 10px">--}}
 
-                    <div class="col-xs-4 col-md-4" style=" text-align: center; float: left">Customer Signature : ___________________</div>
+{{--                    <div class="col-xs-4 col-md-4" style=" text-align: center; float: left">Customer Signature : ___________________</div>--}}
 
-                    <div class="col-xs-4 col-md-4" style="text-align: center; float: right" >Prepared By : {{$visa->staff->first_name.' '.$visa->staff->last_name}}</div>
-                </div>
-            </font>
-        </div>
-    </div>
+{{--                    <div class="col-xs-4 col-md-4" style="text-align: center; float: right" >Prepared By : {{$visa->staff->first_name.' '.$visa->staff->last_name}}</div>--}}
+{{--                </div>--}}
+{{--            </font>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
             <!-- /.row -->
 
