@@ -292,7 +292,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div v-if="this.user_type == 'super-admin'" class="clearfix form-actions">
+                                                <div v-if="this.user_type == 'super-admin' || this.user_type == 'admin'" class="clearfix form-actions">
                                                     <div class="col-md-offset-4 col-md-8">
                                                         <button class="btn" type="reset">
                                                             <i class="ace-icon fa fa-undo bigger-110"></i>
