@@ -506,7 +506,7 @@ class ReceivedController extends Controller
         return "Success Update";
     }
     public function getGuestLastBalance($id){
-        $transaction = Transjaction::orderBy('id', 'desc')->where('guest_id', $id)->select('id', 'guest_id', 'guest_blance')->first();
+        $transaction = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('guest_id', $id)->select('id', 'guest_id', 'guest_blance')->first();
         return response()->json([
             'transaction' => $transaction
         ]);

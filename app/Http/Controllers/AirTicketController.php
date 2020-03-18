@@ -334,7 +334,7 @@ class AirTicketController extends Controller
     protected function updateTransjactionBlance($request, $airticket){
         $transjaction = Transjaction::where('air_id', $airticket->id)->first();
         $old_amount = $transjaction->debit_amount;
-        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
         foreach ($next_same_date_transactions as $next_same_date_transaction){
             $next_same_date_transaction->blance -= $old_amount;
             if($next_same_date_transaction->guest_id == $transjaction->guest_id){
@@ -385,6 +385,7 @@ class AirTicketController extends Controller
         $this->savePaxLoop($request, $airticket);
         $this->updateTransjactionBlance($request, $airticket);
         $this->transjaction($request, $airticket);
+
         return 'Air Ticket Sucessfully Updated';
     }
 
