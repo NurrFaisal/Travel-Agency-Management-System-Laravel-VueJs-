@@ -10,7 +10,8 @@ use Session;
 
 class VisaController extends Controller
 {
-    protected function newVisaValidation($request){
+    protected function newVisaValidation($request)
+    {
         $request->validate([
             'name' => 'required',
             'phone_number' => 'required|numeric',
@@ -32,7 +33,8 @@ class VisaController extends Controller
         ]);
     }
 
-    protected function addWorkAndNotaryValidation($request){
+    protected function addWorkAndNotaryValidation($request)
+    {
         $request->validate([
             'work_by' => 'required|numeric',
             'work_date' => 'required|date',
@@ -40,7 +42,9 @@ class VisaController extends Controller
             'notary_date' => 'required',
         ]);
     }
-    protected function newVisaBasic($request, $visa){
+
+    protected function newVisaBasic($request, $visa)
+    {
         $visa->name = $request->name;
         $visa->phone_number = $request->phone_number;
         $visa->date_of_birth = $request->date_of_birth;
@@ -61,7 +65,8 @@ class VisaController extends Controller
         $visa->payment_status = $request->payment_status;
     }
 
-    public function addVisa(Request $request){
+    public function addVisa(Request $request)
+    {
         $this->newVisaValidation($request);
         $visa = new Visa();
         $this->newVisaBasic($request, $visa);
@@ -86,39 +91,43 @@ class VisaController extends Controller
         $transjaction->narration = $request->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
         return 'visa added';
     }
 
-    public function getAllRecievedVisa(){
+    public function getAllRecievedVisa()
+    {
         $recieved_visa = Visa::where('state', 1)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'recieved_visa' => $recieved_visa
         ]);
     }
-    public function getAllWorkVisa(){
+
+    public function getAllWorkVisa()
+    {
         $work_visa = Visa::where('state', 2)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'work_visa' => $work_visa
         ]);
     }
 
-    protected function addVisaWorkAndNotaryValidation($request){
+    protected function addVisaWorkAndNotaryValidation($request)
+    {
         $request->validate([
             'id' => 'required|numeric',
             'work_by' => 'required|numeric',
@@ -128,24 +137,29 @@ class VisaController extends Controller
         ]);
     }
 
-    public function addVisaWorkAndNotary(Request $request){
+    public function addVisaWorkAndNotary(Request $request)
+    {
         $this->addVisaWorkAndNotaryValidation($request);
         $visa = Visa::where('id', $request->id)->first();
         $visa->work_by = $request->work_by;
         $visa->work_date = $request->work_date;
         $visa->notary_by = $request->notary_by;
-        $visa->notary_date= $request->notary_date;
+        $visa->notary_date = $request->notary_date;
         $visa->state = 2;
         $visa->update();;
         return 'work and notary info added successfully';
     }
-    protected function addCheckedByAsstValidation($request){
+
+    protected function addCheckedByAsstValidation($request)
+    {
         $request->validate([
             'checked_by_asst' => 'required|numeric',
             'checked_by_asst_date' => 'required|date',
         ]);
     }
-    public function addCheckedByAsst(Request $request){
+
+    public function addCheckedByAsst(Request $request)
+    {
         $this->addCheckedByAsstValidation($request);
         $visa = Visa::where('id', $request->id)->first();
         $visa->checked_by_asst = $request->checked_by_asst;
@@ -154,19 +168,25 @@ class VisaController extends Controller
         $visa->update();
         return 'checked By Asst info Updated';
     }
-    public function getAllCheckedByAsstVisa(){
+
+    public function getAllCheckedByAsstVisa()
+    {
         $checked_by_asst_visa = Visa::where('state', 3)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'checked_by_asst_visa' => $checked_by_asst_visa
         ]);
     }
-    protected function addCheckedByOfficerValidation($request){
+
+    protected function addCheckedByOfficerValidation($request)
+    {
         $request->validate([
             'checked_by_officer' => 'required|numeric',
             'checked_by_officer_date' => 'required|date'
         ]);
     }
-    public function addCheckedByOfficer(Request $request){
+
+    public function addCheckedByOfficer(Request $request)
+    {
         $this->addCheckedByOfficerValidation($request);
         $visa = Visa::where('id', $request->id)->first();
         $visa->checked_by_officer = $request->checked_by_officer;
@@ -175,19 +195,25 @@ class VisaController extends Controller
         $visa->update();
         return 'checked by officer info updated successfully';
     }
-    public function getAllCheckedByOfficerVisa(){
+
+    public function getAllCheckedByOfficerVisa()
+    {
         $checked_officer_visa = Visa::where('state', 4)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'checked_officer_visa' => $checked_officer_visa
         ]);
     }
-    protected function addVisaSubmitValidation($request){
+
+    protected function addVisaSubmitValidation($request)
+    {
         $request->validate([
             'submit_by' => 'required|numeric',
             'submit_date' => 'required|date',
         ]);
     }
-    public function addVisaSubmit(Request $request){
+
+    public function addVisaSubmit(Request $request)
+    {
         $this->addVisaSubmitValidation($request);
         $visa = Visa::where('id', $request->id)->first();
         $visa->submit_by = $request->submit_by;
@@ -197,19 +223,24 @@ class VisaController extends Controller
         return 'Visa Submit info Updated Successfully';
     }
 
-    public function getAllSubmitVisa(){
+    public function getAllSubmitVisa()
+    {
         $submit_visa = Visa::where('state', 5)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'submit_visa' => $submit_visa
         ]);
     }
-    protected function addVisaCollectedValidation($request){
+
+    protected function addVisaCollectedValidation($request)
+    {
         $request->validate([
             'collected_by' => 'required|numeric',
             'collected_date' => 'required|date'
         ]);
     }
-    public function addVisaCollected(Request $request){
+
+    public function addVisaCollected(Request $request)
+    {
         $this->addVisaCollectedValidation($request);
         $collected_visa = Visa::where('id', $request->id)->first();
         $collected_visa->collected_by = $request->collected_by;
@@ -218,20 +249,25 @@ class VisaController extends Controller
         $collected_visa->update();
         return 'Add Collected Visa info Updated Successfully';
     }
-    public function getAllCollectedVisa(){
+
+    public function getAllCollectedVisa()
+    {
         $collected_visa = Visa::where('state', 6)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'collected_visa' => $collected_visa
         ]);
     }
-    protected function addVisaGuestCallAndSmsValidation($request){
+
+    protected function addVisaGuestCallAndSmsValidation($request)
+    {
         $request->validate([
             'call_and_sms_by' => 'required|numeric',
             'call_and_sms_date' => 'required|date',
         ]);
     }
 
-    public function addVisaGuestCallAndSms(Request $request){
+    public function addVisaGuestCallAndSms(Request $request)
+    {
         $this->addVisaGuestCallAndSmsValidation($request);
         $visa = Visa::where('id', $request->id)->first();
         $visa->call_and_sms_by = $request->call_and_sms_by;
@@ -240,20 +276,25 @@ class VisaController extends Controller
         $visa->update();
         return 'Guest Call And Sms Info Updated Successfully';
     }
-    public function getAllGCSVisa(){
+
+    public function getAllGCSVisa()
+    {
         $gcs_visa = Visa::where('state', 7)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'gcs_visa' => $gcs_visa
         ]);
     }
 
-    protected function addVisaDeleveredValidation($request){
+    protected function addVisaDeleveredValidation($request)
+    {
         $request->validate([
             'delevered_by' => 'required|numeric',
             'delevered_date' => 'required|date'
         ]);
     }
-    public function addVisaDelevered(Request $request){
+
+    public function addVisaDelevered(Request $request)
+    {
         $this->addVisaDeleveredValidation($request);
         $delevered_visa = Visa::where('id', $request->id)->first();
         $delevered_visa->delevered_by = $request->delevered_by;
@@ -262,7 +303,9 @@ class VisaController extends Controller
         $delevered_visa->update();
         return 'Delevered Date and Person Added Successfully';
     }
-    public function getAllDeleveredVisa(){
+
+    public function getAllDeleveredVisa()
+    {
         $delevered_visa = Visa::where('state', 8)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'delelvered_visa' => $delevered_visa
@@ -271,18 +314,21 @@ class VisaController extends Controller
 
     // Edit Visa Start
 
-    public function editReceivedVisa($id){
+    public function editReceivedVisa($id)
+    {
         $received_visa = Visa::where('id', $id)->first();
         return response()->json([
             'received_visa' => $received_visa
         ]);
     }
-    public function updateReceivedVisa(Request $request){
+
+    public function updateReceivedVisa(Request $request)
+    {
         $visa = Visa::where('id', $request->id)->first();
         $this->newVisaBasic($request, $visa);
         $visa->update();
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -295,7 +341,7 @@ class VisaController extends Controller
 
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -306,7 +352,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -325,32 +371,35 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
         return 'received visa updated successfully';
     }
 
-    public function editWorkAndNotaryVisa($id){
+    public function editWorkAndNotaryVisa($id)
+    {
         $work_visa = Visa::where('id', $id)->first();
         return response()->json([
             'work_visa' => $work_visa
         ]);
     }
-    public function updateWorkAndNotaryVisa(Request $request){
+
+    public function updateWorkAndNotaryVisa(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $visa = Visa::where('id', $request->id)->first();
@@ -362,7 +411,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -375,7 +424,7 @@ class VisaController extends Controller
 
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -386,7 +435,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -405,33 +454,35 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
         return 'Work And Notary Visa Updated Successfully';
     }
 
-    public function editCheckedByAsst($id){
+    public function editCheckedByAsst($id)
+    {
         $checked_by_asst = Visa::where('id', $id)->first();
         return response()->json([
             'checked_by_asst' => $checked_by_asst
         ]);
     }
 
-    public function updateCheckedByAsst(Request $request){
+    public function updateCheckedByAsst(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $this->addCheckedByAsstValidation($request);
@@ -446,7 +497,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -459,7 +510,7 @@ class VisaController extends Controller
 
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -470,7 +521,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -489,19 +540,19 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
@@ -510,7 +561,8 @@ class VisaController extends Controller
 
 
     // Edit Checked By Officer Start
-    public function editCheckedByOfficer($id){
+    public function editCheckedByOfficer($id)
+    {
         $checked_by_officer = Visa::where('id', $id)->first();
         return response()->json([
             'checked_by_officer' => $checked_by_officer
@@ -518,7 +570,8 @@ class VisaController extends Controller
     }
 
 
-    public function updateCheckedByOfficer(Request $request){
+    public function updateCheckedByOfficer(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $this->addCheckedByAsstValidation($request);
@@ -536,7 +589,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -547,7 +600,7 @@ class VisaController extends Controller
         $profit->amount = $request->price - $request->net_price;
         $profit->save();
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -558,7 +611,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -577,19 +630,19 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
@@ -599,14 +652,16 @@ class VisaController extends Controller
     // Edit Checked By Officer End
 
     // Edit Submited Visa Start
-    public function editSubmitedVisa($id){
+    public function editSubmitedVisa($id)
+    {
         $submited_visa = Visa::where('id', $id)->first();
         return response()->json([
             'submited_visa' => $submited_visa
         ]);
     }
 
-    public function updateSubmitVisa(Request $request){
+    public function updateSubmitVisa(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $this->addCheckedByAsstValidation($request);
@@ -627,7 +682,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -639,7 +694,7 @@ class VisaController extends Controller
         $profit->save();
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -650,7 +705,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -669,19 +724,19 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
@@ -691,14 +746,16 @@ class VisaController extends Controller
     // Edit Submited Visa End
 
     // Edit Collected Visa Start
-    public function editCollectedVisa($id){
+    public function editCollectedVisa($id)
+    {
         $collected_visa = Visa::where('id', $id)->first();
         return response()->json([
             'collected_visa' => $collected_visa
         ]);
     }
 
-    public function updateCollectedVisa(Request $request){
+    public function updateCollectedVisa(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $this->addCheckedByAsstValidation($request);
@@ -722,7 +779,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -734,7 +791,7 @@ class VisaController extends Controller
         $profit->save();
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -745,7 +802,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -764,19 +821,19 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
@@ -785,14 +842,16 @@ class VisaController extends Controller
     // Edit Collected Visa End
 
     // Edit Call And Sms Visa Start
-    public function editCallAndSmsVisa($id){
+    public function editCallAndSmsVisa($id)
+    {
         $call_and_sms_visa = Visa::where('id', $id)->first();
         return response()->json([
             'call_and_sms_visa' => $call_and_sms_visa
         ]);
     }
 
-    public function updateCallAndSmsVisa(Request $request){
+    public function updateCallAndSmsVisa(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $this->addCheckedByAsstValidation($request);
@@ -818,7 +877,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -830,7 +889,7 @@ class VisaController extends Controller
         $profit->save();
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -841,7 +900,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -860,19 +919,19 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
@@ -882,14 +941,16 @@ class VisaController extends Controller
 
 
     // Edit Delevered Visa Start
-    public function editDeleveredVisa($id){
+    public function editDeleveredVisa($id)
+    {
         $delevered_visa = Visa::where('id', $id)->first();
         return response()->json([
             'delevered_visa' => $delevered_visa
         ]);
     }
 
-    public function updateDeleveredVisa(Request $request){
+    public function updateDeleveredVisa(Request $request)
+    {
         $this->newVisaValidation($request);
         $this->addWorkAndNotaryValidation($request);
         $this->addCheckedByAsstValidation($request);
@@ -917,7 +978,7 @@ class VisaController extends Controller
         $visa->update();
 
         $old_profit = Profit::where('visa_id', $request->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -929,7 +990,7 @@ class VisaController extends Controller
         $profit->save();
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('visa_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-'.$update_first_transjaction->visa_id.' )';
+        $update_first_transjaction->narration = 'Updated Visa Transjaction 1st ( V-' . $update_first_transjaction->visa_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $request->reference)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -940,7 +1001,7 @@ class VisaController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->visa_id = $update_first_transjaction->visa_id;
-        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-'.$update_first_transjaction->visa_id.' )';
+        $update_scond_transjaction->narration = 'Updated Visa Transjaction 2nd ( P-' . $update_first_transjaction->visa_id . ' )';
         $update_scond_transjaction->transjaction_date = $visa->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -959,19 +1020,19 @@ class VisaController extends Controller
         $transjaction->narration = $visa->narration;
         $transjaction->transjaction_date = $visa->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();

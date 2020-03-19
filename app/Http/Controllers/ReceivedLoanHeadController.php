@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class ReceivedLoanHeadController extends Controller
 {
-    public function addReceivedLoanHead(Request $request){
+    public function addReceivedLoanHead(Request $request)
+    {
         $request->validate([
             'name' => 'required',
         ]);
@@ -16,19 +17,25 @@ class ReceivedLoanHeadController extends Controller
         $rl_head->save();
         return 'Received Loan Head Added Successfully';
     }
-    public function getAllReceivedLoanHead(){
+
+    public function getAllReceivedLoanHead()
+    {
         $rl_heads = ReceivedLoanHead::orderBy('name')->get();
         return response()->json([
             'rl_heads' => $rl_heads
         ]);
     }
-    public function getReceivedLoanHead($id){
+
+    public function getReceivedLoanHead($id)
+    {
         $rl_head = ReceivedLoanHead::where('id', $id)->first();
         return response()->json([
             'rl_head' => $rl_head
         ]);
     }
-    public function updateReceivedLoanHead(Request $request){
+
+    public function updateReceivedLoanHead(Request $request)
+    {
         $request->validate([
             'name' => 'required',
         ]);

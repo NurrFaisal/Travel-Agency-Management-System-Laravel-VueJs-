@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class StaffDesignationController extends Controller
 {
-    public function addStaffDesignation(Request $request){
+    public function addStaffDesignation(Request $request)
+    {
         $request->validate([
             'staff_designation' => 'required'
         ]);
@@ -17,19 +18,25 @@ class StaffDesignationController extends Controller
         $staff_designation->save();
         return 'save';
     }
-    public function allStaffDesignation(){
+
+    public function allStaffDesignation()
+    {
         $staff_designations = StaffDesignation::orderBy('staff_designation', 'desc')->get();
         return response()->json([
             'staff_designations' => $staff_designations
         ]);
     }
-    public function editStaffDesignation($id){
-        $staff_designation = StaffDesignation::where('id',$id)->first();
+
+    public function editStaffDesignation($id)
+    {
+        $staff_designation = StaffDesignation::where('id', $id)->first();
         return response()->json([
             'staff_designation' => $staff_designation
         ]);
     }
-    public function updateStaffDesignation(Request $request){
+
+    public function updateStaffDesignation(Request $request)
+    {
         $request->validate([
             'staff_designation' => 'required'
         ]);
@@ -39,7 +46,9 @@ class StaffDesignationController extends Controller
         $staff_desigantion->update();
         return 'update';
     }
-    public function deleteStaffDesignation($id){
+
+    public function deleteStaffDesignation($id)
+    {
         $staff_designation = StaffDesignation::find($id);
         $staff_designation->delete();
         return 'delete';

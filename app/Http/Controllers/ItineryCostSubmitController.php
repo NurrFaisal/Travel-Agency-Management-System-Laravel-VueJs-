@@ -10,13 +10,16 @@ use Session;
 
 class ItineryCostSubmitController extends Controller
 {
-    protected function ItineryCostSubmitValidation($request){
+    protected function ItineryCostSubmitValidation($request)
+    {
         $request->validate([
             'id' => 'required|numeric',
             'iti_submit_to_guest_date' => 'required',
         ]);
     }
-    public function addItineryCostSubmitDate(Request $request){
+
+    public function addItineryCostSubmitDate(Request $request)
+    {
         $this->ItineryCostSubmitValidation($request);
         $package = Package::where('id', $request->id)->first();
         $package->iti_submit_to_guest_date = $request->iti_submit_to_guest_date;
@@ -26,23 +29,32 @@ class ItineryCostSubmitController extends Controller
         return 'Tour Plan Submit To Guest Added Successfully';
     }
 
-    public function getAllItineraryCostSubmitDate(){
+    public function getAllItineraryCostSubmitDate()
+    {
         $user_type = Session::get('user_type');
-        $itinerary_cost_submit_date = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->select('id','guest', 'country', 'destination', 'duration')->where('state', 3)->orderBy('id', 'desc')->paginate(10);
+        $itinerary_cost_submit_date = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->select('id', 'guest', 'country', 'destination', 'duration')->where('state', 3)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'itinerary_cost_submit_date' => $itinerary_cost_submit_date,
             'user_type' => $user_type
         ]);
     }
-    public function editItineraryCostSubmitDate($id){
+
+    public function editItineraryCostSubmitDate($id)
+    {
         $user_type = Session::get('user_type');
-        $itinerary_cost_submit_date = Package::with(['package_days','guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
+        $itinerary_cost_submit_date = Package::with(['package_days', 'guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('id', $id)->first();
         return response()->json([
             'itinerary_cost_submit_date' => $itinerary_cost_submit_date,
             'user_type' => $user_type
         ]);
     }
-    protected function itineraryCostSubmitDateValidation($request){
+
+    protected function itineraryCostSubmitDateValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -69,7 +81,9 @@ class ItineryCostSubmitController extends Controller
 
         ]);
     }
-    protected function addPackageICSDBasic($request, $package){
+
+    protected function addPackageICSDBasic($request, $package)
+    {
         $package->guest = $request->guest;
         $package->package_type = $request->package_type;
         $package->country = $request->country;
@@ -91,10 +105,12 @@ class ItineryCostSubmitController extends Controller
         $package->total_bed_qty = $request->total_bed_qty;
         $package->narration = $request->narration;
     }
-    protected function packageDay($request, $package){
+
+    protected function packageDay($request, $package)
+    {
         $package_day_arrys = $request->package_days;
         $package_day_arrys_count = count($package_day_arrys);
-        for ($i=0; $i<$package_day_arrys_count; $i++){
+        for ($i = 0; $i < $package_day_arrys_count; $i++) {
             $package_day = new PackageDay();
             $package_day->package_id = $package->id;
             $package_day->day = $package_day_arrys[$i]['day'];
@@ -107,13 +123,15 @@ class ItineryCostSubmitController extends Controller
             $package_day->save();
         }
     }
-    public function UpdateItineraryCostSubmitDate(Request $request){
+
+    public function UpdateItineraryCostSubmitDate(Request $request)
+    {
         $this->itineraryCostSubmitDateValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->addPackageICSDBasic($request, $package);
         $package->update();
         $package_days = PackageDay::where('package_id', $request->id)->get();
-        foreach ($package_days as $package_day){
+        foreach ($package_days as $package_day) {
             $package_day->delete();
         }
         $this->packageDay($request, $package);

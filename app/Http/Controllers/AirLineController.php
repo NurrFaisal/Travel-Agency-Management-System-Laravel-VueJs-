@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 
 class AirLineController extends Controller
 {
-    public function addAirLine(Request $request){
+    public function addAirLine(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
@@ -18,20 +19,24 @@ class AirLineController extends Controller
         return 'save';
     }
 
-    public function getAllAirLine(){
+    public function getAllAirLine()
+    {
         $air_line = AirLine::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'air_line' => $air_line
         ]);
     }
 
-    public function editAirLine($id){
+    public function editAirLine($id)
+    {
         $air_line = AirLine::where('id', $id)->first();
         return response()->json([
             'air_line' => $air_line
         ]);
     }
-    public function updateAirLine(Request $request){
+
+    public function updateAirLine(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
@@ -41,9 +46,11 @@ class AirLineController extends Controller
         return 'update';
 
     }
-    public function deleteAirLine($id){
+
+    public function deleteAirLine($id)
+    {
         $sub_air_ticket = SubAirticket::where('air_lines', $id)->count();
-        if($sub_air_ticket > 0){
+        if ($sub_air_ticket > 0) {
             $air_line = AirLine::where('id', $id)->first();
             $air_line->delete();
             return 'Deleted';

@@ -24,19 +24,20 @@ use Illuminate\Http\Request;
 
 class AtAGlanceController extends Controller
 {
-    public function viewAtAGlance(){
+    public function viewAtAGlance()
+    {
         $today = Carbon::now()->format('Y-m-d');
         $air_ticket_count = Airticket::where('invoice_date', $today)->count();
         $air_ticket_sum = Airticket::where('invoice_date', $today)->sum('total_price');
 
-        $package_count = Package::whereDate('created_at','=', $today)->count();
-        $package_sum = Package::whereDate('created_at','=', $today)->sum('total_total_price');
+        $package_count = Package::whereDate('created_at', '=', $today)->count();
+        $package_sum = Package::whereDate('created_at', '=', $today)->sum('total_total_price');
 
-        $visa_count = VisaUpdated::whereDate('created_at','=', $today)->count();
-        $visa_sum = VisaUpdated::whereDate('created_at','=', $today)->sum('grand_total_price');
+        $visa_count = VisaUpdated::whereDate('created_at', '=', $today)->count();
+        $visa_sum = VisaUpdated::whereDate('created_at', '=', $today)->sum('grand_total_price');
 
-        $hotel_booking_count = HotelBooking::whereDate('created_at','=', $today)->count();
-        $hotel_booking_sum = HotelBooking::whereDate('created_at','=', $today)->sum('total_price');
+        $hotel_booking_count = HotelBooking::whereDate('created_at', '=', $today)->count();
+        $hotel_booking_sum = HotelBooking::whereDate('created_at', '=', $today)->sum('total_price');
 
         $cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
         $dhanmondi_cash_book = CashBook::where('branch_id', 1)->orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance', 'branch_blance')->first();
@@ -44,7 +45,7 @@ class AtAGlanceController extends Controller
 
         $bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->select('bank_date', 'blance')->first();
         $cheque = ChequeBook::where('cheque_date', $today)->sum('cheque_amount');
-        $others = Other::whereDate('created_at','=', $today)->sum('others_amount');
+        $others = Other::whereDate('created_at', '=', $today)->sum('others_amount');
 
         $guest_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->select('transjaction_date', 'blance')->first();
         $suplier_blance = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->select('transaction_date', 'balance')->first();
@@ -86,19 +87,21 @@ class AtAGlanceController extends Controller
             'incentive' => $incentive,
         ]);
     }
-    public function viewAtAGlanceSearch($search){
+
+    public function viewAtAGlanceSearch($search)
+    {
         $today = $search;
-        $air_ticket_count = Airticket::where('invoice_date','like', $today.'%')->count();
-        $air_ticket_sum = Airticket::where('invoice_date', 'like', $today.'%')->sum('total_price');
+        $air_ticket_count = Airticket::where('invoice_date', 'like', $today . '%')->count();
+        $air_ticket_sum = Airticket::where('invoice_date', 'like', $today . '%')->sum('total_price');
 
-        $package_count = Package::whereDate('created_at','like', $today.'%')->count();
-        $package_sum = Package::whereDate('created_at','like', $today.'%')->sum('total_total_price');
+        $package_count = Package::whereDate('created_at', 'like', $today . '%')->count();
+        $package_sum = Package::whereDate('created_at', 'like', $today . '%')->sum('total_total_price');
 
-        $visa_count = VisaUpdated::whereDate('created_at','like', $today.'%')->count();
-        $visa_sum = VisaUpdated::whereDate('created_at','like', $today.'%')->sum('grand_total_price');
+        $visa_count = VisaUpdated::whereDate('created_at', 'like', $today . '%')->count();
+        $visa_sum = VisaUpdated::whereDate('created_at', 'like', $today . '%')->sum('grand_total_price');
 
-        $hotel_booking_count = HotelBooking::whereDate('created_at','like', $today.'%')->count();
-        $hotel_booking_sum = HotelBooking::whereDate('created_at','like', $today.'%')->sum('total_price');
+        $hotel_booking_count = HotelBooking::whereDate('created_at', 'like', $today . '%')->count();
+        $hotel_booking_sum = HotelBooking::whereDate('created_at', 'like', $today . '%')->sum('total_price');
 
         $cash_book = CashBook::orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
         $dhanmondi_cash_book = CashBook::where('branch_id', 1)->orderBy('cash_date', 'desc')->orderBy('id', 'desc')->select('cash_date', 'blance')->first();
@@ -106,21 +109,21 @@ class AtAGlanceController extends Controller
 
 
         $bank_book = BankBook::orderBy('bank_date', 'desc')->orderBy('id', 'desc')->select('bank_date', 'blance')->first();
-        $cheque = ChequeBook::where('cheque_date', 'like', $today.'%')->sum('cheque_amount');
-        $others = Other::whereDate('created_at','like', $today.'%')->sum('others_amount');
+        $cheque = ChequeBook::where('cheque_date', 'like', $today . '%')->sum('cheque_amount');
+        $others = Other::whereDate('created_at', 'like', $today . '%')->sum('others_amount');
 
         $guest_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->select('transjaction_date', 'blance')->first();
         $suplier_blance = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->select('transaction_date', 'balance')->first();
 
-        $received = MoneyReceived::whereDate('created_at', 'like', $today.'%')->sum('total_received_amount');
-        $payment = Payment::whereDate('debit_voucher_date', 'like', $today.'%')->sum('total_payment_amount');
+        $received = MoneyReceived::whereDate('created_at', 'like', $today . '%')->sum('total_received_amount');
+        $payment = Payment::whereDate('debit_voucher_date', 'like', $today . '%')->sum('total_payment_amount');
 
         $received_loan = ReceivedLoanTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->select('transaction_date', 'blance')->first();
         $payment_loan = PaymentLoanTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->select('transaction_date', 'blance')->first();
 
-        $expense = Expence::where('expence_date', 'like', $today.'%')->sum('total_expence_amount');
-        $salary = Salary::where('salary_date', 'like', $today.'%')->sum('total_salary_amount');
-        $incentive = Incentive::where('incentive_date', 'like', $today.'%')->sum('total_incentive_amount');
+        $expense = Expence::where('expence_date', 'like', $today . '%')->sum('total_expence_amount');
+        $salary = Salary::where('salary_date', 'like', $today . '%')->sum('total_salary_amount');
+        $incentive = Incentive::where('incentive_date', 'like', $today . '%')->sum('total_incentive_amount');
         return response()->json([
             'air_ticket_count' => $air_ticket_count,
             'air_ticket_sum' => $air_ticket_sum,

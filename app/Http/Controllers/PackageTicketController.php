@@ -10,14 +10,16 @@ use Session;
 
 class PackageTicketController extends Controller
 {
-    protected function addPackageTicketValidation($request){
+    protected function addPackageTicketValidation($request)
+    {
         $request->validate([
             'ticket_date' => 'required|date',
             'ticket_type' => 'required'
         ]);
     }
 
-    public function addPackageTicketDate(Request $request){
+    public function addPackageTicketDate(Request $request)
+    {
         $this->addPackageTicketValidation($request);
         $package = Package::where('id', $request->id)->first();
         $package->ticket_date = $request->ticket_date;
@@ -26,23 +28,33 @@ class PackageTicketController extends Controller
         $package->update();
         return 'Package Ticket Date Added Successfully';
     }
-    public function getAllPackageTicket(){
+
+    public function getAllPackageTicket()
+    {
         $user_type = Session::get('user_type');
-        $package = Package::with(['guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('state', 7)->paginate(10);
+        $package = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 7)->paginate(10);
         return response()->json([
             'pacakge_ticket' => $package,
             'user_type' => $user_type
         ]);
     }
-    public function EditPackageTicket($id){
+
+    public function EditPackageTicket($id)
+    {
         $user_type = Session::get('user_type');
-        $package = Package::with(['package_days','guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
+        $package = Package::with(['package_days', 'guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('id', $id)->first();
         return response()->json([
             'package_ticket' => $package,
             'user_type' => $user_type
         ]);
     }
-    protected function updatePackageTicketValidation($request){
+
+    protected function updatePackageTicketValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -74,7 +86,9 @@ class PackageTicketController extends Controller
             'ticket_type' => 'required',
         ]);
     }
-    protected function updatePackageBasic($request, $package){
+
+    protected function updatePackageBasic($request, $package)
+    {
         $package->guest = $request->guest;
         $package->package_type = $request->package_type;
         $package->country = $request->country;
@@ -91,7 +105,6 @@ class PackageTicketController extends Controller
         $package->quared_size = $request->quared_size;
         $package->total_bed_qty = $request->total_bed_qty;
         $package->narration = $request->narration;
-
 
 
         $package->adult_qty = $request->adult_qty;
@@ -152,10 +165,12 @@ class PackageTicketController extends Controller
         $package->ticket_date = $request->ticket_date;
         $package->ticket_type = $request->ticket_type;
     }
-    protected function packageDay($request, $package){
+
+    protected function packageDay($request, $package)
+    {
         $package_day_arrys = $request->package_days;
         $package_day_arrys_count = count($package_day_arrys);
-        for ($i=0; $i<$package_day_arrys_count; $i++){
+        for ($i = 0; $i < $package_day_arrys_count; $i++) {
             $package_day = new PackageDay();
             $package_day->package_id = $package->id;
             $package_day->day = $package_day_arrys[$i]['day'];
@@ -168,13 +183,15 @@ class PackageTicketController extends Controller
             $package_day->save();
         }
     }
-    public function updatePackageTicket(Request $request){
+
+    public function updatePackageTicket(Request $request)
+    {
         $this->updatePackageTicketValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->updatePackageBasic($request, $package);
         $package->update();
         $package_days = PackageDay::where('package_id', $request->id)->get();
-        foreach ($package_days as $package_day){
+        foreach ($package_days as $package_day) {
             $package_day->delete();
         }
         $this->packageDay($request, $package);
@@ -182,27 +199,29 @@ class PackageTicketController extends Controller
         $this->transjaction($request, $package);
         return 'Package Ticket Added Successfully';
     }
-    protected function updateTransjactionBlance($request, $package){
+
+    protected function updateTransjactionBlance($request, $package)
+    {
         $transjaction = Transjaction::where('pack_id', $package->id)->first();
         $old_amount = $transjaction->debit_amount;
         $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
-        foreach ($next_same_date_transactions as $next_same_date_transaction){
+        foreach ($next_same_date_transactions as $next_same_date_transaction) {
             $next_same_date_transaction->blance -= $old_amount;
-            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+            if ($next_same_date_transaction->guest_id == $transjaction->guest_id) {
                 $next_same_date_transaction->guest_blance -= $old_amount;
             }
-            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+            if ($next_same_date_transaction->staff_id == $transjaction->staff_id) {
                 $next_same_date_transaction->staff_blance -= $old_amount;
             }
             $next_same_date_transaction->update();
         }
         $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_date_transactions as $next_date_transaction){
+        foreach ($next_date_transactions as $next_date_transaction) {
             $next_date_transaction->blance -= $old_amount;
-            if($next_date_transaction->guest_id == $transjaction->guest_id){
+            if ($next_date_transaction->guest_id == $transjaction->guest_id) {
                 $next_date_transaction->guest_blance -= $old_amount;
             }
-            if($next_date_transaction->staff_id == $transjaction->staff_id){
+            if ($next_date_transaction->staff_id == $transjaction->staff_id) {
                 $next_date_transaction->staff_blance -= $old_amount;
             }
             $next_date_transaction->update();
@@ -211,17 +230,18 @@ class PackageTicketController extends Controller
     }
 
 
-    protected function transjaction($request, $package){
+    protected function transjaction($request, $package)
+    {
         $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         }
         $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         }
         $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->select('id', 'transjaction_date', 'narration', 'blance')->first();
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->first();
         }
         $transjaction = new Transjaction();
@@ -231,30 +251,30 @@ class PackageTicketController extends Controller
         $transjaction->narration = $package->narration;
         $transjaction->transjaction_date = $package->confirm_date;
         $transjaction->debit_amount = $package->grand_total_price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $package->grand_total_price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $package->grand_total_price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance + $package->grand_total_price;
         }
         $transjaction->save();
 
         $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_dates as $next_date){
+        foreach ($next_dates as $next_date) {
             $next_date->blance += $package->grand_total_price;
-            if($next_date->guest_id == $package->guest){
+            if ($next_date->guest_id == $package->guest) {
                 $next_date->guest_blance += $package->grand_total_price;
             }
-            if($next_date->staff_id == $package->staff){
+            if ($next_date->staff_id == $package->staff) {
                 $next_date->staff_blance += $package->grand_total_price;
             }
             $next_date->update();

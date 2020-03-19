@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class GuestDesignationController extends Controller
 {
-    public function addGuestDesignation(Request $request){
+    public function addGuestDesignation(Request $request)
+    {
         $request->validate([
             'guest_designation' => 'required|min:3|max:50'
         ]);
@@ -17,30 +18,40 @@ class GuestDesignationController extends Controller
         $guest_designation->save();
         return 'save';
     }
-    public function allGuestDesignation(){
+
+    public function allGuestDesignation()
+    {
         $all_guest_designations = GuestDesignation::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'all_guest_designations' => $all_guest_designations
         ], 200);
     }
-    public function allGuestDesignationForSelect(){
+
+    public function allGuestDesignationForSelect()
+    {
         $all_guest_designations = GuestDesignation::orderBy('guest_designation')->get();
         return response()->json([
             'all_guest_designations' => $all_guest_designations
         ], 200);
     }
-    public function deleteGuestDesignation($id){
+
+    public function deleteGuestDesignation($id)
+    {
         $guest_designation = GuestDesignation::find($id);
         $guest_designation->delete();
         return 'delete';
     }
-    public function editGuestDesignation($id){
+
+    public function editGuestDesignation($id)
+    {
         $guest_designation_info = GuestDesignation::find($id);
         return response()->json([
             'guest_designation_info' => $guest_designation_info
         ], 200);
     }
-    public function updateGuestDesignation(Request $request){
+
+    public function updateGuestDesignation(Request $request)
+    {
         $request->validate([
             'guest_designation' => 'required'
         ]);

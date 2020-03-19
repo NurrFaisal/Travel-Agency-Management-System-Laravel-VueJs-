@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class AgencyController extends Controller
 {
-    protected function suplierValidation($request){
+    protected function suplierValidation($request)
+    {
         $request->validate([
             'name' => 'required',
             'contact_person' => 'required',
@@ -18,7 +19,8 @@ class AgencyController extends Controller
         ]);
     }
 
-    protected function suplierBasic($request, $agency){
+    protected function suplierBasic($request, $agency)
+    {
         $agency->name = $request->name;
         $agency->contact_person = $request->contact_person;
         $agency->phone_number = $request->phone_number;
@@ -27,7 +29,8 @@ class AgencyController extends Controller
         $agency->product = $request->product;
     }
 
-    public function addSuplier(Request $request){
+    public function addSuplier(Request $request)
+    {
         $this->suplierValidation($request);
         $agency = new Agency();
         $this->suplierBasic($request, $agency);
@@ -35,27 +38,33 @@ class AgencyController extends Controller
         return 'Success';
     }
 
-    public function getAllAgency(){
+    public function getAllAgency()
+    {
         $agency = Agency::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'agency' => $agency
         ]);
     }
 
-    public function editSuplier($id){
+    public function editSuplier($id)
+    {
         $agency = Agency::where('id', $id)->first();
         return response()->json([
             'agency' => $agency
         ]);
     }
-    public function updateSuplier(Request $request){
+
+    public function updateSuplier(Request $request)
+    {
         $this->suplierValidation($request);
         $agency = Agency::where('id', $request->id)->first();
         $this->suplierBasic($request, $agency);
         $agency->update();
         return 'update';
     }
-    public function deleteSuplier($id){
+
+    public function deleteSuplier($id)
+    {
         $agency = Agency::where('id', $id)->first();
         $agency->delete();
         return 'delete';

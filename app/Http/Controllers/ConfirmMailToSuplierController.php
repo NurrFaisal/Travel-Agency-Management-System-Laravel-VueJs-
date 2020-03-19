@@ -7,20 +7,27 @@ use Illuminate\Http\Request;
 
 class ConfirmMailToSuplierController extends Controller
 {
-    public function getAllPackageCMTS(){
-        $confirm_mail_to_suplier = Package::with(['guest' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 6)->orderBy('id', 'desc')->paginate(10);
+    public function getAllPackageCMTS()
+    {
+        $confirm_mail_to_suplier = Package::with(['guest' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 6)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'confirm_mail_to_suplier' => $confirm_mail_to_suplier
         ]);
     }
-    protected function addConfirmMailToSuplierValidation($request){
+
+    protected function addConfirmMailToSuplierValidation($request)
+    {
         $request->validate([
             'id' => 'required',
             'confirm_mail_to_suplier_date' => 'required',
             'confirm_mail_to_suplier_note' => 'required'
         ]);
     }
-    public function addConfirmMailToSuplier(Request $request){
+
+    public function addConfirmMailToSuplier(Request $request)
+    {
         $this->addConfirmMailToSuplierValidation($request);
         $package = Package::where('id', $request->id)->first();
         $package->confirm_mail_to_suplier_date = $request->confirm_mail_to_suplier_date;
@@ -29,14 +36,17 @@ class ConfirmMailToSuplierController extends Controller
         $package->update();
         return 'Confirm Mail To Suplier Date Added Successfully';
     }
-    public function editConfirmMailToSuplier($id){
+
+    public function editConfirmMailToSuplier($id)
+    {
         $cmts = Package::where('id', $id)->first();
         return response()->json([
             'cmts' => $cmts
         ]);
     }
 
-    protected function updateConfirmMailToSuplierValidation($request){
+    protected function updateConfirmMailToSuplierValidation($request)
+    {
         $request->validate([
             'guest_id' => 'required|numeric',
             'staff_id' => 'required|numeric',
@@ -64,7 +74,9 @@ class ConfirmMailToSuplierController extends Controller
             'confirm_mail_to_suplier_note' => 'required',
         ]);
     }
-    protected function updateConfirmMailToSuplierBasic($request, $package){
+
+    protected function updateConfirmMailToSuplierBasic($request, $package)
+    {
         $package->guest_id = $request->guest_id;
         $package->staff_id = $request->staff_id;
         $package->country = $request->country;
@@ -91,7 +103,8 @@ class ConfirmMailToSuplierController extends Controller
         $package->confirm_mail_to_suplier_note = $request->confirm_mail_to_suplier_note;
     }
 
-    public function updateConfirmMailToSuplier(Request $request){
+    public function updateConfirmMailToSuplier(Request $request)
+    {
         $this->updateConfirmMailToSuplierValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->updateConfirmMailToSuplierBasic($request, $package);

@@ -9,14 +9,18 @@ use Illuminate\Http\Request;
 
 class PDDINController extends Controller
 {
-    public function getAllPaymentDoneDueInvoiceNo(){
-        $payment_done_due_invoice_no = Package::with(['guest' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 9)->orderBy('id', 'desc')->paginate(10);
+    public function getAllPaymentDoneDueInvoiceNo()
+    {
+        $payment_done_due_invoice_no = Package::with(['guest' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 9)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'payment_done_due_invoice_no' => $payment_done_due_invoice_no
         ]);
     }
 
-    protected function addPaymentValidation($request){
+    protected function addPaymentValidation($request)
+    {
         $request->validate([
             'payment_date' => 'required',
             'price' => 'required',
@@ -25,7 +29,8 @@ class PDDINController extends Controller
         ]);
     }
 
-    public function addPayment(Request $request){
+    public function addPayment(Request $request)
+    {
         $this->addPaymentValidation($request);
         $package = Package::where('id', $request->id)->first();
         $package->payment_date = $request->payment_date;
@@ -55,19 +60,19 @@ class PDDINController extends Controller
         $transjaction->narration = $package->narration;
         $transjaction->transjaction_date = $package->created_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
@@ -75,13 +80,16 @@ class PDDINController extends Controller
         return 'Payment Date And Price Added Successfully';
     }
 
-    public function EditPddin($id){
+    public function EditPddin($id)
+    {
         $pddin = Package::where('id', $id)->first();
         return response()->json([
             'pddin' => $pddin
         ]);
     }
-    protected function updatePaymentValidation($request){
+
+    protected function updatePaymentValidation($request)
+    {
         $request->validate([
             'guest_id' => 'required|numeric',
             'staff_id' => 'required|numeric',
@@ -118,7 +126,9 @@ class PDDINController extends Controller
             'payment_note' => 'required',
         ]);
     }
-    protected function updatePaymentBasic($request, $package){
+
+    protected function updatePaymentBasic($request, $package)
+    {
         $package->guest_id = $request->guest_id;
         $package->staff_id = $request->staff_id;
         $package->country = $request->country;
@@ -153,14 +163,16 @@ class PDDINController extends Controller
         $package->advance = $request->advance;
         $package->payment_note = $request->payment_note;
     }
-    public function updatePayment(Request $request){
+
+    public function updatePayment(Request $request)
+    {
         $this->updatePaymentValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->updatePaymentBasic($request, $package);
         $package->update();
 
         $old_profit = Profit::where('pack_id', $package->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -172,7 +184,7 @@ class PDDINController extends Controller
         $profit->save();
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('pack_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Package Transjaction 1st ( P-'.$update_first_transjaction->pack_id.' )';
+        $update_first_transjaction->narration = 'Updated Package Transjaction 1st ( P-' . $update_first_transjaction->pack_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $package->guest_id)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -183,7 +195,7 @@ class PDDINController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->pack_id = $update_first_transjaction->pack_id;
-        $update_scond_transjaction->narration = 'Updated Package Transjaction 2nd ( P-'.$update_first_transjaction->pack_id.' )';
+        $update_scond_transjaction->narration = 'Updated Package Transjaction 2nd ( P-' . $update_first_transjaction->pack_id . ' )';
         $update_scond_transjaction->transjaction_date = $package->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -202,19 +214,19 @@ class PDDINController extends Controller
         $transjaction->narration = $package->narration;
         $transjaction->transjaction_date = $package->updated_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();

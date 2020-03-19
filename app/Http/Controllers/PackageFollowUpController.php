@@ -11,7 +11,8 @@ use Session;
 
 class PackageFollowUpController extends Controller
 {
-    protected function addPackageFollowUpValidation($request){
+    protected function addPackageFollowUpValidation($request)
+    {
         $request->validate([
             'id' => 'required|numeric',
             'flw_up_to_suplier' => 'required',
@@ -19,8 +20,10 @@ class PackageFollowUpController extends Controller
             'note' => 'required',
         ]);
     }
-    public function addPackageFollowUp(Request $request){
-        if($request->flw_up_to_suplier == 1){
+
+    public function addPackageFollowUp(Request $request)
+    {
+        if ($request->flw_up_to_suplier == 1) {
             $package = Package::where('id', $request->id)->first();
             $package->state = 2;
             $package->update();
@@ -33,24 +36,32 @@ class PackageFollowUpController extends Controller
         return 'Follow Up To Suplier Date Added Successfully';
     }
 
-    public function getAllPackageFollowUp(){
+    public function getAllPackageFollowUp()
+    {
         $user_type = Session::get('user_type');
-        $package_follow_up =Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->select('id','guest', 'country', 'destination', 'duration')->where('state', 2)->orderBy('id', 'desc')->paginate(10);
+        $package_follow_up = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->select('id', 'guest', 'country', 'destination', 'duration')->where('state', 2)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'package_follow_up' => $package_follow_up,
             'user_type' => $user_type
         ]);
     }
 
-    public function editPackageFollowUp($id){
+    public function editPackageFollowUp($id)
+    {
         $user_type = Session::get('user_type');
-       $package_follow_up = Package::with(['package_days','guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
-       return response()->json([
-           'package_follow_up' => $package_follow_up,
-           'user_type' => $user_type
-       ]);
+        $package_follow_up = Package::with(['package_days', 'guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('id', $id)->first();
+        return response()->json([
+            'package_follow_up' => $package_follow_up,
+            'user_type' => $user_type
+        ]);
     }
-    protected function addPackageQueryValidation($request){
+
+    protected function addPackageQueryValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -76,7 +87,9 @@ class PackageFollowUpController extends Controller
 
         ]);
     }
-    protected function addPackageQueryBasic($request, $package){
+
+    protected function addPackageQueryBasic($request, $package)
+    {
         $package->guest = $request->guest;
         $package->package_type = $request->package_type;
         $package->country = $request->country;
@@ -98,10 +111,12 @@ class PackageFollowUpController extends Controller
         $package->total_bed_qty = $request->total_bed_qty;
         $package->narration = $request->narration;
     }
-    protected function packageDay($request, $package){
+
+    protected function packageDay($request, $package)
+    {
         $package_day_arrys = $request->package_days;
         $package_day_arrys_count = count($package_day_arrys);
-        for ($i=0; $i<$package_day_arrys_count; $i++){
+        for ($i = 0; $i < $package_day_arrys_count; $i++) {
             $package_day = new PackageDay();
             $package_day->package_id = $package->id;
             $package_day->day = $package_day_arrys[$i]['day'];
@@ -115,13 +130,14 @@ class PackageFollowUpController extends Controller
         }
     }
 
-    public function updatePackageFollowUp(Request $request){
+    public function updatePackageFollowUp(Request $request)
+    {
         $this->addPackageQueryValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->addPackageQueryBasic($request, $package);
         $package->update();
         $package_days = PackageDay::where('package_id', $request->id)->get();
-        foreach ($package_days as $package_day){
+        foreach ($package_days as $package_day) {
             $package_day->delete();
         }
         $this->packageDay($request, $package);

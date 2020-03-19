@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class VisaAgencyController extends Controller
 {
-    protected function visaAgencyValidation($request){
+    protected function visaAgencyValidation($request)
+    {
         $request->validate([
             'name' => 'required',
             'company_name' => 'required',
@@ -16,7 +17,9 @@ class VisaAgencyController extends Controller
             'address' => 'required',
         ]);
     }
-    protected function visaAgencyBasic($request, $visa_agency){
+
+    protected function visaAgencyBasic($request, $visa_agency)
+    {
         $visa_agency->name = $request->name;
         $visa_agency->company_name = $request->company_name;
         $visa_agency->email_address = $request->email_address;
@@ -24,32 +27,40 @@ class VisaAgencyController extends Controller
         $visa_agency->address = $request->address;
     }
 
-    public function addVisaAgency(Request $request){
+    public function addVisaAgency(Request $request)
+    {
         $this->visaAgencyValidation($request);
         $visa_agency = new VisaAgency();
         $this->visaAgencyBasic($request, $visa_agency);
         $visa_agency->save();
         return 'save';
     }
-    public function getAllVisaAgency(){
+
+    public function getAllVisaAgency()
+    {
         $visa_agency = VisaAgency::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'visa_agency' => $visa_agency
         ]);
     }
-    public function deleteVisaAgency($id){
+
+    public function deleteVisaAgency($id)
+    {
         $visa_agency = VisaAgency::where('id', $id)->first();
         $visa_agency->delete();
         return 'Deleted';
     }
 
-    public function editVisaAgency($id){
+    public function editVisaAgency($id)
+    {
         $visa_agency = VisaAgency::where('id', $id)->first();
         return response()->json([
             'visa_agency' => $visa_agency
         ]);
     }
-    public function updateVisaAgency(Request $request){
+
+    public function updateVisaAgency(Request $request)
+    {
         $this->visaAgencyValidation($request);
         $visa_agency = VisaAgency::where('id', $request->id)->first();
         $this->visaAgencyBasic($request, $visa_agency);

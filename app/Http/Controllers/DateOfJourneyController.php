@@ -13,21 +13,28 @@ use Session;
 
 class DateOfJourneyController extends Controller
 {
-    public function getAllDateOfJourney(){
+    public function getAllDateOfJourney()
+    {
         $user_type = Session::get('user_type');
-        $date_of_journey = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 10)->orderBy('id', 'desc')->paginate(10);
+        $date_of_journey = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 10)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'date_of_journey' => $date_of_journey,
             'user_type' => $user_type
         ]);
     }
-    protected function addDateOfJourneyValidation($request){
+
+    protected function addDateOfJourneyValidation($request)
+    {
         $request->validate([
-            'id'=> 'required',
+            'id' => 'required',
             'confirm_date_of_journey' => 'required',
         ]);
     }
-    public function addDateOfJourney(Request $request){
+
+    public function addDateOfJourney(Request $request)
+    {
         $this->addDateOfJourneyValidation($request);
         $package = Package::where('id', $request->id)->first();
         $package->confirm_date_of_journey = $request->confirm_date_of_journey;
@@ -36,16 +43,20 @@ class DateOfJourneyController extends Controller
         return 'Confirm Date Of Journey Added Successfully';
     }
 
-    public function editDateOfJourney($id){
+    public function editDateOfJourney($id)
+    {
         $user_type = Session::get('user_type');
-        $doj = Package::with(['net_prices','package_days', 'guestt' =>function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
+        $doj = Package::with(['net_prices', 'package_days', 'guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('id', $id)->first();
         return response()->json([
             'doj' => $doj,
-            'user_type'=> $user_type
+            'user_type' => $user_type
         ]);
     }
 
-    protected function updateDateOfJourneyValidation($request){
+    protected function updateDateOfJourneyValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -83,7 +94,8 @@ class DateOfJourneyController extends Controller
         ]);
     }
 
-    protected function updateDateOfJourneyBasic($request, $package){
+    protected function updateDateOfJourneyBasic($request, $package)
+    {
         $package->guest = $request->guest;
         $package->package_type = $request->package_type;
         $package->country = $request->country;
@@ -100,7 +112,6 @@ class DateOfJourneyController extends Controller
         $package->quared_size = $request->quared_size;
         $package->total_bed_qty = $request->total_bed_qty;
         $package->narration = $request->narration;
-
 
 
         $package->adult_qty = $request->adult_qty;
@@ -166,10 +177,11 @@ class DateOfJourneyController extends Controller
 
     }
 
-    protected function packageDay($request, $package){
+    protected function packageDay($request, $package)
+    {
         $package_day_arrys = $request->package_days;
         $package_day_arrys_count = count($package_day_arrys);
-        for ($i=0; $i<$package_day_arrys_count; $i++){
+        for ($i = 0; $i < $package_day_arrys_count; $i++) {
             $package_day = new PackageDay();
             $package_day->package_id = $package->id;
             $package_day->day = $package_day_arrys[$i]['day'];
@@ -182,55 +194,59 @@ class DateOfJourneyController extends Controller
             $package_day->save();
         }
     }
-    protected function savePackageSuplierTransaction($request, $net_price){
+
+    protected function savePackageSuplierTransaction($request, $net_price)
+    {
         // SuplierTransaction Start
         $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $net_price->net_price_date)->where('suplier_id', $net_price->suplier)->first();
-        if($pre_suplier_sup_transaction == null){
-            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date','<', $net_price->net_price_date)->where('suplier_id', $net_price->suplier)->first();
+        if ($pre_suplier_sup_transaction == null) {
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $net_price->net_price_date)->where('suplier_id', $net_price->suplier)->first();
         }
-        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date',$net_price->net_price_date)->first();
-        if($pre_sup_transaction == null){
+        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $net_price->net_price_date)->first();
+        if ($pre_sup_transaction == null) {
             $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $net_price->net_price_date)->first();
         }
         $suplier_transaction = new SuplierTransaction();
-        $suplier_transaction->suplier_id =  $net_price->suplier;
+        $suplier_transaction->suplier_id = $net_price->suplier;
         $suplier_transaction->pack_id = $net_price->pack_id;
         $suplier_transaction->transaction_date = $net_price->net_price_date;
-        $suplier_transaction->narration = "Package Net Price P-".$net_price->pack_id;
+        $suplier_transaction->narration = "Package Net Price P-" . $net_price->pack_id;
         $suplier_transaction->credit_amount = $net_price->amount;
-        if($pre_sup_transaction == null){
+        if ($pre_sup_transaction == null) {
             $suplier_transaction->balance = -$net_price->amount;
-        }else{
+        } else {
             $suplier_transaction->balance = $pre_sup_transaction->balance - $net_price->amount;
         }
-        if($pre_suplier_sup_transaction == null){
+        if ($pre_suplier_sup_transaction == null) {
             $suplier_transaction->suplier_balance = -$net_price->amount;
-        }else{
+        } else {
             $suplier_transaction->suplier_balance = $pre_suplier_sup_transaction->suplier_balance - $net_price->amount;
         }
         $suplier_transaction->save();
         $next_same_dates = SuplierTransaction::where('id', '>', $suplier_transaction->id)->where('transaction_date', $suplier_transaction->transaction_date)->get();
-        foreach ($next_same_dates as $next_same_date){
+        foreach ($next_same_dates as $next_same_date) {
             $next_same_date->balance -= $net_price->amount;
-            if($next_same_date->suplier_id == $suplier_transaction->suplier_id){
+            if ($next_same_date->suplier_id == $suplier_transaction->suplier_id) {
                 $next_same_date->suplier_balance -= $net_price->amount;
             }
             $next_same_date->update();
         }
         $next_dates = SuplierTransaction::orderBy('transaction_date', 'asc')->where('transaction_date', '>', $suplier_transaction->transaction_date)->get();
-        foreach ($next_dates as $next_date){
+        foreach ($next_dates as $next_date) {
             $next_date->balance -= $net_price->amount;
-            if($next_date->suplier_id == $suplier_transaction->suplier_id){
+            if ($next_date->suplier_id == $suplier_transaction->suplier_id) {
                 $next_date->suplier_balance -= $net_price->amount;
             }
             $next_date->update();
         }
         // SuplierTransaction End
     }
-    public function saveUpdateNetPriceLoop($request, $package){
+
+    public function saveUpdateNetPriceLoop($request, $package)
+    {
         $net_price_arry = $request->net_prices;
         $net_price_arry_count = count($net_price_arry);
-        for ($i = 0; $i < $net_price_arry_count; $i++){
+        for ($i = 0; $i < $net_price_arry_count; $i++) {
             $net_price = new PackageNetPrice();
             $net_price->suplier = $net_price_arry[$i]['suplier'];
             $net_price->net_price_date = $net_price_arry[$i]['net_price_date'];
@@ -240,7 +256,9 @@ class DateOfJourneyController extends Controller
             $this->savePackageSuplierTransaction($request, $net_price);
         }
     }
-    protected function profit($package){
+
+    protected function profit($package)
+    {
         $profit = new Profit();
         $profit->staff_id = $package->staff;
         $profit->guest_id = $package->guest;
@@ -249,21 +267,23 @@ class DateOfJourneyController extends Controller
         $profit->amount = $package->grand_total_price - $package->grand_total_net_price;
         $profit->save();
     }
-    protected  function removeSuplierTransaction($package){
-        $suplier_transactions =SuplierTransaction::where('pack_id', $package->id)->get();
-        foreach ($suplier_transactions as $suplier_transaction){
+
+    protected function removeSuplierTransaction($package)
+    {
+        $suplier_transactions = SuplierTransaction::where('pack_id', $package->id)->get();
+        foreach ($suplier_transactions as $suplier_transaction) {
             $next_same_dates = SuplierTransaction::where('id', '>', $suplier_transaction->id)->where('transaction_date', $suplier_transaction->transaction_date)->get();
-            foreach ($next_same_dates as $next_same_date){
+            foreach ($next_same_dates as $next_same_date) {
                 $next_same_date->balance += $suplier_transaction->credit_amount;
-                if($next_same_date->suplier_id == $suplier_transaction->suplier_id){
+                if ($next_same_date->suplier_id == $suplier_transaction->suplier_id) {
                     $next_same_date->suplier_balance += $suplier_transaction->credit_amount;
                 }
                 $next_same_date->update();
             }
             $next_dates = SuplierTransaction::where('transaction_date', '>', $suplier_transaction->transaction_date)->get();
-            foreach ($next_dates as $next_date){
+            foreach ($next_dates as $next_date) {
                 $next_date->balance += $suplier_transaction->credit_amount;
-                if($next_date->suplier_id == $suplier_transaction->suplier_id){
+                if ($next_date->suplier_id == $suplier_transaction->suplier_id) {
                     $next_date->suplier_balance += $suplier_transaction->credit_amount;
                 }
                 $next_date->update();
@@ -272,24 +292,25 @@ class DateOfJourneyController extends Controller
         }
     }
 
-    public function updateDateOfJourney(Request $request){
+    public function updateDateOfJourney(Request $request)
+    {
         $this->updateDateOfJourneyValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->updateDateOfJourneyBasic($request, $package);
         $package->update();
         $this->removeSuplierTransaction($package);
         $package_days = PackageDay::where('package_id', $request->id)->get();
-        foreach ($package_days as $package_day){
+        foreach ($package_days as $package_day) {
             $package_day->delete();
         }
         $this->packageDay($request, $package);
         $net_prices = PackageNetPrice::where('pack_id', $package->id)->get();
-        foreach ($net_prices as $net_price){
+        foreach ($net_prices as $net_price) {
             $net_price->delete();
         }
         $this->saveUpdateNetPriceLoop($request, $package);
         $profits = Profit::where('pack_id', $package->id)->get();
-        foreach ($profits as $profit){
+        foreach ($profits as $profit) {
             $profit->delete();
         }
         $this->profit($package);
@@ -297,27 +318,29 @@ class DateOfJourneyController extends Controller
         $this->transjaction($request, $package);
         return 'Document Delivery Date Updated Successfully';
     }
-    protected function updateTransjactionBlance($request, $package){
+
+    protected function updateTransjactionBlance($request, $package)
+    {
         $transjaction = Transjaction::where('pack_id', $package->id)->first();
         $old_amount = $transjaction->debit_amount;
         $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
-        foreach ($next_same_date_transactions as $next_same_date_transaction){
+        foreach ($next_same_date_transactions as $next_same_date_transaction) {
             $next_same_date_transaction->blance -= $old_amount;
-            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+            if ($next_same_date_transaction->guest_id == $transjaction->guest_id) {
                 $next_same_date_transaction->guest_blance -= $old_amount;
             }
-            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+            if ($next_same_date_transaction->staff_id == $transjaction->staff_id) {
                 $next_same_date_transaction->staff_blance -= $old_amount;
             }
             $next_same_date_transaction->update();
         }
         $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_date_transactions as $next_date_transaction){
+        foreach ($next_date_transactions as $next_date_transaction) {
             $next_date_transaction->blance -= $old_amount;
-            if($next_date_transaction->guest_id == $transjaction->guest_id){
+            if ($next_date_transaction->guest_id == $transjaction->guest_id) {
                 $next_date_transaction->guest_blance -= $old_amount;
             }
-            if($next_date_transaction->staff_id == $transjaction->staff_id){
+            if ($next_date_transaction->staff_id == $transjaction->staff_id) {
                 $next_date_transaction->staff_blance -= $old_amount;
             }
             $next_date_transaction->update();
@@ -326,17 +349,18 @@ class DateOfJourneyController extends Controller
     }
 
 
-    protected function transjaction($request, $package){
+    protected function transjaction($request, $package)
+    {
         $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         }
         $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         }
         $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->select('id', 'transjaction_date', 'narration', 'blance')->first();
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->first();
         }
         $transjaction = new Transjaction();
@@ -346,30 +370,30 @@ class DateOfJourneyController extends Controller
         $transjaction->narration = $package->narration;
         $transjaction->transjaction_date = $package->confirm_date;
         $transjaction->debit_amount = $package->grand_total_price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $package->grand_total_price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $package->grand_total_price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance + $package->grand_total_price;
         }
         $transjaction->save();
 
         $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_dates as $next_date){
+        foreach ($next_dates as $next_date) {
             $next_date->blance += $package->grand_total_price;
-            if($next_date->guest_id == $package->guest){
+            if ($next_date->guest_id == $package->guest) {
                 $next_date->guest_blance += $package->grand_total_price;
             }
-            if($next_date->staff_id == $package->staff){
+            if ($next_date->staff_id == $package->staff) {
                 $next_date->staff_blance += $package->grand_total_price;
             }
             $next_date->update();

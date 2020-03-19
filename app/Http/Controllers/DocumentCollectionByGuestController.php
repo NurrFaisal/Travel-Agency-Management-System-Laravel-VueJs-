@@ -9,19 +9,26 @@ use Illuminate\Http\Request;
 
 class DocumentCollectionByGuestController extends Controller
 {
-    public function getAllDocumentCollectionByGuest(){
-        $document_collection_by_guest = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 8)->orderBy('id', 'desc')->paginate(10);
+    public function getAllDocumentCollectionByGuest()
+    {
+        $document_collection_by_guest = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 8)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'document_collection_by_guest' => $document_collection_by_guest
         ]);
     }
-    protected function addDocumentCollectionValidation($request){
+
+    protected function addDocumentCollectionValidation($request)
+    {
         $request->validate([
             'id' => 'required',
             'document_delivery_date' => 'required',
         ]);
     }
-    public function addDocumentCollection(Request $request){
+
+    public function addDocumentCollection(Request $request)
+    {
         $this->addDocumentCollectionValidation($request);
         $package = Package::where('id', $request->id)->first();
         $package->document_delivery_date = $request->document_delivery_date;
@@ -30,13 +37,16 @@ class DocumentCollectionByGuestController extends Controller
         return 'Document Delivery Date Added Successfully';
     }
 
-    public function editDocumentCollectionByGuest($id){
+    public function editDocumentCollectionByGuest($id)
+    {
         $dcbg = Package::where('id', $id)->first();
         return response()->json([
             'dcbg' => $dcbg
         ]);
     }
-    protected function updateDocumentCollectionValidation($request){
+
+    protected function updateDocumentCollectionValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -70,7 +80,9 @@ class DocumentCollectionByGuestController extends Controller
             'delivery_date' => 'required',
         ]);
     }
-    protected function updateDocumentCollectionByGuestBasic($request, $package){
+
+    protected function updateDocumentCollectionByGuestBasic($request, $package)
+    {
         $package->guest_id = $request->guest_id;
         $package->staff_id = $request->staff_id;
         $package->country = $request->country;
@@ -108,14 +120,15 @@ class DocumentCollectionByGuestController extends Controller
         $package->document_collection_by_note = $request->document_collection_by_note;
     }
 
-    public function updateDocumentCollectionByGuest(Request $request){
+    public function updateDocumentCollectionByGuest(Request $request)
+    {
         $this->updateDocumentCollectionValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->updateDocumentCollectionByGuestBasic($request, $package);
         $package->update();
 
         $old_profit = Profit::where('pack_id', $package->id)->first();
-        if($old_profit){
+        if ($old_profit) {
             $old_profit->delete();
         }
         $profit = new Profit();
@@ -127,7 +140,7 @@ class DocumentCollectionByGuestController extends Controller
         $profit->save();
 
         $update_first_transjaction = Transjaction::orderBy('id', 'desc')->where('pack_id', $request->id)->first();
-        $update_first_transjaction->narration = 'Updated Package Transjaction 1st ( P-'.$update_first_transjaction->pack_id.' )';
+        $update_first_transjaction->narration = 'Updated Package Transjaction 1st ( P-' . $update_first_transjaction->pack_id . ' )';
         $update_first_transjaction->update();
 
         $pre_guest_transjaction_blance = Transjaction::where('guest_id', $package->guest_id)->orderBy('id', 'desc')->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
@@ -138,7 +151,7 @@ class DocumentCollectionByGuestController extends Controller
         $update_scond_transjaction->guest_id = $update_first_transjaction->guest_id;
         $update_scond_transjaction->staff_id = $update_first_transjaction->staff_id;
         $update_scond_transjaction->pack_id = $update_first_transjaction->pack_id;
-        $update_scond_transjaction->narration = 'Updated Package Transjaction 2nd ( P-'.$update_first_transjaction->pack_id.' )';
+        $update_scond_transjaction->narration = 'Updated Package Transjaction 2nd ( P-' . $update_first_transjaction->pack_id . ' )';
         $update_scond_transjaction->transjaction_date = $package->updated_at->format('Y-m-d');
         $update_scond_transjaction->debit_amount = $update_first_transjaction->credit_amount;
         $update_scond_transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $update_first_transjaction->credit_amount;
@@ -157,25 +170,24 @@ class DocumentCollectionByGuestController extends Controller
         $transjaction->narration = $package->narration;
         $transjaction->transjaction_date = $package->updated_at->format('Y-m-d');
         $transjaction->credit_amount = $request->price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance - $request->price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = -$request->price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance - $request->price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = -$request->price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance - $request->price;
         }
         $transjaction->save();
         return 'Document Collection By Guest Updated Successfully';
     }
-
 
 
 }

@@ -8,7 +8,8 @@ use Session;
 
 class VisaCountryController extends Controller
 {
-    public function addVisaCountry(Request $request){
+    public function addVisaCountry(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
@@ -18,21 +19,24 @@ class VisaCountryController extends Controller
         return 'saved';
     }
 
-    public function getAllVisaCountry(){
+    public function getAllVisaCountry()
+    {
         $visa_country = VisaCountry::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'visa_country' => $visa_country
         ]);
     }
 
-    public function deleteVisaCountry($id){
+    public function deleteVisaCountry($id)
+    {
         return 'Not Perfect';
         $visa_country = VisaCountry::where('id', $id)->first();
         $visa_country->delete();
         return 'delete';
     }
 
-    public function editVisaCountry($id){
+    public function editVisaCountry($id)
+    {
         $user_type = Session::get('user_type');
         $visa_country = VisaCountry::where('id', $id)->first();
         return response()->json([
@@ -40,7 +44,9 @@ class VisaCountryController extends Controller
             'user_type' => $user_type
         ]);
     }
-    public function updateVisaCountry(Request $request){
+
+    public function updateVisaCountry(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);

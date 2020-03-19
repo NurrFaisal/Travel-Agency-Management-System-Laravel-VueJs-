@@ -723,15 +723,16 @@ class VisaUpdatedController extends Controller
         ]);
     }
 
-    public function getAllVisaSearch($search){
+    public function getAllVisaSearch($search)
+    {
         $len = strlen($search);
-        if($len == 9){
+        if ($len == 9) {
             $visa_count = 1;
             $pass_visa_id = [];
             $passports = Passport::where('passport_number', $search)->get();
             $passport_count = count($passports);
-            if($passport_count > 0){
-                foreach ($passports as $key => $passport){
+            if ($passport_count > 0) {
+                foreach ($passports as $key => $passport) {
                     $pass_visa_id[$key] = $passport->visa_updated_id;
                 }
                 $recieved_visas = VisaUpdated::with(['guest' => function ($q) {
@@ -878,7 +879,9 @@ class VisaUpdatedController extends Controller
         ]);
 
     }
-    public function getAllVisaStaffsBy(){
+
+    public function getAllVisaStaffsBy()
+    {
         $staffs = Staff::where('department', 4)->orderBy('first_name', 'asc')->get();
         return response()->json([
             'staffs' => $staffs

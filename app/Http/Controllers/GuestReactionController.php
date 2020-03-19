@@ -10,15 +10,20 @@ use Session;
 
 class GuestReactionController extends Controller
 {
-    public function getAllPackageGuestReaction(){
+    public function getAllPackageGuestReaction()
+    {
         $user_type = Session::get('user_type');
-        $guest_reaction = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 4)->orderBy('id', 'desc')->paginate(10);
+        $guest_reaction = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 4)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'guest_reaction' => $guest_reaction,
             'user_type' => $user_type
         ]);
     }
-    protected function guestReactionValidation($request){
+
+    protected function guestReactionValidation($request)
+    {
         $request->validate([
             'id' => 'required',
             'guest_reaction' => 'required',
@@ -28,14 +33,15 @@ class GuestReactionController extends Controller
         ]);
     }
 
-    public function addGuestReaction(Request $request){
+    public function addGuestReaction(Request $request)
+    {
         $this->guestReactionValidation($request);
         $flw_package = new FollowUPtoGuest();
         $flw_package->package_id = $request->id;
         $flw_package->flw_up_to_guest_date = $request->flw_up_to_guest_date;
         $flw_package->guest_reaction = $request->guest_reaction;
         $flw_package->note = $request->note;
-        if($request->ftg_confimation == 1){
+        if ($request->ftg_confimation == 1) {
             $package = Package::where('id', $request->id)->select('id', 'state')->first();
             $package->state = 4;
             $package->update();
@@ -45,15 +51,20 @@ class GuestReactionController extends Controller
     }
 
 
-    public function editGuestReaction($id){
+    public function editGuestReaction($id)
+    {
         $user_type = Session::get('user_type');
-        $edit_guest_reaction = Package::with(['package_days','guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('id', $id)->first();
+        $edit_guest_reaction = Package::with(['package_days', 'guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('id', $id)->first();
         return response()->json([
             'edit_guest_reaction' => $edit_guest_reaction,
             'user_type' => $user_type
         ]);
     }
-    protected function updateGuestReacitonValidation($request){
+
+    protected function updateGuestReacitonValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -80,7 +91,9 @@ class GuestReactionController extends Controller
 
         ]);
     }
-    protected function guestReactionBasic($request, $package){
+
+    protected function guestReactionBasic($request, $package)
+    {
         $package->guest = $request->guest;
         $package->package_type = $request->package_type;
         $package->country = $request->country;
@@ -103,10 +116,12 @@ class GuestReactionController extends Controller
         $package->narration = $request->narration;
         $package->iti_submit_to_guest_date = $request->iti_submit_to_guest_date;
     }
-    protected function packageDay($request, $package){
+
+    protected function packageDay($request, $package)
+    {
         $package_day_arrys = $request->package_days;
         $package_day_arrys_count = count($package_day_arrys);
-        for ($i=0; $i<$package_day_arrys_count; $i++){
+        for ($i = 0; $i < $package_day_arrys_count; $i++) {
             $package_day = new PackageDay();
             $package_day->package_id = $package->id;
             $package_day->day = $package_day_arrys[$i]['day'];
@@ -119,13 +134,15 @@ class GuestReactionController extends Controller
             $package_day->save();
         }
     }
-    public function updateGuestReaction(Request $request){
+
+    public function updateGuestReaction(Request $request)
+    {
         $this->updateGuestReacitonValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->guestReactionBasic($request, $package);
         $package->update();
         $package_days = PackageDay::where('package_id', $request->id)->get();
-        foreach ($package_days as $package_day){
+        foreach ($package_days as $package_day) {
             $package_day->delete();
         }
         $this->packageDay($request, $package);

@@ -11,16 +11,20 @@ use Session;
 
 class PackageVisaUpdateController extends Controller
 {
-    public function getAllPackageVisaUpdate(){
+    public function getAllPackageVisaUpdate()
+    {
         $user_type = Session::get('user_type');
-        $package_visa_update = Package::with(['guestt' => function($q){$q->select('id','name', 'phone_number');}])->where('state', 6)->orderBy('id', 'desc')->paginate(10);
+        $package_visa_update = Package::with(['guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('state', 6)->orderBy('id', 'desc')->paginate(10);
         return response()->json([
             'package_visa_update' => $package_visa_update,
             'user_type' => $user_type
         ]);
     }
 
-    protected function addVisaUpdateValidation($request){
+    protected function addVisaUpdateValidation($request)
+    {
         $request->validate([
             'id' => 'required',
             'total_qty' => 'required',
@@ -36,7 +40,9 @@ class PackageVisaUpdateController extends Controller
             'visa_delivery_to_guest' => 'required|date',
         ]);
     }
-    public function addVisaUpdateDateBasic($request, $package){
+
+    public function addVisaUpdateDateBasic($request, $package)
+    {
         $package->adult_qty = $request->adult_qty;
         $package->adult_service = $request->adult_service;
         $package->adult_price = $request->adult_price;
@@ -93,7 +99,8 @@ class PackageVisaUpdateController extends Controller
         $package->visa_delivery_to_guest = $request->visa_delivery_to_guest;
     }
 
-    public function addVisaUpdateDate(Request $request){
+    public function addVisaUpdateDate(Request $request)
+    {
         $this->addVisaUpdateValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->addVisaUpdateDateBasic($request, $package);
@@ -103,27 +110,29 @@ class PackageVisaUpdateController extends Controller
         $this->transjaction($request, $package);
         return 'Visa update Successfully';
     }
-    protected function updateTransjactionBlance($request, $package){
+
+    protected function updateTransjactionBlance($request, $package)
+    {
         $transjaction = Transjaction::where('pack_id', $package->id)->first();
         $old_amount = $transjaction->debit_amount;
         $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
-        foreach ($next_same_date_transactions as $next_same_date_transaction){
+        foreach ($next_same_date_transactions as $next_same_date_transaction) {
             $next_same_date_transaction->blance -= $old_amount;
-            if($next_same_date_transaction->guest_id == $transjaction->guest_id){
+            if ($next_same_date_transaction->guest_id == $transjaction->guest_id) {
                 $next_same_date_transaction->guest_blance -= $old_amount;
             }
-            if($next_same_date_transaction->staff_id == $transjaction->staff_id){
+            if ($next_same_date_transaction->staff_id == $transjaction->staff_id) {
                 $next_same_date_transaction->staff_blance -= $old_amount;
             }
             $next_same_date_transaction->update();
         }
         $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_date_transactions as $next_date_transaction){
+        foreach ($next_date_transactions as $next_date_transaction) {
             $next_date_transaction->blance -= $old_amount;
-            if($next_date_transaction->guest_id == $transjaction->guest_id){
+            if ($next_date_transaction->guest_id == $transjaction->guest_id) {
                 $next_date_transaction->guest_blance -= $old_amount;
             }
-            if($next_date_transaction->staff_id == $transjaction->staff_id){
+            if ($next_date_transaction->staff_id == $transjaction->staff_id) {
                 $next_date_transaction->staff_blance -= $old_amount;
             }
             $next_date_transaction->update();
@@ -132,17 +141,18 @@ class PackageVisaUpdateController extends Controller
     }
 
 
-    protected function transjaction($request, $package){
+    protected function transjaction($request, $package)
+    {
         $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('guest_id', $package->guest)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         }
         $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->where('staff_id', $package->staff)->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         }
         $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $package->confirm_date)->select('id', 'transjaction_date', 'narration', 'blance')->first();
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $package->confirm_date)->first();
         }
         $transjaction = new Transjaction();
@@ -152,30 +162,30 @@ class PackageVisaUpdateController extends Controller
         $transjaction->narration = $package->narration;
         $transjaction->transjaction_date = $package->confirm_date;
         $transjaction->debit_amount = $package->grand_total_price;
-        if($pre_guest_transjaction_blance == null){
+        if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->guest_blance = $pre_guest_transjaction_blance->guest_blance + $package->grand_total_price;
         }
-        if($pre_staff_transjaction_blance == null){
+        if ($pre_staff_transjaction_blance == null) {
             $transjaction->staff_blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $package->grand_total_price;
         }
-        if($pre_transjaction_blance == null){
+        if ($pre_transjaction_blance == null) {
             $transjaction->blance = $package->grand_total_price;
-        }else{
+        } else {
             $transjaction->blance = $pre_transjaction_blance->blance + $package->grand_total_price;
         }
         $transjaction->save();
 
         $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
-        foreach ($next_dates as $next_date){
+        foreach ($next_dates as $next_date) {
             $next_date->blance += $package->grand_total_price;
-            if($next_date->guest_id == $package->guest){
+            if ($next_date->guest_id == $package->guest) {
                 $next_date->guest_blance += $package->grand_total_price;
             }
-            if($next_date->staff_id == $package->staff){
+            if ($next_date->staff_id == $package->staff) {
                 $next_date->staff_blance += $package->grand_total_price;
             }
             $next_date->update();
@@ -184,17 +194,20 @@ class PackageVisaUpdateController extends Controller
     }
 
 
-
-    public function editPackageUpdateVisa($id){
+    public function editPackageUpdateVisa($id)
+    {
         $user_type = Session::get('user_type');
-        $update_visa = Package::with(['package_days','guestt' => function($q){$q->select('id', 'name', 'phone_number');}])->where('id', $id)->first();
+        $update_visa = Package::with(['package_days', 'guestt' => function ($q) {
+            $q->select('id', 'name', 'phone_number');
+        }])->where('id', $id)->first();
         return response()->json([
             'update_visa' => $update_visa,
             'user_type' => $user_type
         ]);
     }
 
-    protected function updateVisaValidation($request){
+    protected function updateVisaValidation($request)
+    {
         $request->validate([
             'guest' => 'required',
             'package_type' => 'required',
@@ -225,7 +238,8 @@ class PackageVisaUpdateController extends Controller
         ]);
     }
 
-    protected function updateVisaUpdateBasic($request, $package){
+    protected function updateVisaUpdateBasic($request, $package)
+    {
         $package->guest = $request->guest;
         $package->package_type = $request->package_type;
         $package->country = $request->country;
@@ -242,7 +256,6 @@ class PackageVisaUpdateController extends Controller
         $package->quared_size = $request->quared_size;
         $package->total_bed_qty = $request->total_bed_qty;
         $package->narration = $request->narration;
-
 
 
         $package->adult_qty = $request->adult_qty;
@@ -300,10 +313,12 @@ class PackageVisaUpdateController extends Controller
         $package->visa_done_date = $request->visa_done_date;
         $package->visa_delivery_to_guest = $request->visa_delivery_to_guest;
     }
-    protected function packageDay($request, $package){
+
+    protected function packageDay($request, $package)
+    {
         $package_day_arrys = $request->package_days;
         $package_day_arrys_count = count($package_day_arrys);
-        for ($i=0; $i<$package_day_arrys_count; $i++){
+        for ($i = 0; $i < $package_day_arrys_count; $i++) {
             $package_day = new PackageDay();
             $package_day->package_id = $package->id;
             $package_day->day = $package_day_arrys[$i]['day'];
@@ -317,13 +332,14 @@ class PackageVisaUpdateController extends Controller
         }
     }
 
-    protected function updatPackageVisaUpdate(Request $request){
+    protected function updatPackageVisaUpdate(Request $request)
+    {
         $this->updateVisaValidation($request);
         $package = Package::where('id', $request->id)->first();
         $this->updateVisaUpdateBasic($request, $package);
         $package->update();
         $package_days = PackageDay::where('package_id', $request->id)->get();
-        foreach ($package_days as $package_day){
+        foreach ($package_days as $package_day) {
             $package_day->delete();
         }
         $this->packageDay($request, $package);

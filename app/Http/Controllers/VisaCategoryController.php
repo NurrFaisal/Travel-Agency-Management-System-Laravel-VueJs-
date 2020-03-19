@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class VisaCategoryController extends Controller
 {
-    public function addVisaCategory(Request $request){
+    public function addVisaCategory(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
@@ -17,21 +18,24 @@ class VisaCategoryController extends Controller
         return 'success';
     }
 
-    public function getAllVisaCategory(){
+    public function getAllVisaCategory()
+    {
         $visa_category = VisaCategory::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'visa_category' => $visa_category
         ]);
     }
 
-    public function editVisaCategory($id){
+    public function editVisaCategory($id)
+    {
         $visa_category = VisaCategory::where('id', $id)->first();
         return response()->json([
             'visa_category' => $visa_category
         ]);
     }
 
-    public function updateVisaCategory(Request $request){
+    public function updateVisaCategory(Request $request)
+    {
         $request->validate([
             'name' => 'required'
         ]);
@@ -41,7 +45,8 @@ class VisaCategoryController extends Controller
         return 'updated';
     }
 
-    public function deleteVisaCategory($id){
+    public function deleteVisaCategory($id)
+    {
         $visa_category = VisaCategory::where('id', $id)->first();
         $visa_category->delete();
         return 'delete';

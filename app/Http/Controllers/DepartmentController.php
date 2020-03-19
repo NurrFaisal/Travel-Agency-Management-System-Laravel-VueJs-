@@ -7,26 +7,33 @@ use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    public function addDepartment(Request $request){
+    public function addDepartment(Request $request)
+    {
         $department = new Department();
         $department->slug = str_slug($request->department_name);
         $department->department_name = $request->department_name;
         $department->save();
         return 'save';
     }
-    public function allDepartment(){
+
+    public function allDepartment()
+    {
         $department = Department::orderBy('updated_at', 'desc')->get();
         return response()->json([
             'department' => $department
         ]);
     }
-    public function editDepartment($id){
+
+    public function editDepartment($id)
+    {
         $department = Department::find($id);
         return response()->json([
             'department' => $department
         ]);
     }
-    public function updateDepartment(Request $request){
+
+    public function updateDepartment(Request $request)
+    {
         $request->validate([
             'department_name' => 'required',
         ]);
@@ -36,7 +43,9 @@ class DepartmentController extends Controller
         $department->update();
         return 'update';
     }
-    public function deleteDepartment($id){
+
+    public function deleteDepartment($id)
+    {
         $department = Department::find($id);
         $department->delete();
         return 'Deleted';
