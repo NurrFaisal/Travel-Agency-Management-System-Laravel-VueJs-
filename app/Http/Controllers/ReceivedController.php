@@ -430,7 +430,7 @@ class ReceivedController extends Controller
     protected function updateReceivedTransaction($request, $received){
         $transjaction = Transjaction::where('received_id', $received->id)->select('id', 'guest_id', 'staff_id', 'received_id', 'transjaction_date', 'narration', 'credit_amount', 'blance', 'guest_blance', 'staff_blance')->first();
         $old_amount = $transjaction->credit_amount;
-        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
         foreach ($next_same_date_transactions as $next_same_date_transaction){
             $next_same_date_transaction->blance += $old_amount;
             if($next_same_date_transaction->guest_id == $transjaction->guest_id){

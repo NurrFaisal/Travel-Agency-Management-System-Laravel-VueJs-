@@ -281,7 +281,7 @@ class HotelBookingController extends Controller
     protected function updateTransjactionBlance($request, $hotel_booking){
         $transjaction = Transjaction::where('hotel_id', $hotel_booking->id)->first();
         $old_amount = $transjaction->debit_amount;
-        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaciton_date)->get();
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
         foreach ($next_same_date_transactions as $next_same_date_transaction){
             $next_same_date_transaction->blance -= $old_amount;
             if($next_same_date_transaction->guest_id == $transjaction->guest_id){
