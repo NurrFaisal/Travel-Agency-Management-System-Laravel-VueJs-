@@ -20,9 +20,7 @@ class GuestController extends Controller
             'rf_staff' => 'required|numeric',
             'rf_guest' => 'required|max:191',
             'email_address' => 'required|max:191',
-            'alt_email_address' => 'required|max:191',
             'phone_number' => 'required|max:15|min:11',
-            'alt_phone_number' => 'required|max:15|min:11',
             'address' => 'required',
             'status' => 'required|numeric',
         ]);

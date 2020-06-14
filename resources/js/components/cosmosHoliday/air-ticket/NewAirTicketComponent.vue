@@ -113,7 +113,7 @@
                                                                     Air Lines<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                               <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('air_lines') }" v-model="employee.air_lines" id="air_lines" name="air_lines" class="col-xs-12 col-sm-12" >
+                                                               <select required v-validate="'required'" :class="{ 'is-invalid': form.errors.has('air_lines') }" v-model="employee.air_lines" id="air_lines" name="air_lines" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Airline--</option>
                                                                     <option :value="al.id" v-for="al in getAllAirLine " >{{al.name}}</option>
                                                                 </select>
@@ -187,7 +187,7 @@
                                                                 <label for="suplier">
                                                                     Suplier<span class="text-danger">*</span> :
                                                                 </label>
-                                                                <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('suplier') }" v-model="employee.suplier" id="suplier" name="suplier" class="col-xs-12 col-sm-12" >
+                                                                <select required v-validate="'required'" :class="{ 'is-invalid': form.errors.has('suplier') }" v-model="employee.suplier" id="suplier" name="suplier" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Suplier--</option>
                                                                     <option :value="suplier.id" v-for="suplier in supliers " >{{suplier.name}}</option>
                                                                 </select>
@@ -215,7 +215,7 @@
                                                                     Title<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                    <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('pax_title') }" v-model="pax.pax_title" id="pax_title" name="pax_title" class="col-xs-12 col-sm-12" >
+                                                                    <select required v-validate="'required'" :class="{ 'is-invalid': form.errors.has('pax_title') }" v-model="pax.pax_title" id="pax_title" name="pax_title" class="col-xs-12 col-sm-12" >
                                                                         <option value="">--Select Title--</option>
                                                                         <option value="1">Mr.</option>
                                                                         <option value="2">Mrs.</option>
@@ -251,7 +251,7 @@
                                                                     Date Of Birth<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="pax.date_of_birth" :class="{ 'is-invalid': form.errors.has('date_of_birth') }"   class="col-xs-12 col-sm-12" id="date_of_birth" name="date_of_birth" required="" type="date">
+                                                                <input v-validate="'required'" v-model="pax.date_of_birth" :class="{ 'is-invalid': form.errors.has('date_of_birth') }"   class="col-xs-12 col-sm-12" id="date_of_birth" name="date_of_birth" required type="date">
                                                             </span>
                                                             </div>
                                                             <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -264,7 +264,7 @@
                                                                 <label for="gender">
                                                                     Gender<span class="text-danger">*</span> :
                                                                 </label>
-                                                                <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('gender') }" v-model="pax.gender" id="gender" name="gender" class="col-xs-12 col-sm-12" >
+                                                                <select required v-validate="'required'" :class="{ 'is-invalid': form.errors.has('gender') }" v-model="pax.gender" id="gender" name="gender" class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Gender--</option>
                                                                     <option value="1">Male</option>
                                                                     <option value="2">Female</option>
@@ -283,7 +283,7 @@
                                                                     Phone Number<span class="text-danger">*</span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <input v-model="pax.phone_number" :class="{ 'is-invalid': form.errors.has('phone_number') }" placeholder="Enter pax phone number"  class="col-xs-12 col-sm-12" id="phone_number" name="phone_number"  type="text">
+                                                                <input required v-model="pax.phone_number" :class="{ 'is-invalid': form.errors.has('phone_number') }" placeholder="Enter pax phone number"  class="col-xs-12 col-sm-12" id="phone_number" name="phone_number"  type="text">
                                                             </span>
                                                             </div>
                                                             <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -958,6 +958,7 @@
                             name:'',
                             date_of_birth:'',
                             gender:'',
+                            phone_number:'',
                             passport_number:'',
                             pp_issue_date:'',
                             pp_expire_date:'',
@@ -1121,6 +1122,7 @@
                                 name:'',
                                 date_of_birth:'',
                                 gender:'',
+                                phone_number:'',
                                 passport_number:'',
                                 pp_issue_date:'',
                                 pp_expire_date:'',

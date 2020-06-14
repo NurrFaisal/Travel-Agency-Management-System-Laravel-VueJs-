@@ -48,6 +48,7 @@ class AirTicketController extends Controller
             'paxs.*.pax_title' => 'required',
             'paxs.*.name' => 'required',
             'paxs.*.date_of_birth' => 'required',
+            'paxs.*.phone_number' => 'required',
             'paxs.*.passport_number' => 'required',
             'paxs.*.pp_issue_date' => 'required',
             'paxs.*.pp_expire_date' => 'required',

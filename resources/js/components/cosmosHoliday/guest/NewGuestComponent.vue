@@ -181,10 +181,10 @@
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="alt_email_address">
-                                                                Alt.Email Address <span class="text-danger">*</span> :
+                                                                Alt.Email Address <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-model="form.alt_email_address" id="alt_email_address" name="alt_email_address" placeholder="Enter Alt. Email Address"  class="col-xs-12 col-sm-12" required="" type="email" >
+                                                                <input v-model="form.alt_email_address" id="alt_email_address" name="alt_email_address" placeholder="Enter Alt. Email Address"  class="col-xs-12 col-sm-12"  type="email" >
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -211,10 +211,10 @@
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="alt_phone_number">
-                                                                Alt.Phone Number <span class="text-danger">*</span> :
+                                                                Alt.Phone Number <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-model="form.alt_phone_number" id="alt_phone_number" name="alt_phone_number" placeholder="Enter Alt.Phone Number"  class="col-xs-12 col-sm-12" required="" type="number" >
+                                                                <input v-model="form.alt_phone_number" id="alt_phone_number" name="alt_phone_number" placeholder="Enter Alt.Phone Number"  class="col-xs-12 col-sm-12" type="number" >
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
