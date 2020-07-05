@@ -256,7 +256,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    King Size<span class="text-danger">*</span> :
+                                                                    King Size<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)"  v-model="hotel.king_size" :class="{ 'is-invalid': form.errors.has('king_size') }"   class="col-xs-12 col-sm-12"  name="king_size" placeholder="Qty" type="number">
@@ -270,7 +270,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Couple<span class="text-danger">*</span> :
+                                                                    Couple<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)" v-model="hotel.couple" :class="{ 'is-invalid': form.errors.has('couple') }"   class="col-xs-12 col-sm-12" name="couple" placeholder="Qty" type="number">
@@ -284,10 +284,10 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Twin<span class="text-danger">*</span> :
+                                                                    Twin<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <input @keyup="bedChangeQty(index)" v-model="hotel.twin" :class="{ 'is-invalid': form.errors.has('twin') }"   class="col-xs-12 col-sm-12"  name="twin" placeholder="Qty" required type="number">
+                                                                <input @keyup="bedChangeQty(index)" v-model="hotel.twin" :class="{ 'is-invalid': form.errors.has('twin') }"   class="col-xs-12 col-sm-12"  name="twin" placeholder="Qty"  type="number">
                                                             </span>
                                                             </div>
                                                             <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -298,7 +298,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Triple<span class="text-danger">*</span> :
+                                                                    Triple<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)" v-model="hotel.triple" :class="{ 'is-invalid': form.errors.has('triple') }"   class="col-xs-12 col-sm-12" name="triple" placeholder="Qty" type="number">
@@ -312,7 +312,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Quared<span class="text-danger">*</span> :
+                                                                    Quared<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)" v-model="hotel.quared" :class="{ 'is-invalid': form.errors.has('quared') }"   class="col-xs-12 col-sm-12"  name="quared" placeholder="Qty" type="number">
@@ -333,7 +333,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    King Size Price<span class="text-danger">*</span> :
+                                                                    King Size Price<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)"  v-model="hotel.king_size_price" :class="{ 'is-invalid': form.errors.has('king_size_price') }"   class="col-xs-12 col-sm-12"  name="king_size_price" placeholder="Price" type="number">
@@ -347,7 +347,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Couple Price<span class="text-danger">*</span> :
+                                                                    Couple Price<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)" v-model="hotel.couple_price" :class="{ 'is-invalid': form.errors.has('couple_price') }"   class="col-xs-12 col-sm-12" name="couple_price" placeholder="Price" type="number">
@@ -361,10 +361,10 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Twin Price<span class="text-danger">*</span> :
+                                                                    Twin Price<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
-                                                                <input @keyup="bedChangeQty(index)" v-model="hotel.twin_price" :class="{ 'is-invalid': form.errors.has('twin_price') }"   class="col-xs-12 col-sm-12"  name="twin_price" placeholder="Price" required type="number">
+                                                                <input @keyup="bedChangeQty(index)" v-model="hotel.twin_price" :class="{ 'is-invalid': form.errors.has('twin_price') }"   class="col-xs-12 col-sm-12"  name="twin_price" placeholder="Price"  type="number">
                                                             </span>
                                                             </div>
                                                             <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -375,7 +375,7 @@
                                                         <div class="col-md-2">
                                                             <div class="col-xs-12 col-sm-12">
                                                                 <label>
-                                                                    Triple Price<span class="text-danger">*</span> :
+                                                                    Triple Price<span class="text-danger"></span> :
                                                                 </label>
                                                                 <span class="block input-icon input-icon-right">
                                                                 <input @keyup="bedChangeQty(index)" v-model="hotel.triple_price" :class="{ 'is-invalid': form.errors.has('triple_price') }"   class="col-xs-12 col-sm-12" name="triple_price" placeholder="Price" type="number">

@@ -22,6 +22,7 @@ class GuestController extends Controller
             'email_address' => 'required|max:191',
             'phone_number' => 'required|max:15|min:11',
             'address' => 'required',
+            'pre_due' => 'required',
             'status' => 'required|numeric',
         ]);
     }
@@ -47,6 +48,7 @@ class GuestController extends Controller
         $guest->phone_number = $request->phone_number;
         $guest->alt_phone_number = $request->alt_phone_number;
         $guest->address = $request->address;
+        $guest->pre_due = $request->pre_due;
         $guest->type = $request->type;
         $guest->status = $request->status;
     }
@@ -58,8 +60,53 @@ class GuestController extends Controller
         $guest = new Guest();
         $this->guestBasic($request, $guest);
         $guest->save();
+        $this->transjaction($request, $guest);
         return 'success';
     }
+
+    protected function transjaction($request, $guest){
+
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $guest->created_at)->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        if ($pre_staff_transjaction_blance == null) {
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $guest->created_at)->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        }
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $guest->created_at)->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        if ($pre_transjaction_blance == null) {
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $guest->created_at)->first();
+        }
+        $transjaction = new Transjaction();
+        $transjaction->guest_id = $guest->id;
+        $transjaction->staff_id = Session::get('staff_id');
+        $transjaction->pre_due = $guest->id;
+        $transjaction->narration = "Pre Due";
+        $transjaction->transjaction_date = $guest->created_at;
+        $transjaction->debit_amount = $guest->pre_due;
+        $transjaction->guest_blance = $guest->pre_due;
+
+        if ($pre_staff_transjaction_blance == null) {
+            $transjaction->staff_blance = $guest->pre_due;
+        } else {
+            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $guest->pre_due;
+        }
+        if ($pre_transjaction_blance == null) {
+            $transjaction->blance = $guest->pre_due;
+        } else {
+            $transjaction->blance = $pre_transjaction_blance->blance + $guest->pre_due;
+        }
+        $transjaction->save();
+
+        $next_dates = Transjaction::orderBy('transjaction_date', 'asc')->where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_dates as $next_date) {
+            $next_date->blance += $guest->pre_due;
+            if ($next_date->staff_id == $guest->rf_staff) {
+                $next_date->staff_blance += $guest->pre_due;
+            }
+            $next_date->update();
+        }
+
+    }
+
+
 
     public function getAllGuest()
     {
@@ -168,8 +215,62 @@ class GuestController extends Controller
         }
         $this->guestBasic($request, $guest);
         $guest->update();
+        $this->updateTransjactionBlance($request, $guest);
         return 'update';
     }
+
+    protected function updateTransjactionBlance($request, $guest){
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $guest->created_at)->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        if ($pre_staff_transjaction_blance == null) {
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $guest->created_at)->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        }
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $guest->created_at)->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        if ($pre_transjaction_blance == null) {
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $guest->created_at)->first();
+        }
+        $transjaction = Transjaction::where('pre_due', $guest->id)->first();
+        $old_amount = $transjaction->debit_amount;
+        $diffrent_amount = $request->pre_due - $old_amount;
+        $transjaction->debit_amount = $request->pre_due;
+        $transjaction->guest_blance = $request->pre_due;
+        if ($pre_staff_transjaction_blance == null) {
+            $transjaction->staff_blance = $guest->pre_due;
+        } else {
+            $transjaction->staff_blance = $pre_staff_transjaction_blance->staff_blance + $guest->pre_due;
+        }
+        if ($pre_transjaction_blance == null) {
+            $transjaction->blance = $guest->pre_due;
+        } else {
+            $transjaction->blance = $pre_transjaction_blance->blance + $guest->pre_due;
+        }
+        $transjaction->update();
+
+
+        $next_same_date_transactions = Transjaction::where('id', '>', $transjaction->id)->where('transjaction_date', $transjaction->transjaction_date)->get();
+        foreach ($next_same_date_transactions as $next_same_date_transaction) {
+            $next_same_date_transaction->blance += $diffrent_amount;
+            if ($next_same_date_transaction->guest_id == $transjaction->guest_id) {
+                $next_same_date_transaction->guest_blance += $diffrent_amount;
+            }
+            if ($next_same_date_transaction->staff_id == $transjaction->staff_id) {
+                $next_same_date_transaction->staff_blance += $diffrent_amount;
+            }
+            $next_same_date_transaction->update();
+        }
+        $next_date_transactions = Transjaction::where('transjaction_date', '>', $transjaction->transjaction_date)->get();
+        foreach ($next_date_transactions as $next_date_transaction) {
+            $next_date_transaction->blance += $diffrent_amount;
+            if ($next_date_transaction->guest_id == $transjaction->guest_id) {
+                $next_date_transaction->guest_blance += $diffrent_amount;
+            }
+            if ($next_date_transaction->staff_id == $transjaction->staff_id) {
+                $next_date_transaction->staff_blance += $diffrent_amount;
+            }
+            $next_date_transaction->update();
+        }
+
+    }
+
 
     public function getAllGuestRefernce($query)
     {

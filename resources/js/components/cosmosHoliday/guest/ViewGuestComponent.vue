@@ -85,6 +85,8 @@
                                                                     <td v-if="transjaction.visa_id != null">V-{{transjaction.visa_id}}</td>
                                                                     <td style="background-color: greenyellow;" v-if="transjaction.received_id != null">M-{{transjaction.received_id}}</td>
                                                                     <td v-if="transjaction.discount_id != null">D-{{transjaction.discount_id}}</td>
+                                                                    <td v-if="transjaction.pre_due != null">PD-{{transjaction.pre_due}}</td>
+
                                                                     <td>{{transjaction.narration}}</td>
                                                                     <td>{{transjaction.staff.first_name}}</td>
                                                                     <td>{{transjaction.debit_amount}}</td>

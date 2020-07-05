@@ -225,7 +225,7 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-8">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="address">
                                                                 Address <span class="text-danger">*</span> :
@@ -237,6 +237,20 @@
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
                                                             <has-error style="color:red" :form="form" field="address"></has-error>
                                                             <span style="color: red">{{ errors.first('address') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="col-xs-12 col-sm-12">
+                                                            <label for="pre_due">
+                                                                Pre Due <span class="text-danger">*</span> :
+                                                            </label>
+                                                            <span class="block input-icon input-icon-right">
+                                                                <input v-validate="'required'" v-model="form.pre_due" :class="{ 'is-invalid': form.errors.has('pre_due') }"   class="col-xs-12 col-sm-12" id="pre_due" name="pre_due" required="" type="text" placeholder="Enter Guest Pre Due...">
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                            <has-error style="color:red" :form="form" field="pre_due"></has-error>
+                                                            <span style="color: red">{{ errors.first('pre_due') }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -376,6 +390,7 @@
                     phone_number: '',
                     alt_phone_number: '',
                     address: '',
+                    pre_due: '',
                     type: '0',
                     status: '1',
                 })
@@ -412,6 +427,7 @@
                         this.form.phone_number = ''
                         this.form.alt_phone_number = ''
                         this.form.address = ''
+                        this.form.pre_due = ''
                         this.form.category = ''
                         this.form.type = ''
                         this.form.status = ''

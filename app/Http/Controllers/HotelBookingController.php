@@ -95,13 +95,13 @@ class HotelBookingController extends Controller
     protected function saveHotelSuplierTransaction($request, $hotel, $hotel_booking)
     {
         // SuplierTransaction Start
-        $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $hotel_booking->created_at->format('Y-m-d'))->where('suplier_id', $hotel->suplier)->first();
+        $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $hotel_booking->created_at)->where('suplier_id', $hotel->suplier)->first();
         if ($pre_suplier_sup_transaction == null) {
-            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $hotel_booking->created_at->format('Y-m-d'))->where('suplier_id', $hotel->suplier)->first();
+            $pre_suplier_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $hotel_booking->created_at)->where('suplier_id', $hotel->suplier)->first();
         }
-        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $hotel_booking->created_at->format('Y-m-d'))->first();
+        $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', $hotel_booking->created_at)->first();
         if ($pre_sup_transaction == null) {
-            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $hotel_booking->created_at->format('Y-m-d'))->first();
+            $pre_sup_transaction = SuplierTransaction::orderBy('transaction_date', 'desc')->orderBy('id', 'desc')->where('transaction_date', '<', $hotel_booking->created_at)->first();
         }
         $suplier_transaction = new SuplierTransaction();
         $suplier_transaction->suplier_id = $hotel->suplier;
@@ -145,25 +145,25 @@ class HotelBookingController extends Controller
 
     protected function transjaction($request, $hotel_booking)
     {
-        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $hotel_booking->created_at->format('Y-m-d'))->where('guest_id', $hotel_booking->client)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+        $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', date('Y-m-d', strtotime($hotel_booking->created_at)))->where('guest_id', $hotel_booking->client)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         if ($pre_guest_transjaction_blance == null) {
-            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $hotel_booking->created_at->format('Y-m-d'))->where('guest_id', $hotel_booking->client)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
+            $pre_guest_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', date('Y-m-d', strtotime($hotel_booking->created_at)))->where('guest_id', $hotel_booking->client)->select('id', 'guest_id', 'transjaction_date', 'narration', 'guest_blance')->first();
         }
-        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $hotel_booking->created_at->format('Y-m-d'))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+        $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', date('Y-m-d', strtotime($hotel_booking->created_at)))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         if ($pre_staff_transjaction_blance == null) {
-            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $hotel_booking->created_at->format('Y-m-d'))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
+            $pre_staff_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', date('Y-m-d', strtotime($hotel_booking->created_at)))->where('staff_id', Session::get('staff_id'))->select('id', 'staff_id', 'transjaction_date', 'narration', 'staff_blance')->first();
         }
 
-        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', $hotel_booking->created_at->format('Y-m-d'))->select('id', 'transjaction_date', 'narration', 'blance')->first();
+        $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', date('Y-m-d', strtotime($hotel_booking->created_at)))->select('id', 'transjaction_date', 'narration', 'blance')->first();
         if ($pre_transjaction_blance == null) {
-            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', $hotel_booking->created_at->format('Y-m-d'))->first();
+            $pre_transjaction_blance = Transjaction::orderBy('transjaction_date', 'desc')->orderBy('id', 'desc')->where('transjaction_date', '<', date('Y-m-d', strtotime($hotel_booking->created_at)))->first();
         }
         $transjaction = new Transjaction();
         $transjaction->guest_id = $hotel_booking->client;
         $transjaction->staff_id = Session::get('staff_id');
         $transjaction->hotel_id = $hotel_booking->id;
         $transjaction->narration = $hotel_booking->narration;
-        $transjaction->transjaction_date = $hotel_booking->created_at->format('Y-m-d');
+        $transjaction->transjaction_date = date('Y-m-d', strtotime($hotel_booking->created_at));
         $transjaction->debit_amount = $hotel_booking->total_price;
         if ($pre_guest_transjaction_blance == null) {
             $transjaction->guest_blance = $hotel_booking->total_price;
