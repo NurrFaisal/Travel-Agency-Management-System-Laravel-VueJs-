@@ -805,7 +805,7 @@
 
                                                         <button class="btn btn-info" type="submit">
                                                             <i class="ace-icon fa fa-check bigger-110"></i>
-                                                            Add
+                                                            Submit
                                                         </button>
                                                     </div>
                                                 </div>

@@ -1609,6 +1609,22 @@
                 }
             },
 
+            changeTotalAmount(){
+                this.form.total_total_price =0;
+                if(this.form.adult_total_price > 0){
+                    this.form.total_total_price += this.form.adult_total_price;
+                }
+                if(this.form.child_total_price > 0){
+                    this.form.total_total_price += this.form.child_total_price;
+                }
+                if(this.form.infant_total_price > 0){
+                    this.form.total_total_price += this.form.infant_total_price;
+                }
+                this.totalQty();
+                this.changeGrandAmount()
+
+            },
+
 
 
             adultChange(){

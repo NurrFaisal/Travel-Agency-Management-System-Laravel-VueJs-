@@ -377,6 +377,7 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
     Route::post('/api/add-guest-confirm', 'GuestConfirmDateController@addGuestConfirmation');
     Route::get('/api/edit-guest-confirmation/{id}', 'GuestConfirmDateController@editGuestConfirmation');
     Route::post('/api/update-guest-confirmation', 'GuestConfirmDateController@updateGuestConfirmation');
+    Route::post('/api/add-direct-package', 'DirectPackageController@addDirectPackage');
 // GuestConfirmDateController End
 
 

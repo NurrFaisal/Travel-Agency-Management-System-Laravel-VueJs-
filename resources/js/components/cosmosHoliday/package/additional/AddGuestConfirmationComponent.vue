@@ -50,7 +50,7 @@
                                                                 Qty<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input @keyup="adultChange()" v-model="form.adult_qty" :class="{ 'is-invalid': form.errors.has('adult_qty') }"   class="col-xs-12 col-sm-12" id="adult_qty" name="adult_qty" placeholder="Qty" required="" type="number">
+                                                                <input @keyup="adultChange()" v-model="form.adult_qty" :class="{ 'is-invalid': form.errors.has('adult_qty') }"   class="col-xs-12 col-sm-12" id="adult_qty" name="adult_qty" placeholder="Qty" required type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -64,7 +64,7 @@
                                                                 Sevice<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input   v-model="form.adult_service" :class="{ 'is-invalid': form.errors.has('adult_service') }"   class="col-xs-12 col-sm-12" id="adult_service" name="adult_service" placeholder="Enter Some Notes..." required="" type="text">
+                                                                <input   v-model="form.adult_service" :class="{ 'is-invalid': form.errors.has('adult_service') }"   class="col-xs-12 col-sm-12" id="adult_service" name="adult_service" placeholder="Enter Some Notes..." required type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -78,7 +78,7 @@
                                                                 Price<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input @keyup="adultChange()"  v-model="form.adult_price" :class="{ 'is-invalid': form.errors.has('adult_price') }"   class="col-xs-12 col-sm-12" id="adult_price" name="adult_price" placeholder="Adult Price" required="" type="number">
+                                                                <input @keyup="adultChange()"  v-model="form.adult_price" :class="{ 'is-invalid': form.errors.has('adult_price') }"   class="col-xs-12 col-sm-12" id="adult_price" name="adult_price" placeholder="Adult Price" required type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -93,7 +93,7 @@
                                                                 Total Price<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input disabled v-model="form.adult_total_price" :class="{ 'is-invalid': form.errors.has('adult_total_price') }"   class="col-xs-12 col-sm-12" id="adult_total_price" name="adult_total_price" placeholder="Adult Total Price" required="" type="number">
+                                                                <input disabled v-model="form.adult_total_price" :class="{ 'is-invalid': form.errors.has('adult_total_price') }"   class="col-xs-12 col-sm-12" id="adult_total_price" name="adult_total_price" placeholder="Adult Total Price" required type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -111,7 +111,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="child_qty">
-                                                                Qty<span class="text-danger">*</span> :
+                                                                Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="childChange()"  v-model="form.child_qty" :class="{ 'is-invalid': form.errors.has('child_qty') }"   class="col-xs-12 col-sm-12" id="child_qty" name="child_qty" placeholder="Qty"  type="number">
@@ -125,7 +125,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="child_service">
-                                                                Sevice<span class="text-danger">*</span> :
+                                                                Sevice<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input   v-model="form.child_service" :class="{ 'is-invalid': form.errors.has('child_service') }"   class="col-xs-12 col-sm-12" id="child_service" name="child_service" placeholder="Enter Some Notes..."  type="text">
@@ -139,7 +139,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="child_price">
-                                                                Price<span class="text-danger">*</span> :
+                                                                Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="childChange()"   v-model="form.child_price" :class="{ 'is-invalid': form.errors.has('child_price') }"   class="col-xs-12 col-sm-12" id="child_price" name="child_price" placeholder="Child Price"  type="number">
@@ -154,10 +154,10 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="child_total_price">
-                                                                Total Price<span class="text-danger">*</span> :
+                                                                Total Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input disabled  v-model="form.child_total_price" :class="{ 'is-invalid': form.errors.has('child_total_price') }"   class="col-xs-12 col-sm-12" id="child_total_price" name="child_total_price" placeholder="Child Total Price" required="" type="number">
+                                                                <input disabled  v-model="form.child_total_price" :class="{ 'is-invalid': form.errors.has('child_total_price') }"   class="col-xs-12 col-sm-12" id="child_total_price" name="child_total_price" placeholder="Child Total Price"  type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -175,7 +175,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="infant_qty">
-                                                                Qty<span class="text-danger">*</span> :
+                                                                Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="infantChange()"   v-model="form.infant_qty" :class="{ 'is-invalid': form.errors.has('infant_qty') }"   class="col-xs-12 col-sm-12" id="infant_qty" name="infant_qty" placeholder="Qty"  type="number">
@@ -189,7 +189,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="infant_service">
-                                                                Sevice<span class="text-danger">*</span> :
+                                                                Sevice<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input v-model="form.infant_service" :class="{ 'is-invalid': form.errors.has('infant_service') }"   class="col-xs-12 col-sm-12" id="infant_service" name="infant_service" placeholder="Enter Some Notes"  type="text">
@@ -203,7 +203,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="infant_price">
-                                                                Price<span class="text-danger">*</span> :
+                                                                Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="infantChange()"  v-model="form.infant_price" :class="{ 'is-invalid': form.errors.has('infant_price') }"   class="col-xs-12 col-sm-12" id="infant_price" name="infant_price" placeholder="Infant Price" type="number">
@@ -218,10 +218,10 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="infant_total_price">
-                                                                Total Price<span class="text-danger">*</span> :
+                                                                Total Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input disabled  v-model="form.infant_total_price" :class="{ 'is-invalid': form.errors.has('infant_total_price') }"   class="col-xs-12 col-sm-12" id="infant_total_price" name="infant_total_price" placeholder="infant Total Price" required="" type="number">
+                                                                <input disabled  v-model="form.infant_total_price" :class="{ 'is-invalid': form.errors.has('infant_total_price') }"   class="col-xs-12 col-sm-12" id="infant_total_price" name="infant_total_price" placeholder="infant Total Price"  type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -276,7 +276,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_night_qty">
-                                                                Qty<span class="text-danger">*</span> :
+                                                                Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="extraNightChange()" v-model="form.ex_night_qty" :class="{ 'is-invalid': form.errors.has('ex_night_qty') }"   class="col-xs-12 col-sm-12" id="ex_night_qty" name="ex_night_qty" placeholder="Qty" type="number">
@@ -290,7 +290,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_night_note">
-                                                                Sevice<span class="text-danger">*</span> :
+                                                                Sevice<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input v-model="form.ex_night_note" :class="{ 'is-invalid': form.errors.has('ex_night_note') }"   class="col-xs-12 col-sm-12" id="ex_night_note" name="ex_night_note" placeholder="Enter Some Notes..."  type="text">
@@ -304,7 +304,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_night_price">
-                                                                Price<span class="text-danger">*</span> :
+                                                                Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="extraNightChange()" v-model="form.ex_night_price" :class="{ 'is-invalid': form.errors.has('ex_night_price') }"   class="col-xs-12 col-sm-12" id="ex_night_price" name="ex_night_price" placeholder="Ex. Night Price"  type="number">
@@ -319,7 +319,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_night_total_price">
-                                                                Total Price<span class="text-danger">*</span> :
+                                                                Total Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled v-model="form.ex_night_total_price" :class="{ 'is-invalid': form.errors.has('ex_night_total_price') }"   class="col-xs-12 col-sm-12" id="ex_night_total_price" name="ex_night_total_price" placeholder="Extra Total Price" type="number">
@@ -341,7 +341,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_site_seeing_qty">
-                                                                Qty<span class="text-danger">*</span> :
+                                                                Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="extraSiteSeeingChange()"  v-model="form.ex_site_seeing_qty" :class="{ 'is-invalid': form.errors.has('ex_site_seeing_qty') }"   class="col-xs-12 col-sm-12" id="ex_site_seeing_qty" name="ex_site_seeing_qty" placeholder="Qty"  type="number">
@@ -355,7 +355,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_site_seeing_note">
-                                                                Sevice<span class="text-danger">*</span> :
+                                                                Sevice<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input  v-model="form.ex_site_seeing_note" :class="{ 'is-invalid': form.errors.has('ex_site_seeing_note') }"   class="col-xs-12 col-sm-12" id="ex_site_seeing_note" name="ex_site_seeing_note" placeholder="Enter Some Notes..." type="text">
@@ -369,7 +369,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_site_seeing_price">
-                                                                Price<span class="text-danger">*</span> :
+                                                                Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="extraSiteSeeingChange()" v-model="form.ex_site_seeing_price" :class="{ 'is-invalid': form.errors.has('ex_site_seeing_price') }"   class="col-xs-12 col-sm-12" id="ex_site_seeing_price" name="ex_site_seeing_price" placeholder="Ex. Site Seeing Price"  type="number">
@@ -384,7 +384,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="ex_site_seeing_total_price">
-                                                                Total Price<span class="text-danger">*</span> :
+                                                                Total Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled v-model="form.ex_site_seeing_total_price" :class="{ 'is-invalid': form.errors.has('ex_site_seeing_total_price') }"   class="col-xs-12 col-sm-12" id="ex_site_seeing_total_price" name="ex_site_seeing_total_price" placeholder="Ex. Site Seeing Total Price" type="number">
@@ -407,7 +407,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="airport_rd_qty">
-                                                                Qty<span class="text-danger">*</span> :
+                                                                Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="airportRD()" v-model="form.airport_rd_qty" :class="{ 'is-invalid': form.errors.has('airport_rd_qty') }"   class="col-xs-12 col-sm-12" id="airport_rd_qty" name="airport_rd_qty" placeholder="Qty" type="number">
@@ -421,7 +421,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="airport_rd_note">
-                                                                Sevice<span class="text-danger">*</span> :
+                                                                Sevice<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input  v-model="form.airport_rd_note" :class="{ 'is-invalid': form.errors.has('airport_rd_note') }"   class="col-xs-12 col-sm-12" id="airport_rd_note" name="airport_rd_note" placeholder="Enter Some Note..."  type="text">
@@ -435,7 +435,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="airport_rd_price">
-                                                                Price<span class="text-danger">*</span> :
+                                                                Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="airportRD()" v-model="form.airport_rd_price" :class="{ 'is-invalid': form.errors.has('airport_rd_price') }"   class="col-xs-12 col-sm-12" id="airport_rd_price" name="airport_rd_price" placeholder="Airport Rec:Drop Price"  type="number">
@@ -450,7 +450,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="airport_rd_total_price">
-                                                                Total Price<span class="text-danger">*</span> :
+                                                                Total Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled v-model="form.airport_rd_total_price" :class="{ 'is-invalid': form.errors.has('airport_rd_total_price') }"   class="col-xs-12 col-sm-12" id="airport_rd_total_price" name="airport_rd_total_price" placeholder="Airport Rec:Drop Total Price"  type="number">
@@ -471,7 +471,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="others_qty">
-                                                                Qty<span class="text-danger">*</span> :
+                                                                Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="othersChange()" v-model="form.others_qty" :class="{ 'is-invalid': form.errors.has('others_qty') }"   class="col-xs-12 col-sm-12" id="others_qty" name="others_qty" placeholder="Qty"  type="number">
@@ -485,7 +485,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="others_note">
-                                                                Sevice<span class="text-danger">*</span> :
+                                                                Sevice<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input  v-model="form.others_note" :class="{ 'is-invalid': form.errors.has('others_note') }"   class="col-xs-12 col-sm-12" id="others_note" name="others_note" placeholder="Enter Some Notes..." type="text">
@@ -499,7 +499,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="others_price">
-                                                                Price<span class="text-danger">*</span> :
+                                                                Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="othersChange()" v-model="form.others_price" :class="{ 'is-invalid': form.errors.has('others_price') }"   class="col-xs-12 col-sm-12" id="others_price" name="others_price" placeholder="Others Price"  type="number">
@@ -514,7 +514,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="others_total_price">
-                                                                Total Price<span class="text-danger">*</span> :
+                                                                Total Price<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled v-model="form.others_total_price" :class="{ 'is-invalid': form.errors.has('others_total_price') }"   class="col-xs-12 col-sm-12" id="others_total_price" name="others_total_price" placeholder="Others Total Price"  type="number">
@@ -592,7 +592,7 @@
                                                     <div class="col-md-12">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="extra_note">
-                                                                Extra Note<span class="text-danger">*</span> :
+                                                                Extra Note<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
 <!--                                                                <input disabled  v-model="form.grand_total_price" :class="{ 'is-invalid': form.errors.has('grand_total_price') }"   class="col-xs-12 col-sm-12" id="grand_total_price" name="grand_total_price" placeholder="Grand Total Price" required="" type="number">-->
@@ -612,7 +612,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="first_qty">
-                                                                First Qty<span class="text-danger">*</span> :
+                                                                First Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="firstChange()"  v-model="form.first_qty" :class="{ 'is-invalid': form.errors.has('first_qty') }"   class="col-xs-12 col-sm-12" id="first_qty" name="first_qty" placeholder="Qty"  type="number">
@@ -625,7 +625,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="first_price">
-                                                                First Price <span class="text-danger">*</span> :
+                                                                First Price <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="firstChange()" v-model="form.first_price" :class="{ 'is-invalid': form.errors.has('first_price') }"   class="col-xs-12 col-sm-12" id="first_price" name="first_price"   type="number">
@@ -638,7 +638,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="first_total_price">
-                                                                First Total Price <span class="text-danger">*</span> :
+                                                                First Total Price <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled  v-model="form.first_total_price" :class="{ 'is-invalid': form.errors.has('first_total_price') }"   class="col-xs-12 col-sm-12" id="first_total_price" name="first_total_price" placeholder="Total Price"  type="number">
@@ -653,7 +653,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="second_qty">
-                                                                Second Qty<span class="text-danger">*</span> :
+                                                                Second Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="secondChange()"  v-model="form.second_qty" :class="{ 'is-invalid': form.errors.has('second_qty') }"   class="col-xs-12 col-sm-12" id="second_qty" name="second_qty" placeholder="Qty"  type="number">
@@ -666,7 +666,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="second_price">
-                                                                Second Price <span class="text-danger">*</span> :
+                                                                Second Price <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="secondChange()"  v-model="form.second_price" :class="{ 'is-invalid': form.errors.has('second_price') }"   class="col-xs-12 col-sm-12" id="second_price" name="second_price"   type="number">
@@ -679,7 +679,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="second_total_price">
-                                                                Second Total Price <span class="text-danger">*</span> :
+                                                                Second Total Price <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled  v-model="form.second_total_price" :class="{ 'is-invalid': form.errors.has('second_total_price') }"   class="col-xs-12 col-sm-12" id="second_total_price" name="second_total_price" placeholder="Total Price"  type="number">
@@ -694,7 +694,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="third_qty">
-                                                                Third Qty<span class="text-danger">*</span> :
+                                                                Third Qty<span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="thirdChange()"  v-model="form.third_qty" :class="{ 'is-invalid': form.errors.has('third_qty') }"   class="col-xs-12 col-sm-12" id="third_qty" name="third_qty" placeholder="Qty"  type="number">
@@ -707,7 +707,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="third_price">
-                                                                Third Price <span class="text-danger">*</span> :
+                                                                Third Price <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="thirdChange()"  v-model="form.third_price" :class="{ 'is-invalid': form.errors.has('third_price') }"   class="col-xs-12 col-sm-12" id="third_price" name="third_price"   type="number">
@@ -720,7 +720,7 @@
                                                     <div class="col-md-4">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="third_total_price">
-                                                                Third Total Price <span class="text-danger">*</span> :
+                                                                Third Total Price <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled  v-model="form.third_total_price" :class="{ 'is-invalid': form.errors.has('third_total_price') }"   class="col-xs-12 col-sm-12" id="third_total_price" name="third_total_price" placeholder="Total Price"  type="number">

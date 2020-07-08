@@ -156,6 +156,7 @@ import EditAirTicketRefund from "./components/cosmosHoliday/air-ticket/Refund/Ed
 import AtAGlanceComponent from "./components/cosmosHoliday/AtAGlanceComponent";
 import ListDueGuest from "./components/cosmosHoliday/due-guest/ListDueGuest";
 import ListIncome from "./components/cosmosHoliday/income/ListIncome";
+import AddDirectPackage from "./components/cosmosHoliday/package/additional/AddDirectPackage";
 
 
 
@@ -581,8 +582,16 @@ export const routes = [
         component: AddGuestConfirmationComponent
     },
     {
+        path: '/add-guest-confirmation/:id',
+        component: AddGuestConfirmationComponent
+    },
+    {
         path:'/add-package-visa-update-new/:id',
         component: AddPackageVisaUpdateNew
+    },
+    {
+        path:'/add-direct-package',
+        component: AddDirectPackage
     },
 
     {

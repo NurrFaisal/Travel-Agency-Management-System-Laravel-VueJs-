@@ -170,7 +170,7 @@
                                                     <div class="col-md-3">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="child_qty">
-                                                                Child <span class="text-danger">*</span> :
+                                                                Child <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumPaxQty()" v-validate="'required'" v-model="form.child_qty" :class="{ 'is-invalid': form.errors.has('child_qty') }"   class="col-xs-12 col-sm-12" id="child_qty" name="child_qty" placeholder="Qty"  type="number">
@@ -184,7 +184,7 @@
                                                     <div class="col-md-3">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="infant_qty">
-                                                                Infant <span class="text-danger">*</span> :
+                                                                Infant <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumPaxQty()" v-validate="'required'" v-model="form.infant_qty" :class="{ 'is-invalid': form.errors.has('infant_qty') }"   class="col-xs-12 col-sm-12" id="infant_qty" name="infant_qty" placeholder="Qty"  type="number">
@@ -219,7 +219,7 @@
                                                                 Hotel Category <span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                               <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('hotel_cat') }" v-model="form.hotel_cat" id="hotel_cat" name="hotel_cat" class="col-xs-12 col-sm-12" >
+                                                               <select v-validate="'required'" :class="{ 'is-invalid': form.errors.has('hotel_cat') }" v-model="form.hotel_cat" id="hotel_cat" name="hotel_cat" required class="col-xs-12 col-sm-12" >
                                                                     <option value="">--Select Hotel Category--</option>
                                                                     <option  value="1" >7 Star</option>
                                                                     <option  value="2" >5 Star</option>
@@ -287,7 +287,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="king_size">
-                                                                King Size <span class="text-danger">*</span> :
+                                                                King Size <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumBedQty()" v-validate="'required'" v-model="form.king_size" :class="{ 'is-invalid': form.errors.has('king_size') }"   class="col-xs-12 col-sm-12" id="king_size" name="king_size" placeholder="Qty"  type="number">
@@ -301,7 +301,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="couple_size">
-                                                                Couple <span class="text-danger">*</span> :
+                                                                Couple <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumBedQty()" v-validate="'required'" v-model="form.couple_size" :class="{ 'is-invalid': form.errors.has('couple_size') }"   class="col-xs-12 col-sm-12" id="couple_size" name="couple_size" placeholder="Qty"  type="number">
@@ -315,7 +315,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="twin_size">
-                                                                Twin <span class="text-danger">*</span> :
+                                                                Twin <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumBedQty()" v-validate="'required'" v-model="form.twin_size" :class="{ 'is-invalid': form.errors.has('twin_size') }"   class="col-xs-12 col-sm-12" id="twin_size" name="twin_size" placeholder="Qty"  type="number">
@@ -329,7 +329,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="triple_size">
-                                                                Triple <span class="text-danger">*</span> :
+                                                                Triple <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumBedQty()" v-validate="'required'" v-model="form.triple_size" :class="{ 'is-invalid': form.errors.has('triple_size') }"   class="col-xs-12 col-sm-12" id="triple_size" name="triple_size" placeholder="Qty"  type="number">
@@ -343,7 +343,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="quared_size">
-                                                                Quared <span class="text-danger">*</span> :
+                                                                Quared <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input @keyup="sumBedQty()" v-validate="'required'" v-model="form.quared_size" :class="{ 'is-invalid': form.errors.has('quared_size') }"   class="col-xs-12 col-sm-12" id="quared_size" name="quared_size" placeholder="Qty"  type="number">
@@ -357,7 +357,7 @@
                                                     <div class="col-md-2">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="total_bed_qty">
-                                                                Total Bed Qty <span class="text-danger">*</span> :
+                                                                Total Bed Qty <span class="text-danger"></span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                 <input disabled v-validate="'required'" v-model="form.total_bed_qty" :class="{ 'is-invalid': form.errors.has('total_bed_qty') }"   class="col-xs-12 col-sm-12" id="total_bed_qty" name="total_bed_qty" placeholder="Qty" required type="number">

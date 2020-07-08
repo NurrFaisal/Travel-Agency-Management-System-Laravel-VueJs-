@@ -146,6 +146,14 @@
 
                 <b class="arrow"></b>
             </li>
+            <li class="btn_cos">
+                <router-link to="/add-direct-package">
+                    <i class="menu-icon fa fa-tachometer"></i>
+                    <span class="menu-text">Quick Package </span>
+                </router-link>
+
+                <b class="arrow"></b>
+            </li>
         @endif
         @if(Session::get('user_type') == 'admin' || Session::get('user_type') == 'super-admin' || Session::get('department') == 7)
             <li class="btn_cos">
