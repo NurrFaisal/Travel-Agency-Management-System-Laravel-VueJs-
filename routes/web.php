@@ -405,6 +405,11 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
 
 // PackageVisaUpdateController End
 
+
+    //PackageRefoundController Start
+    Route::post('/api/package-refund', 'PackageRefoundController@packageRefund');
+    //PackageRefoundController End
+
 // PackageTicketController Start
     Route::get('/api/get-all-package-ticket', 'PackageTicketController@getAllPackageTicket');
     Route::post('/api/add-package-ticket-date', 'PackageTicketController@addPackageTicketDate');

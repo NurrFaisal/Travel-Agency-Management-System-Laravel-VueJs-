@@ -484,6 +484,53 @@
 <!--                                    Follow up to Guest End-->
 <!--                                    Guest Confirmation Start-->
                                     <div id="guest_confirm_date_tab" class="tab-pane fade in" :class="p_state == 5 ? 'active' : ''">
+                                        <div class="modal fade" id="air_ticket_refound" aria-hidden="true" role="dialog"  tabindex="-1">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">×</button>
+                                                        <h4 class="modal-title">Package Guest Refund</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form @submit.prevent="packageGuestRefund()" method="post">
+                                                            <div class="row">
+                                                                <label for="refund_date" class="col-sm-5">Refund Date:</label>
+                                                                <div class="col-sm-7">
+                                                                    <input type="date" v-model="form10.refund_date" id="refund_date" name="refund_date" class="form-control"  style="max-width: 95%;" value="" required="">
+                                                                </div>
+                                                                <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                                    <has-error style="color:red" :form="form10" field="refund_date"></has-error>
+                                                                    <span style="color: red">{{ errors.first('refund_date') }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <br>
+                                                            <div class="row">
+                                                                <label for="amount" class="col-sm-5">Amount:</label>
+                                                                <div class="col-sm-7">
+                                                                    <input type="number" v-model="form10.amount" id="amount" name="amount" class="form-control"  style="max-width: 95%;" value="" required="">
+                                                                </div>
+                                                                <div class="col-xs-offset-2 col-xs-9 text-danger">
+                                                                    <has-error style="color:red" :form="form10" field="amount"></has-error>
+                                                                    <span style="color: red">{{ errors.first('amount') }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <br>
+
+                                                            <div class="row">
+                                                                <div class="col-sm-5 text-right"></div>
+                                                                <div class="col-sm-5">
+                                                                    <input type="submit" name="" class="button" style="background-color: #d3d3d380 !important;" value="Submit">
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <h3>Guest Confirmation</h3>
                                         <div class="row">
                                             <div class="col-xs-12">
@@ -523,6 +570,9 @@
                                                                 </router-link>
                                                                 <a  @click.prevent="downLoadInvoice(gcd.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                                     Invoice
+                                                                </a>
+                                                                <a  href="#" @click.prevent="openModalCollected(ticket.id)" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#air_ticket_refound">
+                                                                    Refund
                                                                 </a>
                                                             </div>
                                                         </td>
@@ -1075,10 +1125,20 @@
                     document_delivery_date:'',
 
                 }),
+                form10: new Form({
+                    id:'',
+                    refund_date:'',
+                    amount:'',
+
+                }),
 
             }
         },
         methods: {
+
+            openModalCollected(id){
+                this.form10.id = id
+            },
             packageSession(state){
                this.isLoading = true
                 this.p_state = state
@@ -1358,6 +1418,22 @@
             openDateOfJourneyModal(id){
                 this.form10.id = id
             },
+
+
+
+            addAirTicketRefund(){
+                this.form10.post('/api/package-refund')
+                    .then((response) => {
+                        this.form10.reset()
+                        console.log(response.data)
+                        $('#air_ticket_refound').modal("hide");
+                        $('.modal-backdrop').remove();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Package Refunded Successfully'
+                        })
+                    })
+            }
 
 
             // All Modal End
