@@ -157,6 +157,7 @@ import AtAGlanceComponent from "./components/cosmosHoliday/AtAGlanceComponent";
 import ListDueGuest from "./components/cosmosHoliday/due-guest/ListDueGuest";
 import ListIncome from "./components/cosmosHoliday/income/ListIncome";
 import AddDirectPackage from "./components/cosmosHoliday/package/additional/AddDirectPackage";
+import PackageRefundListComponent from "./components/cosmosHoliday/package/refund/PackageRefundListComponent";
 
 
 
@@ -630,6 +631,10 @@ export const routes = [
     {
         path:'/edit-package-net-price/:id',
         component: EditPackageNetPrice
+    },
+    {
+        path:'/package-refund-list',
+        component:PackageRefundListComponent
     },
 
 

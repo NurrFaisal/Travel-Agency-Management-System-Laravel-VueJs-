@@ -396,6 +396,8 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
 
 // ConfirmMailToSuplierController End
 
+
+
 // PackageVisaUpdateController Start
 
     Route::get('/api/get-all-package-visa-update', 'PackageVisaUpdateController@getAllPackageVisaUpdate');
@@ -408,6 +410,7 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
 
     //PackageRefoundController Start
     Route::post('/api/package-refund', 'PackageRefoundController@packageRefund');
+    Route::get('/api/package-guest-refund', 'PackageRefoundController@packageGuestRefund');
     //PackageRefoundController End
 
 // PackageTicketController Start

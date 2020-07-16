@@ -571,7 +571,7 @@
                                                                 <a  @click.prevent="downLoadInvoice(gcd.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                                     Invoice
                                                                 </a>
-                                                                <a  href="#" @click.prevent="openModalCollected(ticket.id)" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#air_ticket_refound">
+                                                                <a  href="#" @click.prevent="openModalCollected(gcd.id)" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#air_ticket_refound">
                                                                     Refund
                                                                 </a>
                                                             </div>
@@ -1421,19 +1421,19 @@
 
 
 
-            addAirTicketRefund(){
+            packageGuestRefund(){
                 this.form10.post('/api/package-refund')
                     .then((response) => {
                         this.form10.reset()
                         console.log(response.data)
-                        $('#air_ticket_refound').modal("hide");
-                        $('.modal-backdrop').remove();
+                        $('#air_ticket_refound').modal("hide")
+                        $('.modal-backdrop').remove()
                         Toast.fire({
                             type: 'success',
                             title: 'Package Refunded Successfully'
                         })
                     })
-            }
+            },
 
 
             // All Modal End
