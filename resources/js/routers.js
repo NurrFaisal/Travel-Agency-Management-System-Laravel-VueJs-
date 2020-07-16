@@ -158,6 +158,7 @@ import ListDueGuest from "./components/cosmosHoliday/due-guest/ListDueGuest";
 import ListIncome from "./components/cosmosHoliday/income/ListIncome";
 import AddDirectPackage from "./components/cosmosHoliday/package/additional/AddDirectPackage";
 import PackageRefundListComponent from "./components/cosmosHoliday/package/refund/PackageRefundListComponent";
+import PackageRefundSuplier from "./components/cosmosHoliday/package/refund/PackageRefundSuplier";
 
 
 
@@ -635,6 +636,10 @@ export const routes = [
     {
         path:'/package-refund-list',
         component:PackageRefundListComponent
+    },
+    {
+        path:'/refund-package-suplier/:id',
+        component:PackageRefundSuplier
     },
 
 

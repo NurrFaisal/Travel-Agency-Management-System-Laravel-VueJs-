@@ -826,8 +826,12 @@
                                                                     <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                                 </router-link>
                                                                 <a href="#"  @click.prevent="openDocumentReadyModal(net_price.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#document_ready_modal">
-                                                                    Document Ready
+                                                                    Doc Ready
                                                                 </a>
+                                                                <router-link  v-if="user_type == 'super-admin' || user_type == 'admin' || user_type == 'operation'"  :to="`/refund-package-suplier/${net_price.id}`" class="btn btn-xs btn-danger">
+                                                                    Refund
+                                                                </router-link>
+
                                                                 <a href="#" @click.prevent="downLoadInvoice(net_price.id)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#visa_invoice_modal">
                                                                     Invoice
                                                                 </a>

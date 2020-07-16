@@ -38,6 +38,7 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
     Route::get('/invoice-print-expense/{id}', 'PrintController@invoicePrintExpense');
     Route::get('/invoice-print-salary/{id}', 'PrintController@invoicePrintSalary');
     Route::get('/invoice-print-incentive/{id}', 'PrintController@invoicePrintIncentive');
+    Route::get('/refund-package-suplier/{id}', 'PrintController@invoicePrintIncentive');
 // airTicketInvoice
 
 
@@ -411,6 +412,8 @@ Route::group(['middleware' => ['AuthenticMiddleware']], function () {
     //PackageRefoundController Start
     Route::post('/api/package-refund', 'PackageRefoundController@packageRefund');
     Route::get('/api/package-guest-refund', 'PackageRefoundController@packageGuestRefund');
+    Route::post('/api/suplier-package-refund', 'PackageRefoundController@suplierPackageRefund');
+    Route::get('/api/package-suplier-refund', 'PackageRefoundController@packageSuplierRefund');
     //PackageRefoundController End
 
 // PackageTicketController Start
