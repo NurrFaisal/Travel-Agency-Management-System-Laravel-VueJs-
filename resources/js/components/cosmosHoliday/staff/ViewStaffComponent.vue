@@ -187,7 +187,7 @@
                                                            <th class="center">{{staff.designationt.staff_designation}}</th>
                                                        </tr>
                                                        <tr>
-                                                           <th class="center">Staff ID</th>
+                                                           <th class="center">Employee ID</th>
                                                            <th class="center">COS-{{staff.staff_id}}</th>
                                                        </tr>
                                                        <tr>

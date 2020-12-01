@@ -17,7 +17,7 @@
                     </li>
 
                     <li>
-                        <router-link to="/edit-staff">Edit Staff</router-link>
+                        <router-link to="/edit-staff">Edit Employee</router-link>
                     </li>
                 </ul><!-- /.breadcrumb -->
 
@@ -41,9 +41,9 @@
                             <div class="">
                                 <div class="widget-box">
                                     <div class="widget-header">
-                                        <h5 class="widget-title">Edit Staff</h5>
+                                        <h5 class="widget-title">Edit Employee</h5>
                                         <div class="card-tools" style="float:right">
-                                            <router-link to="/staff-list" class="btn btn-success">Staff List</router-link>
+                                            <router-link to="/staff-list" class="btn btn-success">Employee List</router-link>
                                         </div>
                                         <br/>
                                     </div>
@@ -58,7 +58,7 @@
                                                                 First Name<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.first_name" :class="{ 'is-invalid': form.errors.has('first_name') }"   class="col-xs-12 col-sm-12" id="first_name" name="first_name" placeholder="Enter Staff First Name" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.first_name" :class="{ 'is-invalid': form.errors.has('first_name') }"   class="col-xs-12 col-sm-12" id="first_name" name="first_name" placeholder="Enter Employee First Name" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -72,7 +72,7 @@
                                                                 Last Name<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.last_name" :class="{ 'is-invalid': form.errors.has('last_name') }"   class="col-xs-12 col-sm-12" id="last_name" name="last_name" placeholder="Enter Staff Last Name" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.last_name" :class="{ 'is-invalid': form.errors.has('last_name') }"   class="col-xs-12 col-sm-12" id="last_name" name="last_name" placeholder="Enter Employee Last Name" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -88,7 +88,7 @@
                                                                 Email<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.email_address" :class="{ 'is-invalid': form.errors.has('email_address') }"   class="col-xs-12 col-sm-12" id="email_address" name="email_address" placeholder="Enter Staff Email Address" required="" type="email">
+                                                                <input v-validate="'required'" v-model="form.email_address" :class="{ 'is-invalid': form.errors.has('email_address') }"   class="col-xs-12 col-sm-12" id="email_address" name="email_address" placeholder="Enter Employee Email Address" required="" type="email">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -118,7 +118,7 @@
                                                                 Phone Number<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.phone_number" :class="{ 'is-invalid': form.errors.has('phone_number') }"   class="col-xs-12 col-sm-12" id="phone_number" name="phone_number" placeholder="Enter Staff Phone Number" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.phone_number" :class="{ 'is-invalid': form.errors.has('phone_number') }"   class="col-xs-12 col-sm-12" id="phone_number" name="phone_number" placeholder="Enter Employee Phone Number" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -132,7 +132,7 @@
                                                                 Alt. Phone Number<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.alt_phone_number" :class="{ 'is-invalid': form.errors.has('alt_phone_number') }"   class="col-xs-12 col-sm-12" id="alt_phone_number" name="alt_phone_number" placeholder="Enter Staff Alt Phone Number"  required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.alt_phone_number" :class="{ 'is-invalid': form.errors.has('alt_phone_number') }"   class="col-xs-12 col-sm-12" id="alt_phone_number" name="alt_phone_number" placeholder="Enter Employee Alt Phone Number"  required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -148,7 +148,7 @@
                                                                 Passport No.<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.passport" :class="{ 'is-invalid': form.errors.has('passport') }"   class="col-xs-12 col-sm-12" id="passport" name="passport" placeholder="Enter Staff Passport Number" required="" type="number">
+                                                                <input v-validate="'required'" v-model="form.passport" :class="{ 'is-invalid': form.errors.has('passport') }"   class="col-xs-12 col-sm-12" id="passport" name="passport" placeholder="Enter Employee Passport Number" required="" type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -162,7 +162,7 @@
                                                                 NID<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.nid" :class="{ 'is-invalid': form.errors.has('nid') }"   class="col-xs-12 col-sm-12" id="nid" name="nid" placeholder="Enter Staff NID Number"  required="" type="number">
+                                                                <input v-validate="'required'" v-model="form.nid" :class="{ 'is-invalid': form.errors.has('nid') }"   class="col-xs-12 col-sm-12" id="nid" name="nid" placeholder="Enter Employee NID Number"  required="" type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -178,7 +178,7 @@
                                                                 Address.<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <textarea v-validate="'required'" v-model="form.address" :class="{ 'is-invalid': form.errors.has('address') }"   class="col-xs-12 col-sm-12" id="address" name="address" placeholder="Enter Staff Full Address" ></textarea>
+                                                                <textarea v-validate="'required'" v-model="form.address" :class="{ 'is-invalid': form.errors.has('address') }"   class="col-xs-12 col-sm-12" id="address" name="address" placeholder="Enter Employee Full Address" ></textarea>
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -212,7 +212,7 @@
                                                                 Blood Group<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.blood_group" :class="{ 'is-invalid': form.errors.has('blood_group') }"   class="col-xs-12 col-sm-12" id="blood_group" name="blood_group" placeholder="Enter Staff Blood Group"  required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.blood_group" :class="{ 'is-invalid': form.errors.has('blood_group') }"   class="col-xs-12 col-sm-12" id="blood_group" name="blood_group" placeholder="Enter Employee Blood Group"  required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -233,7 +233,7 @@
                                                                        name="designation" required
                                                                        v-model="form.designation"
                                                                        v-validate="'required'">
-                                                                <option value="">--Select Staff Designation--</option>
+                                                                <option value="">--Select Employee Designation--</option>
                                                                 <option :value="staff.id" v-for="staff in StaffDesignation">{{staff.staff_designation}}</option>
                                                             </select>
                                                             </span>
@@ -246,10 +246,10 @@
                                                     <div class="col-md-6">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label for="staff_id">
-                                                                Staff ID<span class="text-danger">*</span> :
+                                                                Employee ID<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.staff_id" :class="{ 'is-invalid': form.errors.has('staff_id') }"   class="col-xs-12 col-sm-12" id="staff_id" name="staff_id" placeholder="Enter Staff ID" required="" type="number">
+                                                                <input v-validate="'required'" v-model="form.staff_id" :class="{ 'is-invalid': form.errors.has('staff_id') }"   class="col-xs-12 col-sm-12" id="staff_id" name="staff_id" placeholder="Enter Employee ID" required="" type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -270,7 +270,7 @@
                                                                        name="department" required
                                                                        v-model="form.department"
                                                                        v-validate="'required'">
-                                                                <option value="">--Select Staff Department--</option>
+                                                                <option value="">--Select Employee Department--</option>
                                                                 <option :value="department.id" v-for="department in allDepartment">{{department.department_name}}</option>
                                                             </select>
                                                             </span>
@@ -290,7 +290,7 @@
                                                                         name="location" required
                                                                         v-model="form.location"
                                                                         v-validate="'required'">
-                                                                <option value="">--Select Staff Service Location--</option>
+                                                                <option value="">--Select Employee Service Location--</option>
                                                                 <option value="1">Dhanmondi</option>
                                                                 <option value="2">Banani</option>
                                                             </select>
@@ -323,7 +323,7 @@
                                                                 Salary<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.salary" :class="{ 'is-invalid': form.errors.has('salary') }"   class="col-xs-12 col-sm-12" id="salary" name="salary" placeholder="Enter Staff Salary" required="" type="number">
+                                                                <input v-validate="'required'" v-model="form.salary" :class="{ 'is-invalid': form.errors.has('salary') }"   class="col-xs-12 col-sm-12" id="salary" name="salary" placeholder="Enter Employee Salary" required="" type="number">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -341,7 +341,7 @@
                                                                 Name<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.first_person_name" :class="{ 'is-invalid': form.errors.has('first_person_name') }"   class="col-xs-12 col-sm-12" id="first_person_name" name="first_person_name" placeholder="Enter Staff Contact Person Name" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.first_person_name" :class="{ 'is-invalid': form.errors.has('first_person_name') }"   class="col-xs-12 col-sm-12" id="first_person_name" name="first_person_name" placeholder="Enter Employee Contact Person Name" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -355,7 +355,7 @@
                                                                 Phone Number<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.first_person_phone_number" :class="{ 'is-invalid': form.errors.has('first_person_phone_number') }"   class="col-xs-12 col-sm-12" id="first_person_phone_number" name="first_person_phone_number" placeholder="Enter Staff Contact Person Phone Number" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.first_person_phone_number" :class="{ 'is-invalid': form.errors.has('first_person_phone_number') }"   class="col-xs-12 col-sm-12" id="first_person_phone_number" name="first_person_phone_number" placeholder="Enter Employee Contact Person Phone Number" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -369,7 +369,7 @@
                                                                 Reletionship<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.first_person_relationship" :class="{ 'is-invalid': form.errors.has('first_person_relationship') }"   class="col-xs-12 col-sm-12" id="first_person_relationship" name="person_reletionship_one" placeholder="Enter Staff Contact Person Reletionship" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.first_person_relationship" :class="{ 'is-invalid': form.errors.has('first_person_relationship') }"   class="col-xs-12 col-sm-12" id="first_person_relationship" name="person_reletionship_one" placeholder="Enter Employee Contact Person Reletionship" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -386,7 +386,7 @@
                                                                 Name<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.second_person_name" :class="{ 'is-invalid': form.errors.has('second_person_name') }"   class="col-xs-12 col-sm-12" id="second_person_name" name="second_person_name" placeholder="Enter Staff Cotact Person Name" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.second_person_name" :class="{ 'is-invalid': form.errors.has('second_person_name') }"   class="col-xs-12 col-sm-12" id="second_person_name" name="second_person_name" placeholder="Enter Employee Cotact Person Name" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -400,7 +400,7 @@
                                                                 Phone Number<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.second_person_phone_number" :class="{ 'is-invalid': form.errors.has('second_person_phone_number') }"   class="col-xs-12 col-sm-12" id="second_person_phone_number" name="second_person_phone_number" placeholder="Enter Staff Contact Person Phone Number" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.second_person_phone_number" :class="{ 'is-invalid': form.errors.has('second_person_phone_number') }"   class="col-xs-12 col-sm-12" id="second_person_phone_number" name="second_person_phone_number" placeholder="Enter Employee Contact Person Phone Number" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -414,7 +414,7 @@
                                                                 Reletionship<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input v-validate="'required'" v-model="form.second_person_relationship" :class="{ 'is-invalid': form.errors.has('second_person_relationship') }"   class="col-xs-12 col-sm-12" id="second_person_relationship" name="second_person_relationship" placeholder="Enter Staff Contact Person Reletionship" required="" type="text">
+                                                                <input v-validate="'required'" v-model="form.second_person_relationship" :class="{ 'is-invalid': form.errors.has('second_person_relationship') }"   class="col-xs-12 col-sm-12" id="second_person_relationship" name="second_person_relationship" placeholder="Enter Employee Contact Person Reletionship" required="" type="text">
                                                             </span>
                                                         </div>
                                                         <div class="col-xs-offset-2 col-xs-9 text-danger">
@@ -431,7 +431,7 @@
                                                                 Email<span class="text-danger">*</span> :
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
-                                                                <input readonly v-model="form.email_address"    class="col-xs-12 col-sm-12" id="email_address" name="email_address" placeholder="Enter Staff Email Address" required="" type="email">
+                                                                <input readonly v-model="form.email_address"    class="col-xs-12 col-sm-12" id="email_address" name="email_address" placeholder="Enter Employee Email Address" required="" type="email">
                                                             </span>
                                                         </div>
                                                     </div>

@@ -610,6 +610,7 @@
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label>
                                                                 Selling To<span class="text-danger">*</span> :
+                                                                <router-link to="/new-guest">New Guest</router-link>
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                  <GuestAutoComplate :shouldReset="true" :title="this.name+' '+this.phone_number" @change="onchange"  :items="guests" filterby="phone_number" @Selected="customerSelected"/>

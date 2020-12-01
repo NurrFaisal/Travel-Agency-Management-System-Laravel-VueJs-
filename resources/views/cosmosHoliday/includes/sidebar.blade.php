@@ -186,7 +186,7 @@
             <router-link to="/staff-list">
                 <i class="menu-icon fa fa-tachometer"></i>
                 <span class="menu-text">
-                    Staff
+                    Employee
                 </span>
             </router-link>
 

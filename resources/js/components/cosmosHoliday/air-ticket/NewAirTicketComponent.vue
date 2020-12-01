@@ -606,10 +606,11 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="col-xs-12 col-sm-12">
                                                             <label>
                                                                 Selling To<span class="text-danger">*</span> :
+                                                                <router-link to="/new-guest">New Guest</router-link>
                                                             </label>
                                                             <span class="block input-icon input-icon-right">
                                                                  <GuestAutoComplate :shouldReset="true" @change="onchange"  :items="guests" filterby="phone_number" @Selected="customerSelected"/>
@@ -620,6 +621,8 @@
                                                             <span style="color: red">{{ errors.first('selling_to') }}</span>
                                                         </div>
                                                     </div>
+
+
                                                 </div>
                                                 <div class="form-group ">
                                                     <div class="col-md-12">

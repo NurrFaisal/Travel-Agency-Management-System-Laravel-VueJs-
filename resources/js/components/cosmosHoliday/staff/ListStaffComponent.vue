@@ -17,7 +17,7 @@
                     </li>
 
                     <li>
-                        <router-link to="/staff-list">Staff List </router-link>
+                        <router-link to="/staff-list">Employee List </router-link>
                     </li>
                 </ul><!-- /.breadcrumb -->
 
@@ -35,9 +35,9 @@
 
                 <div class="page-header">
                     <h1>
-                        Staff List - {{this.staff_count}}
+                        Employee List - {{this.staff_count}}
                         <div class="card-tools" style="float:right">
-                            <router-link to="/new-staff" class="btn btn-success">Add Staff</router-link>
+                            <router-link to="/new-staff" class="btn btn-success">Add Employee</router-link>
                         </div>
                         <br/>
                     </h1>
@@ -53,7 +53,7 @@
                                     <tr>
                                         <th class="center">Sl.</th>
                                         <th class="center">Photo</th>
-                                        <th  class="center" >Staff Name</th>
+                                        <th  class="center" >Employee Name</th>
                                         <th  class="center" >Phone Number</th>
                                         <th  class="center" >Email</th>
                                         <th  class="center" >Salary</th>
